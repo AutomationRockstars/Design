@@ -1,0 +1,35 @@
+<!-- Copyright (c) 2015, 2016 Automation RockStars Ltd. All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Apache License v2.0 which accompanies this distribution, and 
+	is available at http://www.apache.org/licenses/LICENSE-2.0 Contributors: 
+	Automation RockStars - initial API and implementation -->
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>proxy.log</file>
+
+    <encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+	</encoder>
+  </appender>
+	
+  
+	<logger name="com.automationrockstars.bmo" level="debug">
+	</logger>
+	<logger name="com.barchart.udt" level="off" />
+
+	<root level="error">
+		<appender-ref ref="STDOUT" />
+
+	</root>
+</configuration>

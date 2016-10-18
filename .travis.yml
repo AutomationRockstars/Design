@@ -1,0 +1,23 @@
+language: java
+
+env:
+  global:
+    - secure: olw4cbKyRJC4TuSn5UVg/kIzJblGGLaqUksRWFTFWhYhQJZiUL8R1Lpy6tTev0WuwINi8TK63+WHN8baxdHAdWJTH0ZY99McjF60pMOr5EPpdnrI+vxsEku4sF579Nure4zMKryMHgjTEsTwHr0Vv4/NJPVrPrT/fssKcG73SsInHENJE3V4zLYzeDTXdLd0qdCZDw/kuoO6wb68rzkRu1xv4jFCV2WdudKcJrzowHVmiODvhe/hSemm29X2hiniA6OhLTFUhyowMdc7/0wDlfHes2nROFuN1PRlTuJrMPyT5ChB7RR7P8syJKoerpOQqJn+xCeiJ25yrTuu4j66iANOWkxzEktEn7OwP4XCwV/hHn28n4KWJFn76BH9CcUv63RZiAbxt4XG85ke6KEmIfP7wcck1Dzg2x2PL/Xx/J4wnkhKHp48LhOF7nWHIoEUxzo3TuHSpPXavacidjNPd5z0s7wNgC5PcnLHRkRwAnGRzR/L6DgbD90fpZhuFwn0opc6SBvQKS4hJBCTbWXF9ObGbEWGlAVRV5n85k0E0DX9AP5Enl/On376n6MT0GTRoocA4aPpOcGIx3JuLvateB6cOzStRS0Qbz2A8ToZltVEDyyPfQen1l6UgSYhd1qwsLBkKEW0cvRzktExCtCO0GqM7s8RMxh6x1FfK0iEsIM=
+    - secure: OFsGmp/jxK0H4IG68jtnZ8R3Ct/i72WSyJyzxcHklzJw/sSPZ4iXSnR0etn6Uv75D/AxS254XNErYf+24+bY37H3jF/K6Ch17/2GeOBHsT+YXRmHNOpIENxkqydW9wNx+Z/TiouoEiVZSexHNE5Iz8zl0k3BQo0QEpqURdEUJQVnqUHfdWJvOpZFI2HzZYtRBA31qjCSKBtcYGS1dtNLlq6tJJpQMKbNJr2wExvV/dkGo0ewGCFXGwOAL+fPUH0weDg/sxL3h26VCOKkA3KfUsh3k+SRNS0K9t/PIl6WZ+BPcl4wefQvQ9bdi5Ir09MWp7IHm3iilXxofbs60FCzHifunY0FHv5kaSFLCvQu0vJuCK05sZiVuJUnoA1Eb6Zp26rR1Hff9dp3MAqQTX44IsH9Bjq3CuSl5NNmdH4xigteEuqhSodF4fPBxqpfy9D/Wy9cDM6uIuXIo1OB2EVx2wwIfnBnc69f1kDfUQVtwCspuofWqhZGAi/dwx86xK/h8DDCwpCQxSPDGYGSxZl2J+0IG/jhdvmcvCuCpzlX1kR3J3VyTdAL9hxfj4BKQlV13I/HlDB+zNzWhDh2qMGUUYZLjKV0SQSCj5/MTWt/xhaeQ9erQKA96zFvDV8va45+8yXz+PoWVGGVWtAYS5dFk7fKITxBQ75jO0zRbIJbvnA=
+    - secure: "O+vfOAOiJoBpLEryX7vEhh6iZQWKsKVP9EU0qulBZJdx1xWjiYIdR+rpFzjbO+jVQqeaAqkkmS8PokCNWrhhYsbUtTcjoZfv6R/UfY7/CTvwpy6Z+Rs7wFd9PCS9vrsS5xzeDPW57dbfoXmeBqE5QrHfpnf6gJ6Zq6+eUYqr5QjrfJQIhlOzyZn71duY7zaXWS1iaABIyHNPACkzyLQcaK7XWA7oNFYZEs5rJ5M6+gLsVWv2aAu8EuPnGBxAit2rIGcC9FWGz3gWKH7+4yh/g64g8U/Al8P0pwriGBv80PaTdJiLtUT4HWWXizxTEtoXUkbe5+7I57bFyq1do6fek3rVJyeKNeGx7kQ3Sa2SoEDXrcwnLTtIoo+I6wAphXe2EX/DZ977vDnuhrc/VIy8XCHxp/9FElVg8EGQaNKW3QFISpViUsWbckE+7c8e4htrEH468Hj9UGD9YxtxHbx7uHHASn75UOAIVjfEl8LNo9ligyaQqAySozb86J4AhqQKzzcs5VT0N8aGnTL7u5bjBuxtcI9MlKwHBHfF3JSeruxoU5t6D6n1p/6qNiH2Oc4eTAHKlsy2POa5xntfhxnTgoqvV66GgDkHgd9XRSSba8pT4Lw+a1otlk/1/1tqAJzZE4gITUCqOFJhnXsEOH6bgqP8cQ/VQ6o7UrVLsIVkNmQ="
+
+before_install:
+      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+install: mvn clean source:jar deploy -Dnoui -DskipTests --settings settings.xml
+
+addons:
+  coverity_scan:
+    project:
+      name: "AutomationRockstars/Design"
+      description: "Build submitted via Travis CI"
+    notification_email: admin@automationrockstars.com
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile --settings settings.xml"
+    branch_pattern: master
+
+

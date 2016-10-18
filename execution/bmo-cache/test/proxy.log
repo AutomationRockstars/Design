@@ -1,0 +1,41 @@
+14:42:41.111 [main] ERROR c.a.base.ConfigLoader - Error loading resource: Failed to load resource: test_props/proxy.properties
+14:42:52.814 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+14:42:52.814 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+14:42:52.819 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.ie:443
+14:42:52.819 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.ie:443
+14:42:53.039 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ssl.gstatic.com:443
+14:42:53.039 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ssl.gstatic.com:443
+14:42:53.043 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ssl.gstatic.com:443
+14:42:53.043 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ssl.gstatic.com:443
+14:42:53.158 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.com:443
+14:42:53.158 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.com:443
+14:42:53.163 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.com:443
+14:42:53.163 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.com:443
+14:43:03.715 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/echo.html
+14:43:03.715 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/echo.html
+14:43:03.716 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/echo.html
+14:43:03.716 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/echo.html
+14:43:03.805 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js
+14:43:03.805 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js
+14:43:03.809 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js
+14:43:03.809 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js
+14:43:03.813 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js
+14:43:03.813 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js
+14:43:03.817 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js
+14:43:03.817 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js
+14:43:03.819 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/stomp.js
+14:43:03.819 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/stomp.js
+14:43:03.820 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/stomp.js
+14:43:03.820 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/stomp.js
+14:43:03.826 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/main.css
+14:43:03.826 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15675/web-stomp-examples/main.css
+14:43:03.826 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/main.css
+14:43:03.826 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15675/web-stomp-examples/main.css
+14:43:03.928 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15674/stomp/info?t=1469713383916
+14:43:03.928 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15674/stomp/info?t=1469713383916
+14:43:03.929 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15674/stomp/info?t=1469713383916
+14:43:03.929 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for http://10.64.1.181:15674/stomp/info?t=1469713383916
+14:43:03.986 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to 10.64.1.181:15674
+14:43:03.986 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to 10.64.1.181:15674
+14:43:03.987 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for 10.64.1.181:15674
+14:43:03.987 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Using direct connection for 10.64.1.181:15674

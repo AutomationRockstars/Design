@@ -1,0 +1,3 @@
+rootProject.name = 'toolchain'
+
+include "bmo-bom","reporting", "execution", "design"

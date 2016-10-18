@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2015, 2016 Automation RockStars Ltd.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Apache License v2.0
+    which accompanies this distribution, and is available at
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Contributors:
+        Automation RockStars - initial API and implementation
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.automationrockstars</groupId>
+		<artifactId>design</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<artifactId>gir-mobile</artifactId>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-java</artifactId>
+				<version>2.49.1</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+
+		<dependency>
+			<groupId>com.automationrockstars</groupId>
+			<artifactId>gir-webdriver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

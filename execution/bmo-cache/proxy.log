@@ -1,0 +1,684 @@
+13:16:16.021 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Release libraries missing: null
+13:16:16.028 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Staging libraries missing: com.barchart.udt.lib.VersionUDT (initialization failure)
+13:16:16.028 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Testing libraries missing: com.barchart.udt.lib.VersionUDT (initialization failure)
+13:16:16.034 [main] ERROR com.barchart.udt.SocketUDT - Failed to LOAD native library
+java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) [na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) [na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) [barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+13:16:16.036 [main] WARN  o.l.p.impl.DefaultHttpProxyServer - Unable to initialize transport protocol UDT: null
+java.lang.ExceptionInInitializerError: null
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:257) ~[na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+Caused by: java.lang.RuntimeException: load
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:146) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) ~[na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) ~[na:1.7.0]
+	... 19 common frames omitted
+Caused by: java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	... 21 common frames omitted
+13:16:16.049 [Finalizer thread] ERROR com.barchart.udt.EpollUDT - failed to destroy id=0
+java.lang.NullPointerException: null
+	at com.barchart.udt.EpollUDT.destroy(EpollUDT.java:155) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.EpollUDT.finalize(EpollUDT.java:190) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.runFinalize(J9VMInternals.java:487) [na:1.7.0]
+13:17:30.412 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Release libraries missing: null
+13:17:30.418 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Staging libraries missing: com.barchart.udt.lib.VersionUDT (initialization failure)
+13:17:30.418 [main] WARN  c.barchart.udt.lib.LibraryLoaderUDT - Testing libraries missing: com.barchart.udt.lib.VersionUDT (initialization failure)
+13:17:30.424 [main] ERROR com.barchart.udt.SocketUDT - Failed to LOAD native library
+java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) [na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) [na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) [barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) [barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) [netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+13:17:30.425 [main] WARN  o.l.p.impl.DefaultHttpProxyServer - Unable to initialize transport protocol UDT: null
+java.lang.ExceptionInInitializerError: null
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:257) ~[na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+Caused by: java.lang.RuntimeException: load
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:146) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) ~[na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) ~[na:1.7.0]
+	... 19 common frames omitted
+Caused by: java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	... 21 common frames omitted
+13:20:04.831 [main] WARN  o.l.p.impl.DefaultHttpProxyServer - Unable to initialize transport protocol UDT: null
+java.lang.ExceptionInInitializerError: null
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:257) ~[na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+Caused by: java.lang.RuntimeException: load
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:146) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) ~[na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) ~[na:1.7.0]
+	... 19 common frames omitted
+Caused by: java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	... 21 common frames omitted
+13:21:47.505 [main] WARN  o.l.p.impl.DefaultHttpProxyServer - Unable to initialize transport protocol UDT: null
+java.lang.ExceptionInInitializerError: null
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:257) ~[na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+Caused by: java.lang.RuntimeException: load
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:146) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) ~[na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) ~[na:1.7.0]
+	... 19 common frames omitted
+Caused by: java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	... 21 common frames omitted
+13:23:27.983 [main] WARN  o.l.p.impl.DefaultHttpProxyServer - Unable to initialize transport protocol UDT: null
+java.lang.ExceptionInInitializerError: null
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:257) ~[na:1.7.0]
+	at com.barchart.udt.EpollUDT.<init>(EpollUDT.java:140) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorUDT.<init>(SelectorUDT.java:78) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:107) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.nio.SelectorProviderUDT.openSelector(SelectorProviderUDT.java:24) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:126) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoop.<init>(NioEventLoop.java:120) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.newChild(NioEventLoopGroup.java:87) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:57) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at io.netty.channel.nio.NioEventLoopGroup.<init>(NioEventLoopGroup.java:61) ~[netty-all-4.0.14.Final.jar:4.0.14.Final]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.initializeTransport(DefaultHttpProxyServer.java:458) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:423) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$ServerGroup.<init>(DefaultHttpProxyServer.java:378) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:158) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer.<init>(DefaultHttpProxyServer.java:81) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.build(DefaultHttpProxyServer.java:760) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at org.littleshoot.proxy.impl.DefaultHttpProxyServer$DefaultHttpProxyServerBootstrap.start(DefaultHttpProxyServer.java:747) [littleproxy-1.0.0-ntlm-SNAPSHOT.jar:na]
+	at com.automationrockstars.bmo.cache.Server.start(Server.java:34) [classes/:na]
+	at com.automationrockstars.bmo.cache.Server.main(Server.java:80) [classes/:na]
+Caused by: java.lang.RuntimeException: load
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:146) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at java.lang.J9VMInternals.initializeImpl(Native Method) ~[na:1.7.0]
+	at java.lang.J9VMInternals.initialize(J9VMInternals.java:235) ~[na:1.7.0]
+	... 19 common frames omitted
+Caused by: java.lang.IllegalStateException: Fatal: library load failed.
+	at com.barchart.udt.lib.LibraryLoaderUDT.load(LibraryLoaderUDT.java:75) ~[barchart-udt-bundle-2.3.0.jar:na]
+	at com.barchart.udt.SocketUDT.<clinit>(SocketUDT.java:142) ~[barchart-udt-bundle-2.3.0.jar:na]
+	... 21 common frames omitted
+13:41:16.064 [main] INFO  c.a.base.ConfigLoader - Found properties files [test_props/proxy.properties]
+13:41:16.070 [main] INFO  c.a.base.ConfigLoader - Opening file:/C:/git/Design/execution/bmo-cache/target/test-classes/test_props/proxy.properties
+13:41:16.265 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET bluecoat/do HTTP/1.1 
+13:41:16.268 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET anything/do HTTP/1.1 
+13:41:26.354 [main] INFO  c.a.base.ConfigLoader - Found properties files [test-classes/test_props/proxy.properties]
+13:51:53.130 [main] INFO  c.a.base.ConfigLoader - Found properties files [test_props/proxy.properties]
+13:51:53.136 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+13:51:53.311 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET bluecoat/do HTTP/1.1 
+13:51:53.313 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET anything/do HTTP/1.1 
+14:02:24.228 [main] INFO  c.a.base.ConfigLoader - Found properties resources [test_props/proxy.properties]
+14:02:24.235 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+14:02:24.449 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET bluecoat/do HTTP/1.1 
+14:02:24.451 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET anything/do HTTP/1.1 
+14:07:40.657 [main] INFO  c.a.base.ConfigLoader - Found properties resources [test_props/proxy.properties]
+14:07:40.664 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+14:07:40.867 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET bluecoat/do HTTP/1.1 
+14:07:40.869 [main] INFO  Upstream proxy bluecoat - Checking DefaultHttpRequest, decodeResult: success)
+GET anything/do HTTP/1.1 
+14:14:43.953 [main] INFO  c.a.base.ConfigLoader - Found properties resources [test_props/proxy.properties]
+14:14:43.959 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+14:26:47.052 [main] INFO  c.a.base.ConfigLoader - Found properties resources [test_props/proxy.properties]
+14:26:47.058 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+14:26:47.259 [main] INFO  Upstream proxy bluecoat - Proxy bluecoat properties:
+ SubsetConfiguration - url : 5.5.5.5:80
+SubsetConfiguration - user : ntlmUser
+SubsetConfiguration - password : ntlmPass
+SubsetConfiguration - domain : ntlmGroup
+SubsetConfiguration - type : ntlm
+SubsetConfiguration - filter : bluecoat.*
+
+14:31:41.284 [main] INFO  c.a.base.ConfigLoader - Found properties resources [test_props/proxy.properties]
+14:31:41.289 [main] INFO  c.a.base.ConfigLoader - Opening test_props/proxy.properties
+14:31:41.469 [main] INFO  Upstream proxy bluecoat - Proxy bluecoat properties:
+ SubsetConfiguration - url : 5.5.5.5:80
+SubsetConfiguration - user : ntlmUser
+SubsetConfiguration - password : ntlmPass
+SubsetConfiguration - domain : ntlmGroup
+SubsetConfiguration - type : ntlm
+SubsetConfiguration - filter : bluecoat.*
+
+16:26:02.118 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:26:02.118 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:26:02.170 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:02.170 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:02.174 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:26:02.174 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:26:02.174 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:02.174 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:13.348 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:26:13.348 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:26:28.930 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:26:28.930 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:26:35.220 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:26:35.220 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:26:35.222 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:35.222 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:37.691 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:26:37.691 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:26:38.727 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:26:38.727 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:26:42.312 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:26:42.312 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:26:42.313 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:42.313 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:26:49.166 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:26:49.166 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:26:51.103 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:26:51.103 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:00.201 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:27:00.201 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:27:00.214 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:00.214 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.876 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:04.876 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:04.915 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:04.915 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:04.952 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/propertykeys
+16:27:04.952 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/propertykeys
+16:27:04.952 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.952 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.953 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/manage/server/version/
+16:27:04.953 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/manage/server/version/
+16:27:04.954 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.954 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.954 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/manage/server/jmx/query
+16:27:04.954 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/manage/server/jmx/query
+16:27:04.955 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.955 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.961 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/labels
+16:27:04.961 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/labels
+16:27:04.961 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.961 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.966 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/relationship/types
+16:27:04.966 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/relationship/types
+16:27:04.968 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:04.968 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:07.604 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:07.604 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:07.605 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:07.605 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:11.868 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:11.868 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:11.869 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:11.869 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:14.335 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:14.335 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:14.335 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:14.335 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:15.197 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:15.197 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:15.198 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:15.198 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:15.821 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:15.821 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:15.822 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:15.822 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:16.329 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:16.329 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:16.337 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:16.337 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:16.709 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:16.709 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached true
+16:27:16.711 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:16.711 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:17.901 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:17.901 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:17.902 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:17.902 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:20.342 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:20.342 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/version/ can be cached true
+16:27:20.378 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:27:20.378 [LittleProxy-ProxyToServerWorker-3] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:27:20.904 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:20.904 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:20.906 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:20.906 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:21.505 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:21.505 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:21.513 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:21.513 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:21.920 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:21.920 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:21.921 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:21.921 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:22.373 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:22.373 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:22.374 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:22.374 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:22.773 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:22.773 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:22.774 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:22.774 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:23.197 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/labels can be cached true
+16:27:23.197 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/labels can be cached true
+16:27:23.198 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:23.198 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:23.612 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:23.612 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:23.615 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:23.615 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:28.642 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:28.642 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:28.648 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:28.648 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:29.260 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/labels can be cached true
+16:27:29.260 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/labels can be cached true
+16:27:29.264 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:29.264 [LittleProxy-ProxyToServerWorker-5] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:29.827 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:29.827 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:29.828 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:29.828 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:31.911 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:31.911 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:31.922 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:31.922 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:32.426 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:32.426 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:32.427 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:32.427 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:32.877 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:32.877 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:32.878 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:32.878 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:33.312 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.312 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.312 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:33.312 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:33.676 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.676 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.676 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:33.676 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:33.888 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.888 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/manage/server/jmx/query can be cached false
+16:27:33.889 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:33.889 [LittleProxy-ProxyToServerWorker-4] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:34.073 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/propertykeys can be cached true
+16:27:34.073 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/propertykeys can be cached true
+16:27:34.073 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:34.073 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:47.525 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/propertykeys can be cached true
+16:27:47.525 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/propertykeys can be cached true
+16:27:47.526 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:47.526 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:27:50.571 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:27:50.571 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fiery-heat-7952.firebaseio.com:443
+16:27:50.572 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:50.572 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:50.572 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:50.572 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:50.573 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:50.573 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:52.157 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:52.157 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:52.164 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:52.164 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+16:27:53.501 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:27:53.508 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:53.501 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://10.64.1.181:15673/db/data/
+16:27:53.508 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/relationship/types can be cached true
+16:27:53.513 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:53.519 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:27:53.513 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:53.519 [LittleProxy-ProxyToServerWorker-6] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:27:53.526 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:27:53.526 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:27:53.535 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:53.535 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:27:56.310 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:27:56.310 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:27:56.335 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:56.335 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:27:56.357 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:27:56.357 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://10.64.1.181:15673/db/data/ can be cached false
+16:27:56.358 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:27:56.358 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+16:28:07.241 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:28:07.241 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:28:07.241 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:28:07.241 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:28:57.465 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:28:57.465 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:28:57.471 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:28:57.471 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:34.363 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to services.addons.mozilla.org:443
+16:30:34.363 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to services.addons.mozilla.org:443
+16:30:34.369 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:34.369 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:46.429 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:46.429 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:46.430 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:46.430 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:46.444 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:46.444 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:46.445 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:46.445 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.453 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.453 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.454 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.454 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.468 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.468 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.471 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.471 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.477 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.477 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.479 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.479 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.480 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.480 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.483 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.483 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.485 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.485 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.489 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.489 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.490 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.490 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to versioncheck-bg.addons.mozilla.org:443
+16:30:58.491 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.491 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.500 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.500 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to aus5.mozilla.org:443
+16:30:58.500 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:30:58.500 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:32:24.751 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:32:24.751 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:32:24.757 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:32:24.757 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:33:09.900 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5pZTo0NDM=
+16:33:09.913 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:33:09.917 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:33:09.919 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [org.littleshoot.proxy.ChainedProxyAdapter@dfd88717]
+16:33:50.826 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5pZTo0NDM=
+16:33:50.842 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:33:50.845 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - No upstream proxy defined. Using direct connection
+16:33:50.846 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [org.littleshoot.proxy.ChainedProxyAdapter@c3471149]
+16:37:09.868 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5pZTo0NDM=
+16:37:09.882 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:37:09.897 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.ie:443
+16:37:17.994 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:37:18.311 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID c3NsLmdzdGF0aWMuY29tOjQ0Mw==
+16:37:18.311 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ssl.gstatic.com:443
+16:37:18.317 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ssl.gstatic.com:443
+16:37:18.317 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:37:18.420 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5jb206NDQz
+16:37:18.421 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.com:443
+16:37:18.426 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.com:443
+16:37:18.426 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:09.914 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5pZTo0NDM=
+16:40:09.930 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.ie:443
+16:40:09.937 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.ie:443
+16:40:09.938 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:11.162 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID c3NsLmdzdGF0aWMuY29tOjQ0Mw==
+16:40:11.163 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ssl.gstatic.com:443
+16:40:11.188 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ssl.gstatic.com:443
+16:40:11.189 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:11.974 [LittleProxy-ClientToProxyWorker-3] DEBUG c.a.bmo.cache.Bucket - ID d3d3LmdzdGF0aWMuY29tOjQ0Mw==
+16:40:11.977 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.gstatic.com:443
+16:40:11.982 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.gstatic.com:443
+16:40:11.982 [LittleProxy-ClientToProxyWorker-3] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:12.634 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS5jb206NDQz
+16:40:12.635 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google.com:443
+16:40:12.673 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google.com:443
+16:40:12.673 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:19.178 [LittleProxy-ClientToProxyWorker-4] DEBUG c.a.bmo.cache.Bucket - ID YXBpcy5nb29nbGUuY29tOjQ0Mw==
+16:40:19.179 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to apis.google.com:443
+16:40:19.199 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for apis.google.com:443
+16:40:19.200 [LittleProxy-ClientToProxyWorker-4] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:46.114 [LittleProxy-ClientToProxyWorker-5] DEBUG c.a.bmo.cache.Bucket - ID aWQuZ29vZ2xlLmllOjQ0Mw==
+16:40:46.114 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to id.google.ie:443
+16:40:46.120 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for id.google.ie:443
+16:40:46.120 [LittleProxy-ClientToProxyWorker-5] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:46.650 [LittleProxy-ClientToProxyWorker-6] DEBUG c.a.bmo.cache.Bucket - ID ZGV2ZWxvcGVycy5nb29nbGUuY29tOjQ0Mw==
+16:40:46.651 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to developers.google.com:443
+16:40:46.663 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for developers.google.com:443
+16:40:46.664 [LittleProxy-ClientToProxyWorker-6] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:47.594 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID YWpheC5nb29nbGVhcGlzLmNvbTo0NDM=
+16:40:47.595 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ajax.googleapis.com:443
+16:40:47.629 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ajax.googleapis.com:443
+16:40:47.629 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:48.353 [LittleProxy-ClientToProxyWorker-7] DEBUG c.a.bmo.cache.Bucket - ID Zm9udHMuZ29vZ2xlYXBpcy5jb206NDQz
+16:40:48.353 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fonts.googleapis.com:443
+16:40:48.360 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for fonts.googleapis.com:443
+16:40:48.361 [LittleProxy-ClientToProxyWorker-7] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:49.369 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:40:49.369 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://clients1.google.com/ocsp
+16:40:49.378 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://clients1.google.com/ocsp
+16:40:49.379 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:49.989 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:40:49.990 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://clients1.google.com/ocsp
+16:40:50.025 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://clients1.google.com/ocsp
+16:40:50.025 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:50.554 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:40:53.623 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:40:54.395 [LittleProxy-ClientToProxyWorker-3] DEBUG c.a.bmo.cache.Bucket - ID Zm9udHMuZ3N0YXRpYy5jb206NDQz
+16:40:54.396 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to fonts.gstatic.com:443
+16:40:54.411 [LittleProxy-ClientToProxyWorker-3] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for fonts.gstatic.com:443
+16:40:54.414 [LittleProxy-ClientToProxyWorker-3] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:56.562 [LittleProxy-ClientToProxyWorker-4] DEBUG c.a.bmo.cache.Bucket - ID d3d3Lmdvb2dsZS1hbmFseXRpY3MuY29tOjQ0Mw==
+16:40:56.565 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to www.google-analytics.com:443
+16:40:56.585 [LittleProxy-ClientToProxyWorker-4] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for www.google-analytics.com:443
+16:40:56.585 [LittleProxy-ClientToProxyWorker-4] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:40:57.138 [LittleProxy-ClientToProxyWorker-5] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:40:57.139 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://clients1.google.com/ocsp
+16:40:57.188 [LittleProxy-ClientToProxyWorker-5] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://clients1.google.com/ocsp
+16:40:57.190 [LittleProxy-ClientToProxyWorker-5] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:41:05.562 [LittleProxy-ClientToProxyWorker-5] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:41:06.212 [LittleProxy-ClientToProxyWorker-6] DEBUG c.a.bmo.cache.Bucket - ID c3RhdHMuZy5kb3VibGVjbGljay5uZXQ6NDQz
+16:41:06.213 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to stats.g.doubleclick.net:443
+16:41:06.245 [LittleProxy-ClientToProxyWorker-6] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for stats.g.doubleclick.net:443
+16:41:06.246 [LittleProxy-ClientToProxyWorker-6] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:41:07.530 [LittleProxy-ClientToProxyWorker-7] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:41:07.531 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://clients1.google.com/ocsp
+16:41:07.534 [LittleProxy-ClientToProxyWorker-7] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://clients1.google.com/ocsp
+16:41:07.534 [LittleProxy-ClientToProxyWorker-7] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:41:08.251 [LittleProxy-ClientToProxyWorker-7] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:41:14.711 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://clients1.google.com/ocsp can be cached false
+16:41:15.288 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+16:41:57.098 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Request to http://clients1.google.com/ocsp can be cached false
+16:41:57.099 [LittleProxy-ProxyToServerWorker-7] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+16:42:05.378 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID YWpheC5nb29nbGVhcGlzLmNvbTo0NDM=
+16:42:05.379 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ajax.googleapis.com:443
+16:42:05.383 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ajax.googleapis.com:443
+16:42:05.384 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:55:26.815 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID YWpheC5nb29nbGVhcGlzLmNvbTo0NDM=
+16:55:40.465 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to ajax.googleapis.com:443
+16:55:40.470 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for ajax.googleapis.com:443
+16:55:40.471 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:56:21.443 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8zLjEuMC9qcXVlcnkubWluLmpz
+16:56:21.443 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+16:56:21.450 [LittleProxy-ClientToProxyWorker-2] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+16:56:21.450 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+16:56:46.995 [LittleProxy-ClientToProxyWorker-2] DEBUG c.a.bmo.cache.Bucket - ID N/A
+16:56:57.689 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+16:56:59.444 [LittleProxy-ProxyToServerWorker-2] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:02:54.249 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8zLjEuMC9qcXVlcnkubWluLmpz
+17:02:54.265 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:02:54.273 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:02:54.274 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+17:02:54.294 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID N/A
+17:03:05.210 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:03:05.212 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:03:05.213 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response content false message true respnse true class class io.netty.handler.codec.http.DefaultHttpResponse
+17:04:11.043 [LittleProxy-ProxyToServerWorker-0] DEBUG c.a.bmo.cache.Bucket - Something unknown class io.netty.handler.codec.http.DefaultHttpResponse
+17:04:11.045 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8zLjEuMC9qcXVlcnkubWluLmpz
+17:04:11.048 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:04:11.074 [LittleProxy-ClientToProxyWorker-1] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:04:11.075 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+17:04:11.077 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID N/A
+17:04:19.626 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:04:19.627 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+17:04:19.627 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultHttpContent
+17:04:48.449 [LittleProxy-ProxyToServerWorker-0] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.DefaultHttpContent
+17:04:51.372 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:04:51.373 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:04:51.373 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content false message true respnse true class class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:00.842 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - Something unknown class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:06.055 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:05:06.056 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+17:05:06.057 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultHttpContent
+17:05:07.930 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.DefaultHttpContent
+17:05:09.410 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:05:09.410 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpContent can be stored false
+17:05:09.410 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultHttpContent
+17:05:10.351 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.DefaultHttpContent
+17:05:19.179 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:05:19.180 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+17:05:19.181 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultLastHttpContent
+17:05:20.115 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.DefaultLastHttpContent
+17:05:20.819 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vZmF2aWNvbi5pY28=
+17:05:20.820 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID N/A
+17:05:21.332 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/favicon.ico can be cached true
+17:05:21.333 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:05:21.333 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content false message true respnse true class class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:21.977 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - Something unknown class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:23.150 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/favicon.ico can be cached true
+17:05:23.151 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+17:05:23.151 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultLastHttpContent
+17:05:23.899 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.DefaultLastHttpContent
+17:05:24.694 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vZmF2aWNvbi5pY28=
+17:05:24.695 [LittleProxy-ClientToProxyWorker-1] DEBUG c.a.bmo.cache.Bucket - ID N/A
+17:05:25.306 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/favicon.ico can be cached true
+17:05:25.307 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:05:25.308 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content false message true respnse true class class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:46.207 [LittleProxy-ProxyToServerWorker-1] DEBUG c.a.bmo.cache.Bucket - Something unknown class io.netty.handler.codec.http.DefaultHttpResponse
+17:05:48.975 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/favicon.ico can be cached true
+17:05:48.976 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultLastHttpContent can be stored false
+17:05:48.977 [LittleProxy-ProxyToServerWorker-1] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.DefaultLastHttpContent
+17:07:19.537 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID aHR0cDovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8zLjEuMC9qcXVlcnkubWluLmpz
+17:07:19.550 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Processing request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:07:19.559 [LittleProxy-ClientToProxyWorker-0] INFO  c.a.bmo.cache.ChainedProxySelector - Using proxy [name: bluecoat, url: 10.68.40.70:80,filter: .*] for http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js
+17:07:19.559 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.ChainedProxySelector - Created upstream proxies [name: bluecoat, url: 10.68.40.70:80,filter: .*]
+17:07:19.579 [LittleProxy-ClientToProxyWorker-0] DEBUG c.a.bmo.cache.Bucket - ID N/A
+17:07:19.626 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:07:19.626 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.DefaultHttpResponse can be stored false
+17:07:19.627 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response content false message true respnse true class class io.netty.handler.codec.http.DefaultHttpResponse
+17:07:19.627 [LittleProxy-ProxyToServerWorker-0] DEBUG c.a.bmo.cache.Bucket - Something unknown class io.netty.handler.codec.http.DefaultHttpResponse
+17:07:19.628 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Request to http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js can be cached true
+17:07:19.628 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response class io.netty.handler.codec.http.LastHttpContent$1 can be stored false
+17:07:19.629 [LittleProxy-ProxyToServerWorker-0] WARN  c.a.bmo.cache.Bucket - Response content true message false respnse false class class io.netty.handler.codec.http.LastHttpContent$1
+17:07:19.630 [LittleProxy-ProxyToServerWorker-0] DEBUG c.a.bmo.cache.Bucket - NOT MESSAGE class io.netty.handler.codec.http.LastHttpContent$1

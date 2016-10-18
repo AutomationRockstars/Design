@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':gir-webdriver')
+    compile 'io.appium:java-client:3.2.0'
+}

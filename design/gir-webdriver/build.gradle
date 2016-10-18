@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':gir')
+    compile 'org.seleniumhq.selenium:selenium-java:2.47.1'
+    compile 'ru.yandex.qatools.htmlelements:htmlelements-all:1.14'
+}

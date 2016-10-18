@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':gunter-events')
+    compile 'junit:junit:4.12'
+    compile 'commons-configuration:commons-configuration:1.10'
+    compile 'ch.qos.logback:logback-core:1.1.3'
+    compile 'ch.qos.logback:logback-classic:1.1.3'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'net.lightbody.bmp:browsermob-core-littleproxy:2.1.0-beta-2'
+//    To use the legacy, Jetty-based implementation, change the artifactId to browsermob-core
+}

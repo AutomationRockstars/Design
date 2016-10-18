@@ -1,0 +1,8 @@
+dependencies {
+    compile 'com.google.guava:guava:15.0'
+    compile 'org.slf4j:slf4j-api:1.6.4'
+    compile 'org.hamcrest:hamcrest-all:1.3'
+    compile 'net.sourceforge.expectj:expectj:2.0.7'
+    compile 'com.jcraft:jsch:0.1.53'
+    compile 'commons-pool:commons-pool:1.6'
+}

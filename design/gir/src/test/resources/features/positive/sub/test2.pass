@@ -1,0 +1,3 @@
+Feature: test2
+Given simple string
+Then expect simple

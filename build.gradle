@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
+    }
+}
+
+plugins {
+    id "io.spring.dependency-management" version "0.5.2.RELEASE"
+}
+
+subprojects {
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: "io.spring.dependency-management"
+
+    jar{
+        group = 'com.automationrockstars'
+        version = '1.0.2-SNAPSHOT'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencyManagement {
+//        generatedPomCustomization {
+//            importedBomAction = 'copy'
+//        }
+//        resolutionStrategy {
+//            cacheChangingModulesFor 0, 'seconds'
+//        }
+        imports {
+            mavenBom "com.automationrockstars:bmo-bom:1.0.2-SNAPSHOT"
+        }
+        applyMavenExclusions false
+    }
+
+    ext {
+
+    }
+}

@@ -1,0 +1,14 @@
+Scenario: positive
+Feature: Test 3
+Given <input> string
+Then expect <output>
+
+Examples:
+input|output
+simple|simple
+lame|lame
+
+Scenario: positive2
+Feature: Test 3
+Given ala string
+Then expect ala
