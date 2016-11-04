@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 
 public interface UiDriverPlugin {
 
+	void beforeInstantiateDriver();
+	
 	void beforeGetDriver();
 	
 	void afterGetDriver(WebDriver driver);

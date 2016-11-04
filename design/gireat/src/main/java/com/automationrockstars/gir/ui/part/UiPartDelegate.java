@@ -3,6 +3,7 @@ package com.automationrockstars.gir.ui.part;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -20,11 +21,15 @@ import com.automationrockstars.design.gir.webdriver.Page;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.design.gir.webdriver.Waits;
 import com.automationrockstars.gir.ui.Name;
+import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.UiParts;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 
 
@@ -77,6 +82,13 @@ public class UiPartDelegate implements UiPart {
 	}
 
 	private UiObject wrapped=null;
+	private static ThreadLocal<Boolean> loaded = new ThreadLocal<Boolean>(){
+
+		@Override
+		protected Boolean initialValue(){
+			return Boolean.FALSE;
+		}
+	};
 	public WebElement getWrappedElement() {
 		if (view.getAnnotation(InitialPage.class) != null){
 			if (view.getAnnotation(InitialPage.class).restartBrowser()){
@@ -87,14 +99,39 @@ public class UiPartDelegate implements UiPart {
 					|| ! DriverFactory.getDriver().getCurrentUrl().startsWith("http")){
 				DriverFactory.getDriver().get(MoreObjects.firstNonNull(ConfigLoader.config().getString("url"), view.getAnnotation(InitialPage.class).url()));
 			} 			
+			if (! loaded.get()){				
+				String desiredUrl = ConfigLoader.config().getString("url",view.getAnnotation(InitialPage.class).url());
+				if (desiredUrl != null && ! DriverFactory.getDriver().getCurrentUrl().contains(desiredUrl)){
+					DriverFactory.getDriver().get(desiredUrl);
+				}
+				loaded.set(Boolean.TRUE);			
+			}
+			handleBrowserSpecifics();
 		}
 		if (wrapped == null){
 			wrapped = new UiObject(getLocator());
 			wrapped.setName(name());
+			if (view.getAnnotation(Timeout.class) != null ){
+				wrapped.setTimeout(view.getAnnotation(Timeout.class).value());
+			} else if (view.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Timeout.class)!= null){
+				wrapped.setTimeout(view.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Timeout.class).value());
+			}
 		} 
 		return wrapped;
 	}
 
+	public void handleIeSpecifics(){
+		if (DriverFactory.getDriver().getTitle().contains("Certificate Error")){
+			DriverFactory.getDriver().findElement(By.name("overridelink")).click();
+		}
+
+	}
+	public void handleBrowserSpecifics(){
+		if (DriverFactory.isIe()){
+			handleIeSpecifics();
+		}
+	}
+	
 	public void click() {
 		getWrappedElement().click();
 	}
@@ -178,12 +215,12 @@ public class UiPartDelegate implements UiPart {
 
 	@Override
 	public void waitForHidden() {
-		
+
 		new FluentWait<UiPart>(this)
 		.withTimeout(60, TimeUnit.SECONDS)
 		.pollingEvery(200, TimeUnit.MILLISECONDS)
 		.until(new Predicate<UiPart>() {
-			
+
 			@Override
 			public boolean apply(UiPart input) {
 				if (input.isPresent()){
@@ -192,7 +229,7 @@ public class UiPartDelegate implements UiPart {
 				return true; 
 			}
 		});
-		
+
 	}
 
 

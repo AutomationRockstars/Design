@@ -73,6 +73,11 @@ public class SmartDateConverter extends DateTimeConverter{
 		return super.convertToType(targetType, value);
 	}
 
+	public static String doubleDay(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return String.format("%1$td", cal);
+	}
 	public static String day(Date date){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);

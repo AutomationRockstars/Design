@@ -44,6 +44,14 @@ public class UiDriverPluginService {
 
 		}
 
+		@Override
+		public void beforeInstantiateDriver() {
+			for (UiDriverPlugin plugin : plugins){
+				plugin.beforeInstantiateDriver();
+			}
+			
+		}
+
 	}
 
 

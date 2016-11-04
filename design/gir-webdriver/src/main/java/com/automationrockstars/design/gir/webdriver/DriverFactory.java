@@ -330,7 +330,6 @@ public class DriverFactory {
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
 			result.setCapability("ignoreProtectedModeSettings", true);
-			result.setCapability("logLevel", "DEBUG");
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			break;
 		case BrowserType.CHROME:
@@ -410,7 +409,8 @@ public class DriverFactory {
 		UiDriverPluginService.driverPlugins().beforeGetDriver();
 		if (isWds()) return wdsInstance();
 		if (instance() == null || isWrong(instance())){
-			WebDriver dr =new VisibleElementFilter(createRemoteDriver()); 
+			UiDriverPluginService.driverPlugins().beforeInstantiateDriver();
+			WebDriver dr =new VisibleElementFilter(createRemoteDriver());
 			instances.set(dr);
 			Runtime.getRuntime().addShutdownHook(closeDriver(instance()));
 
@@ -530,5 +530,16 @@ public class DriverFactory {
 		}
 	}
 
+	public static String browserName(){
+		return ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities().getBrowserName();
+	}
+	
+	public static boolean isIe(){
+		return browserName().equals(BrowserType.IE);
+	}
+
+	public static boolean isPhantom() {
+		return browserName().equals(BrowserType.PHANTOMJS);
+	}
 
 }

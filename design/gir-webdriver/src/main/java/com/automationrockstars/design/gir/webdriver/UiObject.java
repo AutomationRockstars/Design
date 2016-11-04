@@ -31,6 +31,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import com.automationrockstars.base.ConfigLoader;
@@ -47,7 +48,8 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 
 	private By by;
 	protected WebElement wrapped;
-
+	protected int timeout = -1;
+	
 	public UiObject() {
 
 	}
@@ -73,7 +75,13 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	public WebElement getWrappedElement() {
 		if (wrapped == null) {
 			Preconditions.checkNotNull(getLocator(), "Element and By cannot be null");
-			wrapped = DriverFactory.getDriver().findElement(getLocator());
+			if (timeout > 0){
+				wrapped = DriverFactory.delay()
+				.withTimeout(timeout, TimeUnit.SECONDS)
+				.until(ExpectedConditions.presenceOfElementLocated(this.getLocator()));				
+			} else {
+				wrapped = DriverFactory.getDriver().findElement(getLocator());
+			}
 		}
 		return wrapped;
 	}
@@ -367,6 +375,13 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		});
 	}
 
+	public void setTimeout(int timeout){
+		this.timeout = timeout;
+	}
+	
+	public int getTimeout(){
+		return timeout;
+	}
 	public void sendKeysUntil(final String predicate, final CharSequence... keys) {
 		untilPredicate(predicate, new Function<WebElement, Void>() {
 
@@ -408,6 +423,10 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	public void afterCloseDriver() {
 		wrapped = null;
 
+	}
+
+	@Override
+	public void beforeInstantiateDriver() {
 	}
 
 }

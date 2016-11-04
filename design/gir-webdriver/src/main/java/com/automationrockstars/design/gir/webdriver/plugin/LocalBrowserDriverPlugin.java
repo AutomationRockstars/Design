@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 
 	@Override
-	public void beforeGetDriver() {
+	public void beforeInstantiateDriver() {
 		if (ConfigLoader.config().containsKey("webdriver.browser")
 				&& ! ConfigLoader.config().containsKey("grid.url")){
 			final String browser = ConfigLoader.config().getString("webdriver.browser");
@@ -36,7 +36,7 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 
 					@Override
 					public boolean apply(String input) {
-						return input.contains(browser);
+						return input.toLowerCase().contains(browser.toLowerCase());
 					}
 				}).isPresent()){
 					downloadDrivers(browser);
@@ -100,6 +100,10 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 	public void afterCloseDriver() {
 
 		
+	}
+
+	@Override
+	public void beforeGetDriver() {
 	}
 
 	

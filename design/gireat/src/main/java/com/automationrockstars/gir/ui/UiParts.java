@@ -145,6 +145,8 @@ public class UiParts {
 				result = transform(method.getAnnotation(FindAll.class));
 		} else if (method.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
 			result =  transform(method.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else if (method.getAnnotation(Filter.class) != null){
+			result = org.openqa.selenium.By.xpath(".//*");
 		} else {
 			throw new RuntimeException("Cannot initialize annotation to get location on " + method);
 		}
@@ -162,6 +164,8 @@ public class UiParts {
 			result =  transform(view.getAnnotation(FindBy.class));
 		} else if (view.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
 			result =  transform(view.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else if (view.getAnnotation(org.openqa.selenium.support.FindAll.class) != null){
+			result = transform(view.getAnnotation(org.openqa.selenium.support.FindAll.class));
 		} else if (view.getAnnotation(FindAll.class) != null){
 			result = transform(view.getAnnotation(FindAll.class));
 		} else if (view.getAnnotation(InitialPage.class) != null){
@@ -184,6 +188,15 @@ public class UiParts {
 	}
 	public static org.openqa.selenium.By transform(org.openqa.selenium.support.FindBy locator){
 		return backward.buildBy(locator);
+	}
+
+	public static org.openqa.selenium.By transform(org.openqa.selenium.support.FindAll locator){
+		org.openqa.selenium.By[] subBys = new org.openqa.selenium.By[locator.value().length];
+		int i=0;
+		for (org.openqa.selenium.support.FindBy findBy : locator.value()){
+			subBys[i++] = transform(findBy);
+		}
+		return new org.openqa.selenium.support.pagefactory.ByAll(subBys);
 	}
 
 

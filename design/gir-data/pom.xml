@@ -5,7 +5,7 @@
 		<artifactId>design</artifactId>
 		<version>1.0.4-SNAPSHOT</version>
 	</parent>
-	<groupId>com.automationrockstars.design</groupId>
+	<groupId>com.automationrockstars</groupId>
 	<artifactId>gir-data</artifactId>
 	<dependencies>
 		<dependency>

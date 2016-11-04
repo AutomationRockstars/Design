@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -420,12 +419,12 @@ public class AllureStoryReporter implements StoryReporter {
 
 		Optional<File> dire = Optional.absent();
 		if (resultsDir == null || ! dire.isPresent()){
-			Collection<File> dirs = FileUtils.listFiles(new File(new File("").getAbsolutePath()), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE); 
+			Collection<File> dirs = FileUtils.listFiles(new File(new File("").getAbsolutePath()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE); 
 			dire = Iterables.tryFind(dirs, new Predicate<File>() {
 
 				@Override
 				public boolean apply(File input) {
-					return input.getName().endsWith("allure-results");
+					return input.isDirectory() && input.getName().endsWith("allure-results");
 				}
 			});
 			resultsDir = dire;
