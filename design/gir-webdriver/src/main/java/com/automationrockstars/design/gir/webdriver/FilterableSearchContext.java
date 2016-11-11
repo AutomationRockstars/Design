@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
@@ -37,7 +38,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 
-public class FilterableSearchContext implements SearchContext{
+public class FilterableSearchContext implements SearchContext {
 	public static final String STUBBORN_WAIT_PARAM = "webdriver.stubborn.wait";
 
 	private static final ThreadLocal<Integer> wait = new InheritableThreadLocal<>();
@@ -77,45 +78,7 @@ public class FilterableSearchContext implements SearchContext{
 			return false;
 		}
 	}
-	private static final ThreadLocal<Map<SearchContext,Map<By,List<WebElement>>>> webCache = new ThreadLocal<Map<SearchContext,Map<By,List<WebElement>>>>(){
-		
-		@Override
-		protected Map<SearchContext,Map<By,List<WebElement>>> initialValue(){
-			return Maps.newConcurrentMap();
-		}
-		
-	};
-	private List<WebElement> fromCache(SearchContext s,By by){
-		Map<By,List<WebElement>> els = webCache.get().get(s);
-		boolean valid = false;
-		if (els == null){
-			els = Maps.newConcurrentMap();
-			els.put(by,unwrap(s).findElements(by));
-			webCache.get().put(s, els);
-			valid = true;
-		} else {
-			List<WebElement> targets = els.get(by);
-			if (targets == null || targets.isEmpty()){
-				targets = unwrap(s).findElements(by);
-				els.put(by, targets);
-				valid = true;
-			}
-		} 
-		if (! valid){
-			FluentIterable<WebElement> result = FluentIterable.from(webCache.get().get(s).get(by));
-			result = result.filter(new Predicate<WebElement>() {
-				@Override
-				public boolean apply(WebElement input) {
-					return isVisible(input);
-				}				
-			});
-			if (result.isEmpty()){
-				els.put(by, unwrap(s).findElements(by));
-				valid = true;
-			}			
-		}
-		return webCache.get().get(s).get(by);
-	}
+
 
 
 
@@ -132,7 +95,7 @@ public class FilterableSearchContext implements SearchContext{
 	private List<WebElement> findAll(SearchContext search, By by){
 		List<WebElement> result = null;
 		if (ConfigLoader.config().getBoolean("webdriver.cache",true)){
-			result = fromCache(search, by);
+			result = WebCache.fromCache(search, by);
 		} else { 
 			unwrap(search).findElements(by);
 		}
@@ -211,5 +174,6 @@ public class FilterableSearchContext implements SearchContext{
 	private SearchContext getWrapped(){
 		return wrapped;
 	}
+
 
 }

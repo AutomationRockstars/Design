@@ -51,6 +51,14 @@
 					<artifactId>httpclient</artifactId>
 					<groupId>org.apache.httpcomponents</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>guice</artifactId>
+					<groupId>com.google.inject</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>sisu-guice</artifactId>
+					<groupId>org.sonatype.sisu</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>

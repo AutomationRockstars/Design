@@ -3,7 +3,9 @@ package com.automationrockstars.bmo.event.processor.internal;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Content;
+import org.apache.http.client.fluent.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +28,10 @@ public class ResultSender {
 		if (message.toHttpContent() != null){
 			for (RequestProducer httpSender : RuleReporter.getHttpSenders(method)){
 				try {
-					Content res = httpSender.execute(
+					HttpResponse resp = httpSender.execute(
 							message.toHttpContent()
-							).returnContent(); 		
-					
+							).returnResponse(); 		
+					LOG.debug("Response from request {}",resp);
 				} catch (IOException e) {
 					LOG.error("Cannot process message {} with sender {}",message.toHttpContent(),httpSender,e);
 				}

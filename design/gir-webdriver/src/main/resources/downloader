@@ -25,7 +25,7 @@ public class Downloader {
 	public static void main(String[] args) throws IOException, URISyntaxException{
 
 		Map<String, String> locations = new HashMap<>();
-		locations.put("chromedriver_win32.zip", "http://chromedriver.storage.googleapis.com/2.24/");
+		locations.put("chromedriver_win32.zip", "http://chromedriver.storage.googleapis.com/2.25/");
 		locations.put("geckodriver-v0.10.0-win64.zip", "https://github.com/mozilla/geckodriver/releases/download/v0.10.0/");
 		locations.put("IEDriverServer_Win32_2.53.1.zip","http://selenium-release.storage.googleapis.com/2.53/");
 		locations.put("IEDriverServer_x64_2.53.1.zip", "http://selenium-release.storage.googleapis.com/2.53/");

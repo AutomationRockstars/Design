@@ -137,6 +137,7 @@ public class UiPartProxy implements InvocationHandler{
 
 	@SuppressWarnings("unchecked")
 	private static Object adjustResults(final List<WebElement> result,final Type type, final Class... decorators){
+		Preconditions.checkState(result.size() > 0, "WebElement not found");
 		Class<?> wanted = null;
 		if (type instanceof Class) {
 			wanted = (Class<?>) type;
@@ -212,15 +213,14 @@ public class UiPartProxy implements InvocationHandler{
 			ConfigLoader.config().setProperty("webdriver.visibleOnly",visibleOnly);
 			FilterableSearchContext.unsetWait();
 		}
+		if (method.getAnnotation(Covered.class) != null && method.getAnnotation(Covered.class).lookForVisibleParent()){
+			result = findVisibleParent(result,visibleOnly);
+		} else {
+			result = Lists.newArrayList(Iterables.filter(result,UiParts.visible()));
+		}
 		if (result.size() < 1){
 			LOG.error("Error on {} inside {}: NoSuchElement",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 			throw new NoSuchElementException("WebElement identified " + by+ " not found");
-		}
-		if (method.getAnnotation(Covered.class) != null && method.getAnnotation(Covered.class).lookForVisibleParent()){
-			result = findVisibleParent(result,visibleOnly);
-		}
-		if (method.getAnnotation(Covered.class) == null){
-			result = Lists.newArrayList(Iterables.filter(result,UiParts.visible()));
 		}
 		return adjustResults(result, method.getGenericReturnType(),decorators(uiPartOf(host)));
 

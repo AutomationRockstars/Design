@@ -47,6 +47,7 @@ import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
 import cucumber.runtime.junit.Assertions;
 import cucumber.runtime.junit.FeatureRunner;
+import cucumber.runtime.junit.JUnitOptions;
 import cucumber.runtime.junit.JUnitReporter;
 import cucumber.runtime.model.CucumberFeature;
 
@@ -78,7 +79,7 @@ public class CucumberExecutor extends ParentRunner<FeatureRunner> {
 
         final List<CucumberFeature> cucumberFeatures = runtimeOptions.cucumberFeatures(resourceLoader);
         jUnitReporter = new JUnitReporter(runtimeOptions.reporter(classLoader), runtimeOptions.formatter(classLoader),
-                runtimeOptions.isStrict());
+                runtimeOptions.isStrict(),new JUnitOptions(Lists.newArrayList("--allow-started-ignored", "--filename-compatible-names")));
         addChildren(cucumberFeatures);
 
     }
