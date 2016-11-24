@@ -6,6 +6,8 @@ public interface UiDriverPlugin {
 
 	void beforeInstantiateDriver();
 	
+	void afterInstantiateDriver(WebDriver driver);
+	
 	void beforeGetDriver();
 	
 	void afterGetDriver(WebDriver driver);
@@ -13,4 +15,6 @@ public interface UiDriverPlugin {
 	void beforeCloseDriver(WebDriver driver);
 	
 	void afterCloseDriver();
+	
+	
 }

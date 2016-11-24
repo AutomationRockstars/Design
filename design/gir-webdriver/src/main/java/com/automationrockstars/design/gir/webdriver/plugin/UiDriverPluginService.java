@@ -15,7 +15,9 @@ public class UiDriverPluginService {
 		@Override
 		public void beforeGetDriver() {
 			for (UiDriverPlugin plugin : plugins){
-				plugin.beforeGetDriver();
+				try {
+					plugin.beforeGetDriver();
+				} catch (Throwable e){}
 			}
 
 		}
@@ -23,7 +25,11 @@ public class UiDriverPluginService {
 		@Override
 		public void afterGetDriver(WebDriver driver) {
 			for (UiDriverPlugin plugin : plugins){
-				plugin.afterGetDriver(driver);	
+				try {
+					plugin.afterGetDriver(driver);
+				} catch (Throwable e){
+					e.printStackTrace();
+				}
 			}
 
 		}
@@ -31,7 +37,9 @@ public class UiDriverPluginService {
 		@Override
 		public void beforeCloseDriver(WebDriver driver) {
 			for (UiDriverPlugin plugin : plugins){
+				try {
 				plugin.beforeCloseDriver(driver);
+				} catch (Throwable e){}
 			}
 
 		}
@@ -39,7 +47,9 @@ public class UiDriverPluginService {
 		@Override
 		public void afterCloseDriver() {
 			for (UiDriverPlugin plugin : plugins){
-				plugin.afterCloseDriver();
+				try {plugin.afterCloseDriver();
+				} catch (Throwable e){}
+				
 			}
 
 		}
@@ -47,16 +57,28 @@ public class UiDriverPluginService {
 		@Override
 		public void beforeInstantiateDriver() {
 			for (UiDriverPlugin plugin : plugins){
-				plugin.beforeInstantiateDriver();
+				try {
+					plugin.beforeInstantiateDriver();
+				}  catch (Throwable e){}
+				
 			}
 			
+		}
+		
+		public void afterInstantiateDriver(WebDriver driver){
+			for (UiDriverPlugin plugin : plugins){
+				try {
+					plugin.afterInstantiateDriver(driver);
+				}  catch (Throwable e){}
+				
+			}
 		}
 
 	}
 
 
-	private static CompositeUiDriverPlugin instance = new CompositeUiDriverPlugin();
-	private static List<UiDriverPlugin> plugins = Lists.newArrayList();
+	private static final CompositeUiDriverPlugin instance = new CompositeUiDriverPlugin();
+	private static final List<UiDriverPlugin> plugins = Lists.newCopyOnWriteArrayList();
 	static {
 		registerSpiPlugins();
 	}

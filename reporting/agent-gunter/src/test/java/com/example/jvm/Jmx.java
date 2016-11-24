@@ -1,18 +1,25 @@
 package com.example.jvm;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.hyperic.sigar.FileSystem;
+import org.hyperic.sigar.Humidor;
+import org.hyperic.sigar.NetInterfaceStat;
+import org.hyperic.sigar.SigarException;
 import org.junit.Test;
+
+import com.automationrockstars.monitoring.agent.SigarHolder;
 
 
 public class Jmx {
 
-	@Test
+//	@Test
 	public void doRun() throws IOException{
 		System.setProperty("com.ibm.CORBA.ConfigURL", "file:///tools/was/runtimes/properties/sas.client.props");
 			
@@ -72,6 +79,26 @@ public class Jmx {
 		} finally {
 				
 		}
+	}
+	
+	@Test
+	public void testt() throws SigarException{
+		System.out.println(Arrays.toString(SigarHolder.getSigar()
+				.getNetInterfaceList()));
+		
+		for (String eth : SigarHolder.getSigar().getNetInterfaceList()){
+			System.out.println(eth);System.out.println(SigarHolder.getSigar().getNetInterfaceStat(eth).getTxCollisions());
+		}
+		
+		for (FileSystem fs : SigarHolder.getSigar().getFileSystemList()){
+			System.out.println(fs);
+			System.out.println(SigarHolder.getSigar().getFileSystemUsage(fs.getDevName()).toMap());
+		}
+		
+		
+		
+		
+		
 	}
 	
 }

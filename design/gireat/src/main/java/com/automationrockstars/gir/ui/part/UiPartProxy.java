@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
@@ -18,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.gir.ui.Covered;
+import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Optional;
 import com.automationrockstars.gir.ui.UiPart;
@@ -57,6 +60,21 @@ public class UiPartProxy implements InvocationHandler{
 		return ! nativeMethodOwners.contains(declaringClass);
 	}
 
+	private static int minimumSize(Object target){
+		int result = 0;
+		if (target instanceof Method){
+			Method m = (Method) target; 
+			if (m.getAnnotation(MinimumElements.class) != null){
+				result = m.getAnnotation(MinimumElements.class).value();
+			}
+		} else if (target instanceof Field){
+			Field f = (Field) target;
+			if (f.getAnnotation(MinimumElements.class) != null){
+				result = f.getAnnotation(MinimumElements.class).value();
+			}
+		}
+		return result;
+	}
 	private static int calculateTimeout(Object target){
 		int defaultTimeout = ConfigLoader.config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM,5);
 		if (target instanceof Method){
@@ -66,7 +84,9 @@ public class UiPartProxy implements InvocationHandler{
 			}
 			if (tm.getAnnotation(Timeout.class)!= null){
 				return tm.getAnnotation(Timeout.class).value();
-			} else {
+			} else if (tm.getAnnotation(com.automationrockstars.gir.ui.Timeout.class)!=null){ 
+				return tm.getAnnotation(com.automationrockstars.gir.ui.Timeout.class).value();
+			}else {
 				return defaultTimeout;
 			}
 		} else if (target instanceof Class){
@@ -116,7 +136,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static <T> T convert(WebElement initial,final Class<T> wanted,Class<? extends WebElementDecorator>... decorators ){
 		initial = decorate(initial, decorators);
@@ -169,24 +189,27 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 
-	private List<WebElement> search(UiPart host, org.openqa.selenium.By by, int timeout){
+	private List<WebElement> search(UiPart host, org.openqa.selenium.By by, int timeout, int minimumSize){
 		List<WebElement> result;
-		if (timeout >=0 ){
+		if (timeout >=0 || minimumSize > 0){
 			result = (host).delay()
 					.withTimeout(timeout, TimeUnit.SECONDS)
-					.until(UiParts.allVisible(by));
+					.until(UiParts.allVisible(by,minimumSize));
 		} else {
 			result = ((UiPart) host).findElements(by);
 		}
+		LOG.trace("Required size {} actual {}",minimumSize,result.size());
 		return result;
 	}
+	@SuppressWarnings("unchecked")
 	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
-		
+
 		List<WebElement> result = Lists.newArrayList();
 		final org.openqa.selenium.By by = UiParts.buildBy(method);
-		final int timeout = calculateTimeout(method); 
+		final int timeout = calculateTimeout(method);
+		final int minimumSize = minimumSize(method);
 		final boolean visibleOnly = ConfigLoader.config().getBoolean("webdriver.visibleOnly",true);
 		if (method.getAnnotation(Covered.class) != null){
 			ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
@@ -198,7 +221,7 @@ public class UiPartProxy implements InvocationHandler{
 				}
 				FilterableSearchContext.setWait(method.getAnnotation(Optional.class).timeout());
 			}
-			result = search((UiPart)host,by, timeout);
+			result = search((UiPart)host,by, timeout, minimumSize);
 			if (result.isEmpty() && method.getAnnotation(Optional.class)!= null){
 				result.add(new EmptyUiObject());
 			}
@@ -228,27 +251,31 @@ public class UiPartProxy implements InvocationHandler{
 
 	private List<WebElement> findVisibleParent(final List<WebElement> initial,final boolean visibleOnly){
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
-		FluentIterable<WebElement> hidden = FluentIterable.from(initial);
+		List<WebElement> previous = initial;
+		FluentIterable<WebElement> hidden = FluentIterable.from(previous);
+		
 		while (hidden.firstMatch(new Predicate<WebElement>(){
-
 			public boolean apply(WebElement input) {
 				//						boolean vis = input.isDisplayed();
 				boolean click = input.isEnabled();
 				Point loc  = input.getLocation();
-
-				return !((click && loc.getX() >0 && loc.getY()>0));
+				if (input.getTagName().equalsIgnoreCase("body")){
+					throw new NoSuchElementException(String.format("Usable element covering %s cannot be found", input));
+				}
+				return !((click && loc.getX() >=0 && loc.getY()>=0));
 			}}).isPresent()){
-			hidden = FluentIterable.from(initial).transform(new Function<WebElement, WebElement>() {
+			hidden = FluentIterable.from(previous).transform(new Function<WebElement, WebElement>() {
 
 				public WebElement apply(WebElement input) {
 					return input.findElement(org.openqa.selenium.By.xpath(".."));
 				}
 			});
+			previous = Lists.newArrayList(hidden.toList());
 		}
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",visibleOnly);
 		return hidden.toList();
 	}
-	
+
 	public Object invoke(Object host, Method method, Object[] args) throws Throwable {
 		Stopwatch stopwatch = Stopwatch.createStarted();	
 		try {

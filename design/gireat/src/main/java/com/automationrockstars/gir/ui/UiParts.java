@@ -14,6 +14,8 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.pagefactory.AbstractAnnotations;
 import org.openqa.selenium.support.pagefactory.ByAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.design.gir.webdriver.InitialPage;
 import com.automationrockstars.design.gir.webdriver.UiObject;
@@ -83,15 +85,18 @@ public class UiParts {
 		};
 	}
 
-	public static Function<SearchContext, List<WebElement>> allVisible(final org.openqa.selenium.By by){
+	public static Function<SearchContext, List<WebElement>> allVisible(final org.openqa.selenium.By by,final int minimumSize){
 		return new Function<SearchContext, List<WebElement>>() {
 			public List<WebElement> apply(SearchContext input) {
-				return UiObject.wrapAll(input.findElements(by),by);
+				List<WebElement> result = input.findElements(by);
+				if (result.size() >= minimumSize){
+					return UiObject.wrapAll(result,by);
+				}
+				else return null;
 			}
 			public String toString(){
 				return String.format("All of elements identified by %s visible", by);
 			}
-
 		};
 	}
 
@@ -254,6 +259,8 @@ public class UiParts {
 		}
 
 	}
+	
+	private static final Logger LOG = LoggerFactory.getLogger(UiParts.class);
 	@SuppressWarnings("rawtypes")
 	public static Predicate withText(final String text) {
 		return new Predicate() {
@@ -267,7 +274,9 @@ public class UiParts {
 				});
 				Preconditions.checkState(getText.isPresent(),"Method getText() cannot be invoked on %s",input.getClass());
 				try {
-					return getText.get().invoke(input,(Object[]) null).toString().contains(text);
+					String actualText = getText.get().invoke(input,(Object[]) null).toString();
+					LOG.info(actualText);
+					return actualText.contains(text);
 				} catch (Exception e) {
 					return false;
 				}	

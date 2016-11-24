@@ -1,7 +1,8 @@
 package com.automationrockstars.gir.ui.part;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;import java.util.Comparator;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
-import com.gargoylesoftware.htmlunit.javascript.host.Iterator;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
@@ -39,16 +36,17 @@ public class MetricsService {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM:dd-HH:mm:ss.SSS");
 		if (DriverFactory.isPhantom()){
 			for (LogEntry log : DriverFactory.getDriver().manage().logs().get("har").getAll()){
-				MetricFileWriter.put(sdf.format(new Date(log.getTimestamp())), host, method, pageAndTime(log.getMessage(),pageFilter));
-				MetricsRabbitWriter.log(host, method, data(log.getMessage(),pageFilter));
+				Map<String,String> timings = timings(log.getMessage(), pageFilter);
+				MetricFileWriter.put(sdf.format(new Date(log.getTimestamp())), host, method, pageAndTime(timings));
+				MetricsRabbitWriter.log(host, method, data(timings));
 			}
 		}
 	}
+	
+	
 	private static Gson gson = new Gson();
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static synchronized String pageAndTime(String har, String... pageFilter){
+	public static synchronized String pageAndTime(Map<String,String> timings){
 		String result = "";
-		Map<String,String> timings = timings(har, pageFilter);
 		for (String page : timings.keySet()){
 			result = String.format("%s, %s, %s",result,page, timings.get(page));
 		}
@@ -79,26 +77,25 @@ public class MetricsService {
 		return result;
 	}
 
-	public static synchronized Map<String,Number> data(String har,String... pageFilter){
-		Long nanos = System.nanoTime();
+	public static synchronized Map<String,Number> data(Map<String,String> timings){
+		Long timeStamp = System.currentTimeMillis();
 		Map<String,Number> result = Maps.newHashMap();
 		try {
 			
-			String timings = FluentIterable.from(timings(har, pageFilter).entrySet()).toSortedList(new Comparator<Map.Entry<String,String>>(){
+			String timingsString = FluentIterable.from(timings.entrySet()).toSortedList(new Comparator<Map.Entry<String,String>>(){
 
 				@Override
 				public int compare(Entry<String, String> arg0, Entry<String, String> arg1) {
 					return arg0.getKey().length() - arg1.getKey().length();
 				}}).iterator().next().getValue();
-			System.out.println("TIMINNG" + timings);
-			if (timings != null){
-				String[] times = CharMatcher.JAVA_DIGIT.or(CharMatcher.anyOf(",.")).retainFrom(timings).split(",");
-				Long val = 0L;
+			if (timingsString != null){
+				String[] times = CharMatcher.JAVA_DIGIT.or(CharMatcher.anyOf(",.")).retainFrom(timingsString).split(",");
+				Float val = 0F;
 				for (String time : times){
-					val += Long.valueOf(time);
+					val += Float.valueOf(time);
 				}
-				result.put("value", val);
-				result.put("timeStamp",nanos);
+				result.put("value", Math.round(val));
+				result.put("timeStamp",timeStamp*1000000);
 			}
 
 		} catch (Exception e){

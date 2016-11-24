@@ -106,5 +106,9 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 	public void beforeGetDriver() {
 	}
 
+	@Override
+	public void afterInstantiateDriver(WebDriver driver) {
+	}
+
 	
 }

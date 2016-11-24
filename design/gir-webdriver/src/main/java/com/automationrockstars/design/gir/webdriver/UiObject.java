@@ -429,4 +429,9 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	public void beforeInstantiateDriver() {
 	}
 
+	@Override
+	public void afterInstantiateDriver(WebDriver driver) {
+	
+	}
+
 }

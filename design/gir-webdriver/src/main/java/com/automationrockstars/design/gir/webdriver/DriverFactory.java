@@ -108,7 +108,7 @@ public class DriverFactory {
 	public static String getScreenshotAsBase64(){
 		return ((RemoteWebDriver)getUnwrappedDriver()).getScreenshotAs(OutputType.BASE64);
 	}
-	
+
 	public static void displayScreenshotFile(){
 		try {
 			File screenshot = getScreenshotFile();
@@ -122,9 +122,9 @@ public class DriverFactory {
 			log.error("Cannot display screenshot due to",e);
 		}
 	}
-	
+
 	private static WebDriver DISPLAY_BROWSER = null;
-	
+
 	public static void displayScreenshotBrowser(){
 		if (DISPLAY_BROWSER == null){
 			DISPLAY_BROWSER = new ChromeDriver();
@@ -133,7 +133,7 @@ public class DriverFactory {
 			DISPLAY_BROWSER.get("data:image/gif;base64,"+getScreenshotAsBase64());
 		}
 	}
-	
+
 	public static File getScreenshotFile(){
 		return ((RemoteWebDriver)getUnwrappedDriver()).getScreenshotAs(OutputType.FILE);
 	}
@@ -178,7 +178,18 @@ public class DriverFactory {
 
 	private static final ThreadLocal<String> browser = new InheritableThreadLocal<String>(){
 		protected String initialValue(){
-			return browserQueue().next();
+			String browser = DEF_BROWSER;
+			if (! isWds()){
+				if (browserQueue().hasNext()){
+					browser = browserQueue().next(); 
+				} else {
+					System.out.println("================== WTF" );
+					if (ConfigLoader.config().containsKey("webdriver.browser")){
+						browser = ConfigLoader.config().getString("webdriver.browser"); 
+					}
+				}
+			}
+		return browser;	
 		}
 
 
@@ -186,28 +197,38 @@ public class DriverFactory {
 	private static final String MATRIX_PROP = "webdriver.matrix.browsers";
 	private static final String BROWSER_PROP = "webdriver.browser";
 	private static final String DEF_BROWSER_PROP = "webdriver.browser.default";
-	private static final String DEF_BROWSER = "firefox";
-	private static Iterator<String> matrix = null; 
+	private static final String DEF_BROWSER = "phantomjs";
+	private static Iterator<String> matrix = null;
+	private static boolean pluginInitialized = false;
 	private static synchronized Iterator<String> browserQueue(){		
-		if (matrix == null){
+		while (matrix == null || ! matrix.hasNext()){
 			matrix = browserMatrix();
-			
+			System.out.println("NEW matrix");
+		}
+		if (! pluginInitialized){
 			UiObjectFindPluginService.findPlugins();
 			UiObjectActionPluginService.actionPlugins();
 			UiObjectInfoPluginService.infoPlugins();
+			pluginInitialized = true;
 		}
+
 		return matrix;
 	}
 
-	
-	public static Iterator<String> browserMatrix(){
+
+	public static synchronized Iterator<String> browserMatrix(){
 		Iterator<String> result ;
 		if (ConfigLoader.config().containsKey(MATRIX_PROP)){
 			result = Iterators.forArray(ConfigLoader.config().getStringArray(MATRIX_PROP));
 		} else {
 			String bName = ConfigLoader.config().getString(BROWSER_PROP,ConfigLoader.config().getString(DEF_BROWSER_PROP,DEF_BROWSER));
-			if (bName.equalsIgnoreCase("ie")) bName = BrowserType.IE;
+			if (bName.equalsIgnoreCase("ie")){
+				bName = BrowserType.IE;
+				log.info("Using {} for browser",bName);
+			}
 			result = Iterators.cycle(bName);
+			System.out.println("Using "+bName+" for browser");
+			System.out.println(result.next());
 		}
 		return result;
 	}
@@ -248,13 +269,13 @@ public class DriverFactory {
 
 				String story = null;
 				try {
-				if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
-					story = GenericAllureStoryReporter.storyName();
-				} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
-					story = AllureStoryReporter.storyName();
-				} 
+					if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
+						story = GenericAllureStoryReporter.storyName();
+					} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
+						story = AllureStoryReporter.storyName();
+					} 
 				} catch (Throwable t){
-					
+
 				}
 				if (Strings.isNullOrEmpty(story)){
 					story = "recording " + result.getSessionId();
@@ -335,7 +356,7 @@ public class DriverFactory {
 		case BrowserType.CHROME:
 			result = DesiredCapabilities.chrome();
 			ChromeOptions chromOptions = new ChromeOptions();
-//			chromOptions.setExperimentalOption("excludeSwitches",Lists.newArrayList("ignore-certificate-errors"));
+			//			chromOptions.setExperimentalOption("excludeSwitches",Lists.newArrayList("ignore-certificate-errors"));
 			chromOptions.addArguments("chrome.switches","--disable-extensions");
 			result.setCapability(ChromeOptions.CAPABILITY, chromOptions);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
@@ -391,8 +412,11 @@ public class DriverFactory {
 	private static ThreadLocal<WdsProvider> providers = new ThreadLocal<>();
 
 	public static final void setWds(WdsProvider provider){
+		UiDriverPluginService.driverPlugins().beforeInstantiateDriver();
 		providers.set(provider);
+		UiDriverPluginService.driverPlugins().afterInstantiateDriver(provider.wds());
 	}
+
 	public static final ConcurrentMap<WebDriver,WebDriver> wdsInstances = Maps.newConcurrentMap();
 
 	private static boolean isWds(){
@@ -400,9 +424,11 @@ public class DriverFactory {
 	}
 	private static WebDriver wdsInstance(){
 		WebDriver wds = providers.get().wds();
+		UiDriverPluginService.driverPlugins().beforeGetDriver();
 		if (wdsInstances.get(wds) == null){
 			wdsInstances.put(wds, new VisibleElementFilter(providers.get().wds()));
 		}
+		UiDriverPluginService.driverPlugins().afterGetDriver(wdsInstances.get(wds));
 		return wdsInstances.get(wds);		
 	}
 	public static final WebDriver getDriver(){
@@ -413,6 +439,7 @@ public class DriverFactory {
 			WebDriver dr =new VisibleElementFilter(createRemoteDriver());
 			instances.set(dr);
 			Runtime.getRuntime().addShutdownHook(closeDriver(instance()));
+			UiDriverPluginService.driverPlugins().afterInstantiateDriver(dr);
 
 		}
 		UiDriverPluginService.driverPlugins().afterGetDriver(instance());
@@ -533,7 +560,7 @@ public class DriverFactory {
 	public static String browserName(){
 		return ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities().getBrowserName();
 	}
-	
+
 	public static boolean isIe(){
 		return browserName().equals(BrowserType.IE);
 	}

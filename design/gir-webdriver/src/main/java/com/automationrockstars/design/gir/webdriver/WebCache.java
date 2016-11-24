@@ -1,8 +1,10 @@
 package com.automationrockstars.design.gir.webdriver;
 
 import java.lang.ref.SoftReference;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
@@ -41,6 +43,11 @@ public class WebCache  {
 
 		@Override
 		public void afterCloseDriver() {
+			webCache.remove();
+		}
+
+		@Override
+		public void afterInstantiateDriver(WebDriver driver) {		
 		}
 	}
 
@@ -52,6 +59,17 @@ public class WebCache  {
 		}
 
 	};
+	
+	
+	private static final ThreadLocal<Entry<SearchContext,By>> lastQuery = new ThreadLocal();
+	private boolean isRepeated(SearchContext s, By by){
+		if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
+			return true;
+		} else {
+			lastQuery.set(Collections.singletonMap(s, by).entrySet().iterator().next());
+			return false;
+		}
+	}
 	private List<WebElement> find(SearchContext s, By by){
 		Map<By,SoftReference<List<WebElement>>> els = webCache.get().get(s);
 		boolean valid = false;
@@ -61,15 +79,13 @@ public class WebCache  {
 			webCache.get().put(s, els);
 			valid = true;
 		} else {
-			System.out.println(els);
-			System.out.println(els.get(by));
-			SoftReference<List<WebElement>> targets = els.get(by);
-			
-			if (targets == null || targets.get() == null || targets.get().isEmpty()){
+			SoftReference<List<WebElement>> targets = els.get(by);			
+			if (targets == null || targets.get() == null || targets.get().isEmpty()
+					|| isRepeated(s, by)){
 				targets = new SoftReference(s.findElements(by));
 				els.put(by, targets);
 				valid = true;
-			}
+			} 
 		} 
 		if (! valid){
 			FluentIterable<WebElement> result = FluentIterable.from(webCache.get().get(s).get(by).get());
