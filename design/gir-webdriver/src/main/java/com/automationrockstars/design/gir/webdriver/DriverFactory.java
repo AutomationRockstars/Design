@@ -183,7 +183,6 @@ public class DriverFactory {
 				if (browserQueue().hasNext()){
 					browser = browserQueue().next(); 
 				} else {
-					System.out.println("================== WTF" );
 					if (ConfigLoader.config().containsKey("webdriver.browser")){
 						browser = ConfigLoader.config().getString("webdriver.browser"); 
 					}
@@ -203,7 +202,6 @@ public class DriverFactory {
 	private static synchronized Iterator<String> browserQueue(){		
 		while (matrix == null || ! matrix.hasNext()){
 			matrix = browserMatrix();
-			System.out.println("NEW matrix");
 		}
 		if (! pluginInitialized){
 			UiObjectFindPluginService.findPlugins();
@@ -227,9 +225,7 @@ public class DriverFactory {
 				log.info("Using {} for browser",bName);
 			}
 			result = Iterators.cycle(bName);
-			System.out.println("Using "+bName+" for browser");
-			System.out.println(result.next());
-		}
+			}
 		return result;
 	}
 	public static void setBrowser(String browser){
