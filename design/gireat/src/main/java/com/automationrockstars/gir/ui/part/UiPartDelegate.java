@@ -3,6 +3,7 @@ package com.automationrockstars.gir.ui.part;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -35,6 +36,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 
 import ru.yandex.qatools.htmlelements.element.Link;
+
+import javax.annotation.Nullable;
 
 
 public class UiPartDelegate implements UiPart {
@@ -101,10 +104,16 @@ public class UiPartDelegate implements UiPart {
 			if (! DriverFactory.canScreenshot() || 
 					view.getAnnotation(InitialPage.class).reload()
 					|| ! DriverFactory.getDriver().getCurrentUrl().startsWith("http")){
-				DriverFactory.getDriver().get(MoreObjects.firstNonNull(MoreObjects.firstNonNull(
-						DriverFactory.url(),
-						ConfigLoader.config().getString("url")),
-						view.getAnnotation(InitialPage.class).url()));
+				String url = FluentIterable.from(Lists.newArrayList(DriverFactory.url(),
+						ConfigLoader.config().getString("url"),
+						view.getAnnotation(InitialPage.class).url())).firstMatch(new Predicate() {
+
+					@Override
+					public boolean apply(@Nullable Object o) {
+						return o != null;
+					}
+				}).get();
+				DriverFactory.getDriver().get(url);
 			} 			
 			if (! loaded.get()){				
 				String desiredUrl = ConfigLoader.config().getString("url",view.getAnnotation(InitialPage.class).url());

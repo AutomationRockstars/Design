@@ -206,6 +206,7 @@ public class UiPartProxy implements InvocationHandler{
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
 		if (UiPart.class.isAssignableFrom(method.getReturnType())){
+			ui.getWrappedElement();
 			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
 			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
