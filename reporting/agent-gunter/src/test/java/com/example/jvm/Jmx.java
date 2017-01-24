@@ -15,13 +15,15 @@ import org.hyperic.sigar.SigarException;
 import org.junit.Test;
 
 import com.automationrockstars.monitoring.agent.SigarHolder;
+import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
 
 
 public class Jmx {
 
-//	@Test
+	@Test
 	public void doRun() throws IOException{
-		System.setProperty("com.ibm.CORBA.ConfigURL", "file:///tools/was/runtimes/properties/sas.client.props");
+		System.setProperty("com.ibm.CORBA.ConfigURL", "file://c:/tools/was/runtimes/properties/sas.client.props");
 			
 		JMXServiceURL url = new JMXServiceURL("service:jmx:iiop://server/jndi/JMXConnector");
 		
@@ -47,29 +49,27 @@ public class Jmx {
 //		
 		String query = "WebSphere:type=JVM,*";
         ObjectName queryName = new ObjectName(query);
-//        
-//        FluentIterable.from(cnt.getMBeanServerConnection().queryNames(queryName, null)).forEach(new Consumer<ObjectName>() {
-//
-//			@Override
-//			public void accept(ObjectName t) {
-//				
-//				try {
-//					System.out.println(Joiner.on("\n").join(cnt.getMBeanServerConnection().getMBeanInfo(t).getAttributes()));
-//					System.out.println("=");
-//					for (int i=0;i<30;i++){
-//					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "maxMemory"));
-//					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "freeMemory"));
-//					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "heapSize"));
-//					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "stats"));
-//					Thread.sleep(10000);
-//					}
-//					
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		});
+        
+        for (ObjectName t : cnt.getMBeanServerConnection().queryNames(queryName, null)){
+
+				
+				try {
+					System.out.println(Joiner.on("\n").join(cnt.getMBeanServerConnection().getMBeanInfo(t).getAttributes()));
+					System.out.println("=");
+					for (int i=0;i<30;i++){
+					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "maxMemory"));
+					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "freeMemory"));
+					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "heapSize"));
+					System.out.println(cnt.getMBeanServerConnection().getAttribute(t, "stats"));
+					Thread.sleep(10000);
+					}
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		
         
         if (cnt != null)
 			cnt.close();
@@ -81,7 +81,7 @@ public class Jmx {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void testt() throws SigarException{
 		System.out.println(Arrays.toString(SigarHolder.getSigar()
 				.getNetInterfaceList()));

@@ -73,7 +73,10 @@ public class PhantomjsDriverService extends DriverService {
 			argsBuilder.add(String.format("--ignore-ssl-errors=true", ! ConfigLoader.config().getBoolean("verify.ssl",false)));
 			argsBuilder.add(String.format("--ssl-protocol=tlsv1"));//, ! ConfigLoader.config().getBoolean("verify.ssl",false)));
 			argsBuilder.add(String.format("--web-security=false"));
-//			argsBuilder.add(String.format("--ssl-ciphers=SSL_DH_anon_WITH_RC4_128_MD5, SSL_RSA_EXPORT_WITH_RC4_40_MD5, SSL_RSA_WITH_RC4_128_MD5,SSL_RSA_WITH_RC4_128_SHA"));
+//			argsBuilder.add(String.format("--ssl-protocol=any"));
+			argsBuilder.add(String.format("--ignore-ssl-errors=true"));
+//			argsBuilder.add(String.format("--ssl-ciphers=any"));
+			argsBuilder.add(String.format("--ssl-ciphers=SSL_DH_anon_WITH_RC4_128_MD5, SSL_RSA_EXPORT_WITH_RC4_40_MD5, SSL_RSA_WITH_RC4_128_MD5,SSL_RSA_WITH_RC4_128_SHA,AES128-SHA"));
 //			argsBuilder.add("--webdriver-loglevel=DEBUG");
 //			                    "TLS_ECDHE_ECDSA_WITH_RC4_128_SHA",
 //			                    "TLS_ECDHE_RSA_WITH_RC4_128_SHA",

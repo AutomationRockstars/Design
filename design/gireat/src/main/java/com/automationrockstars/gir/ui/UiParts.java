@@ -152,7 +152,9 @@ public class UiParts {
 			result =  transform(method.getAnnotation(org.openqa.selenium.support.FindBy.class));
 		} else if (method.getAnnotation(Filter.class) != null){
 			result = org.openqa.selenium.By.xpath(".//*");
-		} else {
+		} else if (UiPart.class.isAssignableFrom(method.getReturnType())){
+			result = buildBy((Class<? extends UiPart>)method.getReturnType());
+		}else {
 			throw new RuntimeException("Cannot initialize annotation to get location on " + method);
 		}
 		if(method.getAnnotation(Filter.class)!= null){
@@ -289,6 +291,10 @@ public class UiParts {
 		List<org.openqa.selenium.By> result = Lists.newArrayList();
 		
 		return result;
+	}
+	
+	public static Head head(){
+		return on(Head.class);
 	}
 	 
 }

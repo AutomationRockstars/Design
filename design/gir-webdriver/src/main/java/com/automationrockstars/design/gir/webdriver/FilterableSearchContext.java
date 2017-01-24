@@ -11,7 +11,6 @@
 package com.automationrockstars.design.gir.webdriver;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -22,20 +21,18 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 
 public class FilterableSearchContext implements SearchContext {
@@ -63,16 +60,17 @@ public class FilterableSearchContext implements SearchContext {
 
 	public static boolean isVisible(WebElement element){
 		try {
-			if (! element.isDisplayed()){
-				try {
-					Page.scrollTo(element);						
-				} catch (Exception cantMove){
-					log.trace("Can't move due to",cantMove);
-				}
-			}
+//			if (! element.isDisplayed()){
+//				try {
+//					System.out.println("SCROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLING");
+//					Page.scrollTo(element);						
+//				} catch (Exception cantMove){
+//					log.trace("Can't move due to",cantMove);
+//				}
+//			}
 			boolean vis = element.isDisplayed();
 			boolean click = element.isEnabled();
-			Point loc  = element.getLocation();
+			Point loc  = ((Locatable)element).getCoordinates().inViewPort();
 			return vis || (click && loc.getX() >0 && loc.getY()>0);
 		} catch (StaleElementReferenceException e){
 			return false;

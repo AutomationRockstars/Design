@@ -11,6 +11,7 @@ import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import com.automationrockstars.base.ConfigLoader;
@@ -20,6 +21,7 @@ import com.automationrockstars.design.gir.webdriver.InitialPage;
 import com.automationrockstars.design.gir.webdriver.Page;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.design.gir.webdriver.Waits;
+import com.automationrockstars.gir.ui.FilteredBy;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
@@ -31,6 +33,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
+
+import ru.yandex.qatools.htmlelements.element.Link;
 
 
 public class UiPartDelegate implements UiPart {
@@ -97,7 +101,10 @@ public class UiPartDelegate implements UiPart {
 			if (! DriverFactory.canScreenshot() || 
 					view.getAnnotation(InitialPage.class).reload()
 					|| ! DriverFactory.getDriver().getCurrentUrl().startsWith("http")){
-				DriverFactory.getDriver().get(MoreObjects.firstNonNull(ConfigLoader.config().getString("url"), view.getAnnotation(InitialPage.class).url()));
+				DriverFactory.getDriver().get(MoreObjects.firstNonNull(MoreObjects.firstNonNull(
+						DriverFactory.url(),
+						ConfigLoader.config().getString("url")),
+						view.getAnnotation(InitialPage.class).url()));
 			} 			
 			if (! loaded.get()){				
 				String desiredUrl = ConfigLoader.config().getString("url",view.getAnnotation(InitialPage.class).url());
@@ -228,8 +235,34 @@ public class UiPartDelegate implements UiPart {
 				}
 				return true; 
 			}
+			
+			@Override
+			public String toString(){
+				return String.format("UiPart %s hidden", name());
+			}
 		});
 
+	}
+
+	@Override
+	public UiObject childWithText(String text) {
+		return waitForChild(new FilteredBy(By.xpath(".//*"), "text.contains('"+text+"')"));
+		
+	}
+
+	private UiObject waitForChild(By childBy){
+		final By theChildBy = new ByChained(getLocator(),childBy);
+		return UiObject.wrap(delay().until(new Function<SearchContext,WebElement>() {
+			@Override
+			public WebElement apply(SearchContext input) {
+				return input.findElement(theChildBy);
+			}
+		}), theChildBy);
+	}
+	
+	@Override
+	public Link childLinkWithText(String text) {
+		return new Link( waitForChild(By.partialLinkText(text))); 
 	}
 
 

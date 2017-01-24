@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
@@ -19,8 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
+import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
 import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
@@ -41,6 +40,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
+import ru.yandex.qatools.htmlelements.element.Named;
 
 public class UiPartProxy implements InvocationHandler{
 
@@ -205,11 +205,16 @@ public class UiPartProxy implements InvocationHandler{
 	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
-
+		if (UiPart.class.isAssignableFrom(method.getReturnType())){
+			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
+			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
+			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
+		}
 		List<WebElement> result = Lists.newArrayList();
 		final org.openqa.selenium.By by = UiParts.buildBy(method);
 		final int timeout = calculateTimeout(method);
 		final int minimumSize = minimumSize(method);
+		LOG.debug("Using timeout {} to wait for at least {} elements",timeout,minimumSize);
 		final boolean visibleOnly = ConfigLoader.config().getBoolean("webdriver.visibleOnly",true);
 		if (method.getAnnotation(Covered.class) != null){
 			ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
@@ -238,17 +243,49 @@ public class UiPartProxy implements InvocationHandler{
 		}
 		if (method.getAnnotation(Covered.class) != null && method.getAnnotation(Covered.class).lookForVisibleParent()){
 			result = findVisibleParent(result,visibleOnly);
-		} else {
+		} else if (method.getAnnotation(Covered.class) == null)	{
 			result = Lists.newArrayList(Iterables.filter(result,UiParts.visible()));
 		}
 		if (result.size() < 1){
 			LOG.error("Error on {} inside {}: NoSuchElement",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 			throw new NoSuchElementException("WebElement identified " + by+ " not found");
 		}
-		return adjustResults(result, method.getGenericReturnType(),decorators(uiPartOf(host)));
+		
+		return adjustResults(setNames(result,method), method.getGenericReturnType(),decorators(uiPartOf(host)));
 
 	}
 
+	private List<WebElement> setNames(List<WebElement> elements,final Method method){
+		String preName = method.getName();
+		if (method.getAnnotation(Name.class) != null){
+			preName = method.getAnnotation(Name.class).value();
+		} else if (method.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Name.class) != null){
+			preName = method.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Name.class).value();
+		}
+		final String name = preName;
+		return Lists.newArrayList(Iterables.transform(elements, new Function<WebElement,WebElement>(){
+			@Override
+			public WebElement apply(WebElement input) {
+				WebElement result = input;
+				boolean nameSet = false;
+				com.google.common.base.Optional<Method> setName = Iterables.tryFind(Lists.newArrayList(input.getClass().getMethods()), new Predicate<Method>(){
+					@Override
+					public boolean apply(Method input) {
+						return input.getName().equals("setName") && input.getParameterTypes().length == 1 && input.getParameterTypes()[0].equals(String.class);
+					}});
+				if (setName.isPresent()){
+					try {
+						setName.get().invoke(result, name);
+						nameSet = true;
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					}
+				}
+				if (! nameSet){
+					result = UiObject.wrap(input, UiParts.buildBy(method),name);
+				}
+				return result;
+			}}));
+	}
 	private List<WebElement> findVisibleParent(final List<WebElement> initial,final boolean visibleOnly){
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
 		List<WebElement> previous = initial;

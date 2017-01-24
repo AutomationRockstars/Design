@@ -14,6 +14,7 @@ import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectAction
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +43,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.cropper.indent.IndentCropper;
+import ru.yandex.qatools.ashot.cropper.indent.IndentFilerFactory;
+import ru.yandex.qatools.ashot.util.ImageTool;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, Locatable, UiDriverPlugin {
@@ -49,7 +54,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	private By by;
 	protected WebElement wrapped;
 	protected int timeout = -1;
-	
+
 	public UiObject() {
 
 	}
@@ -77,8 +82,8 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 			Preconditions.checkNotNull(getLocator(), "Element and By cannot be null");
 			if (timeout > 0){
 				wrapped = DriverFactory.delay()
-				.withTimeout(timeout, TimeUnit.SECONDS)
-				.until(ExpectedConditions.presenceOfElementLocated(this.getLocator()));				
+						.withTimeout(timeout, TimeUnit.SECONDS)
+						.until(ExpectedConditions.presenceOfElementLocated(this.getLocator()));				
 			} else {
 				wrapped = DriverFactory.getDriver().findElement(getLocator());
 			}
@@ -108,13 +113,23 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		});
 	}
 
+	private static final WebElement unwrap(WebElement element){
+		if (WrapsElement.class.isAssignableFrom(element.getClass())){
+			return unwrap(((WrapsElement)element).getWrappedElement());
+		} else return element;
+	}
 	public void click() {
 		actionPlugins().beforeClick(this);
 		try {
 			if (ConfigLoader.config().getBoolean("webdriver.lowlevel.click", false)) {
 				lowLevelClick();
 			} else {
-				DriverFactory.actions().moveToElement(getWrappedElement()).perform();
+				try {
+					
+				DriverFactory.actions().moveToElement(unwrap(getWrappedElement())).perform();
+				} catch (WebDriverException ignore){
+					
+				}
 				Waits.waitUntilClickable(getWrappedElement()).click();
 			}
 
@@ -378,7 +393,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	public void setTimeout(int timeout){
 		this.timeout = timeout;
 	}
-	
+
 	public int getTimeout(){
 		return timeout;
 	}
@@ -431,7 +446,14 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 
 	@Override
 	public void afterInstantiateDriver(WebDriver driver) {
-	
+
+	}
+	public byte[] screenshot(){
+		try {
+			return getWrappedElement().getScreenshotAs(OutputType.BYTES);
+		} catch (WebDriverException e){
+			return DriverFactory.getScreenshot();
+		}
 	}
 
 }

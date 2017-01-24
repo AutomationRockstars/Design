@@ -34,6 +34,16 @@ public class SmartDateConverter extends DateTimeConverter{
 			} else if ( "tomorrow".equals(value.toString().toLowerCase())){
 				c.add(Calendar.DATE, 1);
 				return (T) c.getTime();
+			} else if (value.toString().toLowerCase().startsWith("in ")){
+				int amount = Integer.valueOf(CharMatcher.JAVA_DIGIT.retainFrom(value.toString()));
+				int type = Calendar.DATE; 
+				if (value.toString().toLowerCase().endsWith("months") || value.toString().toLowerCase().endsWith("month")){
+					type = Calendar.MONTH;
+				} else if (value.toString().toLowerCase().endsWith("year") || value.toString().toLowerCase().endsWith("years")){
+					type = Calendar.YEAR;
+				}
+				c.add(type, amount);
+				return (T) c.getTime();
 			} else if ("next month".equals(value.toString().toLowerCase())){
 				c.add(Calendar.MONTH, 1);
 				return (T) c.getTime();

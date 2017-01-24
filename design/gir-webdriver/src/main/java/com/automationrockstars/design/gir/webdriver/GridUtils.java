@@ -104,6 +104,9 @@ public class GridUtils {
 		String port = null;
 		CloseableHttpClient cl = HttpClients.createDefault();
 		try {
+			if (nodeUrl == null){
+				throw new URISyntaxException("URL: " + nodeUrl,"node url shall not be null");
+			}
 			URI node = new URI(nodeUrl);
 			CloseableHttpResponse resp = cl.execute(new HttpGet(String.format("%s://%s:%s/extras/port", node.getScheme(),node.getHost(),node.getPort()+1)));
 			if (resp.getStatusLine().getStatusCode() == 200){
@@ -113,7 +116,7 @@ public class GridUtils {
 			}
 		} catch (UnsupportedOperationException | IOException e1) {
 		} catch (URISyntaxException e) {
-			LOG.warn("Node URI is malformed");
+			LOG.warn("Node URI is malformed: {}",nodeUrl);
 		} finally {
 			try {
 				cl.close();

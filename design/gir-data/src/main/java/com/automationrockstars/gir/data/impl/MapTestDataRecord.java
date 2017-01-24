@@ -9,9 +9,9 @@ import com.google.common.base.Joiner;
 public class MapTestDataRecord implements TestDataRecord{
 
 	
-	private final Map<String,?> data;
+	private final Map<String,Object> data;
 	
-	public MapTestDataRecord(Map<String,?> data) {
+	public MapTestDataRecord(Map<String,Object> data) {
 		this.data = data;
 	}
 	
@@ -36,4 +36,11 @@ public class MapTestDataRecord implements TestDataRecord{
 	public String toString(){
 		return Joiner.on("\n").withKeyValueSeparator(": ").join(data);
 	}
+
+	@Override
+	public <C extends TestDataRecord> C modify(String name, Object value) {
+		data.put(name, value);
+		return (C) this;
+	}
+	
 }

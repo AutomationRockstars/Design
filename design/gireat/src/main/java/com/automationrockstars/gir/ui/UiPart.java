@@ -9,6 +9,8 @@ import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.google.common.collect.FluentIterable;
 
+import ru.yandex.qatools.htmlelements.element.Link;
+
 public abstract interface UiPart extends WrapsElement,WebElement, HasLocator {
 
 	String name();
@@ -26,4 +28,10 @@ public abstract interface UiPart extends WrapsElement,WebElement, HasLocator {
 	FluentWait<SearchContext> delay();
 	
 	void waitForHidden();
+	
+	UiObject childWithText(String text);
+	
+	Link childLinkWithText(String text);
+	
+	
 }

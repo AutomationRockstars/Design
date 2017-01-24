@@ -119,6 +119,7 @@
 			<groupId>ru.yandex.qatools.allure</groupId>
 			<artifactId>allure-report-data</artifactId>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

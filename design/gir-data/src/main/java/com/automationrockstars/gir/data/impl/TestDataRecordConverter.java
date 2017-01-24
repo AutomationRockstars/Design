@@ -28,7 +28,7 @@ public class TestDataRecordConverter extends AbstractConverter {
 			if (TestDataRecord.class.isAssignableFrom(value.getClass())){
 				value = ((TestDataRecord)value).toMap();
 			}
-			return (T) TestDataProxyFactory.createProxy(new MapTestDataRecord((Map<String, ?>) value), (Class<? extends TestDataRecord>)type);
+			return (T) TestDataProxyFactory.createProxy(new MapTestDataRecord((Map<String, Object>) value), (Class<? extends TestDataRecord>)type);
 		}
 		else return null;
 	}

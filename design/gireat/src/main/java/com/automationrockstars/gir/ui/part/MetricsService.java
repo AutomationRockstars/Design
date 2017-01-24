@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.bmo.AllureStoryReporter;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.FluentIterable;

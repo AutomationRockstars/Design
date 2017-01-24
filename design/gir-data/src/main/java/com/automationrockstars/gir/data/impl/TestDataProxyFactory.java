@@ -30,6 +30,7 @@ public class TestDataProxyFactory {
 		ConvertUtils.register(tdrConverter, TestDataRecordConverter.convertible);
 	}
 
+	
 	private static class TestDataBridge implements InvocationHandler{
 		private final TestDataRecord data;
 		public TestDataBridge(TestDataRecord data){
@@ -58,9 +59,16 @@ public class TestDataProxyFactory {
 			if (isTestDataRecord(method.getReturnType())){
 				return tdrConverter.convert(method.getReturnType(), value);
 			} else {
-				return (value == null)?value :ConvertUtils.convert(value, method.getReturnType());
+				return convert(value,method.getReturnType());//(value == null)?value :ConvertUtils.convert(value, method.getReturnType());
 			}
 
+		}
+		
+		public Object convert(Object value,Class<?> returnType){
+			if ( ! ConvertUtils.lookup(Date.class).getClass().equals(SmartDateConverter.class)){
+				ConvertUtils.register(new SmartDateConverter(), Date.class);
+			}
+			return (value == null)?value :ConvertUtils.convert(value, returnType);
 		}
 	}
 	public static String getPropertyName(String name) {

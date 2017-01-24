@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -65,9 +66,16 @@ import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPluginService
 import com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService;
 import com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService;
 import com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.PeekingIterator;
+
 
 
 
@@ -77,10 +85,23 @@ public class DriverFactory {
 
 	public static final String WEBDRIVER_SESSION = "webdriver.session"; 
 	private static final ThreadLocal<WebDriver> instances = new InheritableThreadLocal<>();
+	private static final List<WebDriver> activeDrivers = Lists.newCopyOnWriteArrayList();
+	
 	private static final WebDriver instance(){
 		return instances.get();
 	};
 	private static final Logger log = LoggerFactory.getLogger(DriverFactory.class);
+
+	private static final ThreadLocal<String> url = new ThreadLocal<>();
+
+	public static void url(String url){
+		DriverFactory.url.set(url);
+	}
+
+	public static String url(){
+		return url.get();
+	}
+
 	public static final WebDriver getUnwrappedDriver(){
 		WebDriver toUnwrap = null;
 		if (isWds()){
@@ -188,7 +209,7 @@ public class DriverFactory {
 					}
 				}
 			}
-		return browser;	
+			return browser;	
 		}
 
 
@@ -197,10 +218,11 @@ public class DriverFactory {
 	private static final String BROWSER_PROP = "webdriver.browser";
 	private static final String DEF_BROWSER_PROP = "webdriver.browser.default";
 	private static final String DEF_BROWSER = "phantomjs";
-	private static Iterator<String> matrix = null;
+	private static PeekingIterator<String> matrix = null;
 	private static boolean pluginInitialized = false;
 	private static synchronized Iterator<String> browserQueue(){		
-		while (matrix == null || ! matrix.hasNext()){
+		while (matrix == null || ! matrix.hasNext() || matrix.peek() == null ){
+			System.out.println("asdasdas");
 			matrix = browserMatrix();
 		}
 		if (! pluginInitialized){
@@ -214,18 +236,18 @@ public class DriverFactory {
 	}
 
 
-	public static synchronized Iterator<String> browserMatrix(){
-		Iterator<String> result ;
+	public static synchronized PeekingIterator<String> browserMatrix(){
+		PeekingIterator<String> result ;
 		if (ConfigLoader.config().containsKey(MATRIX_PROP)){
-			result = Iterators.forArray(ConfigLoader.config().getStringArray(MATRIX_PROP));
+			result = Iterators.peekingIterator(Iterators.forArray(ConfigLoader.config().getStringArray(MATRIX_PROP)));
 		} else {
 			String bName = ConfigLoader.config().getString(BROWSER_PROP,ConfigLoader.config().getString(DEF_BROWSER_PROP,DEF_BROWSER));
 			if (bName.equalsIgnoreCase("ie")){
 				bName = BrowserType.IE;
 				log.info("Using {} for browser",bName);
 			}
-			result = Iterators.cycle(bName);
-			}
+			result = Iterators.peekingIterator(Iterators.cycle(bName));
+		}
 		return result;
 	}
 	public static void setBrowser(String browser){
@@ -289,22 +311,61 @@ public class DriverFactory {
 		}
 	}
 
-	public static void closeDriver(){
-		UiDriverPluginService.driverPlugins().beforeCloseDriver(instance());
-		if (instance() != null){
+	private static synchronized void closeDriver(WebDriver driver){
+		UiDriverPluginService.driverPlugins().beforeCloseDriver(driver);
+		if (driver != null){
 			try {
-				instance().close();
+				driver.close();
 				if (! dontUseQuit()){
-					instance().quit();
+					driver.quit();
 				}
 			} catch (Throwable ignore){
-				ignore.printStackTrace();
 			}
-			instances.set(null);
+			activeDrivers.remove(driver);
 		}
 		UiDriverPluginService.driverPlugins().afterCloseDriver();
 	}
+	public static void closeDriver(){
+		closeDriver(instance());
+		instances.remove();
+	}
 
+	public static List<String> activeSessions(){
+		return Lists.newArrayList(Iterables.transform(activeInstances(),new Function<WebDriver, String>() {
+
+			@Override
+			public String apply(WebDriver input) {
+				return ((RemoteWebDriver)unwrap(input)).getSessionId().toString();
+			}
+		}));
+	}
+	
+	public static boolean isSessionOpened(final String session){
+		return Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
+
+			@Override
+			public boolean apply(WebDriver input) {
+				return ((RemoteWebDriver)unwrap(input)).getSessionId().toString().equals(session);
+			}
+		}).isPresent();
+	}
+	
+	public static List<WebDriver> activeInstances(){
+		return UnmodifiableList.decorate(activeDrivers);
+	}
+	
+	public static void closeSession(final String session){
+		Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
+
+			@Override
+			public boolean apply(WebDriver input) {
+				return ((RemoteWebDriver)unwrap(input)).getSessionId().toString().equals(session);
+			}
+		});
+		if (driver.isPresent()){
+			closeDriver(driver.get());
+		}
+	}
 	public static void destroy(){
 		closeDriver();
 		matrix = null;
@@ -376,21 +437,12 @@ public class DriverFactory {
 		return new DesiredCapabilities(toJoin);
 	}
 
-	private static Thread closeDriver(final WebDriver driver){
+	private static Thread createDriverCloser(final WebDriver driver){
 		return new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-
-				if (driver != null && ! ConfigLoader.config().getBoolean("webdriver.dontclose",false) )
-					try {
-						driver.close();
-						if (! dontUseQuit()) {
-							driver.quit();
-						}
-					} catch (Exception ignore) {
-
-					}
+				closeDriver(driver);
 			}
 		});
 	}
@@ -434,9 +486,10 @@ public class DriverFactory {
 			UiDriverPluginService.driverPlugins().beforeInstantiateDriver();
 			WebDriver dr =new VisibleElementFilter(createRemoteDriver());
 			instances.set(dr);
-			Runtime.getRuntime().addShutdownHook(closeDriver(instance()));
+			activeDrivers.add(dr);
+			Runtime.getRuntime().addShutdownHook(createDriverCloser(instance()));
 			UiDriverPluginService.driverPlugins().afterInstantiateDriver(dr);
-
+			
 		}
 		UiDriverPluginService.driverPlugins().afterGetDriver(instance());
 		return instance();

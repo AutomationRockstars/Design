@@ -13,17 +13,18 @@ import com.google.common.collect.Maps;
 
 public class SimpleTestData<T extends TestDataRecord> implements TestData<T> {
 
+	public static final String NAME = "DEFAULT";
 	@Override
 	public String name() {
-		return "DEFAULT";
+		return NAME;
 	}
 
-	private static final ConcurrentMap<Class<? extends TestDataRecord>,List<? extends TestDataRecord>> recordBag = Maps.newConcurrentMap();
+	private final ConcurrentMap<Class<? extends TestDataRecord>,List<? extends TestDataRecord>> recordBag = Maps.newConcurrentMap();
 //	private static final List<? extends TestDataRecord> sharedRecords = Lists.newCopyOnWriteArrayList();
 	private final boolean shared; 
 	private final List<T> exclusiveRecords;
 	private Class<T> classOf;
-	private static <T extends TestDataRecord> List<T> get(Class<T> type){
+	private <T extends TestDataRecord> List<T> get(Class<T> type){
 		if (recordBag.get(type) == null){
 			recordBag.putIfAbsent(type, new CopyOnWriteArrayList<T>());
 		}

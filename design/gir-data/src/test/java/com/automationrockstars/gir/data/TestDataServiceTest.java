@@ -1,5 +1,6 @@
 package com.automationrockstars.gir.data;
 import static com.automationrockstars.asserts.Asserts.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -45,7 +46,7 @@ public class TestDataServiceTest {
 				}
 				people.addNew()
 				.with("name", "John No'" + System.nanoTime())
-				.with("surname","von Avivovitch")
+				.with("surname","von Agigovitch")
 				.with("size", order.getAndIncrement())
 				.with("birth",new Date());
 			}
@@ -66,5 +67,37 @@ public class TestDataServiceTest {
 		}
 		
 		allTheVusers.shutdownNow();
+	}
+	
+	@Test
+	public void should_modifyRecord(){
+		final TestData<Persona> people = TestDataServices.testData(Persona.class);
+		people.addNew()
+		.with("name", "John No'" + System.nanoTime())
+		.with("surname","von Agigovitch")
+		.with("size", order.getAndIncrement())
+		.with("birth",new Date());
+		final String newName = "NEW" + System.currentTimeMillis();
+		people.record(0).modify("name", newName);
+		assertThat(TestDataServices.testData(Persona.class).record(0).name(),is(equalTo(newName)));
+	}
+	
+	@Test
+	public void should_keepDataInsidePools(){
+		final TestDataPool pool = TestDataServices.pool("pool");
+		final TestData<Persona> people = pool.testData(Persona.class);
+		people.addNew()
+		.with("name", "John No'" + System.nanoTime())
+		.with("surname","von Agigovitch")
+		.with("size", order.getAndIncrement())
+		.with("birth",new Date());
+		people.addNew()
+		.with("name", "John No'" + System.nanoTime())
+		.with("surname","von Agigovitch")
+		.with("size", order.getAndIncrement())
+		.with("birth",new Date());
+		assertThat(TestDataServices.pool("pool").testData(Persona.class).records().size(), is(equalTo(2)));
+		assertThat(TestDataServices.testData(Persona.class).records().size(), is(not(equalTo(2))));
+		
 	}
 }

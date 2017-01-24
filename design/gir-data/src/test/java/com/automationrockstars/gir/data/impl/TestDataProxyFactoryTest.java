@@ -30,5 +30,6 @@ public class TestDataProxyFactoryTest {
 		assertThat(TestDataProxyFactory.getPropertyName("UowerUpper"),is(equalTo("uower upper")));
 		assertThat(TestDataProxyFactory.getPropertyName("getLowerUpper"),is(equalTo("lower upper")));
 	}
+	
 
 }

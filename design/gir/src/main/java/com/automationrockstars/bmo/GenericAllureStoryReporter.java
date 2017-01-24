@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -40,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.asserts.Asserts;
 import com.automationrockstars.base.ConfigLoader;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -199,9 +202,6 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 
 	public void beforeStep(String step) {
-		if (! AllureLogbackAppender.isEmpty()){
-			AllureLogbackAppender.fire("before_"+step);
-		}
 		List<String> stepParts = Splitter.onPattern("<|>").splitToList(step);
 		StringBuilder dataStepName = new StringBuilder();
 		for (String stepPart : stepParts){
@@ -212,6 +212,9 @@ public class GenericAllureStoryReporter implements StoryReporter {
 			}
 		}
 		Allure.LIFECYCLE.fire(new StepStartedEvent(dataStepName.toString()));
+		if (! AllureLogbackAppender.isEmpty()){
+			AllureLogbackAppender.fire("before_"+step);
+		}
 		LOG.info("before step {}",step);
 	}
 
@@ -269,7 +272,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 			LOG.info("Attaching screenshot to {}",name);		
 			byte[] screen = Asserts.makeScreenshotIfPossible(); 
 			if (screen != null){
-				attach(screen, name+"_screenshot", "image/png");
+				attach(screen, name, "image/png");
 			}		
 		} catch (Exception noScreenshot) {
 			LOG.warn("Screenshot attaching failed due to {}",noScreenshot.toString());
@@ -284,19 +287,68 @@ public class GenericAllureStoryReporter implements StoryReporter {
 		}
 		return initial;
 	}
-	private static CloseableHttpClient cl;
-	private static void populateVideo(Properties initial, String link, String title){
+	
+	@VisibleForTesting
+	protected static CloseableHttpClient cl;
+
+
+
+	@VisibleForTesting
+	protected static void closeSession(String session){
 		try {
-			HttpResponse videoResponse = cl.execute(new HttpGet(link));
-			if (videoResponse.getStatusLine().getStatusCode() == 200){
-				InputStream videoFile = videoResponse.getEntity().getContent();
+			LOG.info("Closing session {}",session);
+			Class.forName("com.automationrockstars.design.gir.webdriver.DriverFactory").getMethod("closeSession",String.class).invoke(null, session);
+		} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			LOG.error("Cannot close session {} due to ",session,e);
+		}
+	}
+	private static boolean canGetVideo(final String link){
+		CloseableHttpResponse resp = null;
+		try {
+			resp = cl.execute(new HttpGet(link));
+			if ( resp.getStatusLine().getStatusCode() != 200){
+				throw new IllegalArgumentException("Negative response from server " + resp.getStatusLine());
+			}
+			return true;
+		} catch (Throwable t){
+			LOG.debug("Video {} cannot be fetched due to {}",link,t.getMessage());
+			return false;
+		} finally {
+			if (resp!=null){
+				try {
+					resp.close();
+				} catch (IOException ignore) {
+				}
+			}
+		}
+	}
+	@VisibleForTesting
+	protected static void populateVideo(Properties initial, String link, String title){
+		try {
+			if (canGetVideo(link)){
 				Paths.get("target/allure-report/data/").toFile().mkdirs();
-				java.nio.file.Files.copy(videoFile, Paths.get("target/allure-report/data/"+title+".mp4"), StandardCopyOption.REPLACE_EXISTING);
+
+				Path ying = Paths.get("target/allure-report/data/"+title+".mp4.1");
+				Path yang = Paths.get("target/allure-report/data/"+title+".mp4.2");
+				Path dest = Paths.get("target/allure-report/data/"+title+".mp4");
+				do {
+					CloseableHttpResponse videoResponse = cl.execute(new HttpGet(link));
+					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), ying, StandardCopyOption.REPLACE_EXISTING);
+					videoResponse.close();
+					videoResponse = cl.execute(new HttpGet(link));
+					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), yang, StandardCopyOption.REPLACE_EXISTING);
+					videoResponse.close();
+				} while (java.nio.file.Files.size(yang) != java.nio.file.Files.size(yang));
+				if (dest.toFile().exists()){
+					FileUtils.forceDelete(dest.toFile());
+				}
+				FileUtils.moveFile(ying.toFile(), dest.toFile());
+				FileUtils.forceDelete(yang.toFile());
 				initial.setProperty(title, "<a href=\"data/"+title+".mp4\"><video id=\""+title+"\" width=\"160\" height=\"88\" autoplay=\"true\" controls=\"true\">"+
 						"<source src=\"data/"+title+".mp4\" type=\"video/mp4\">"+
 						"Your browser does not support HTML5 video.</video></a>");
 			}
-		} catch (Exception e) {
+		} catch (UnsupportedOperationException | IOException e) {
 			LOG.error("Video cannot be added {}",e.getMessage());
 		}
 	}
@@ -308,13 +360,13 @@ public class GenericAllureStoryReporter implements StoryReporter {
 		} else {
 			cl = HttpClients.createDefault();
 			for (Object video : videos){
-				@SuppressWarnings("unchecked")
 				Map.Entry<String, String> videoData = ((Map<String, String>) video).entrySet().iterator().next();
+				closeSession(videoData.getValue().replaceAll(".*/download_video/", "").replaceAll(".mp4", ""));
 				populateVideo(initial, videoData.getValue(), videoData.getKey());
 			}
 			try {
 				cl.close();
-			} catch (Exception e) {
+			} catch (IOException e) {
 			}
 		}
 	}
