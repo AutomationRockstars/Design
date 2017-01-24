@@ -68,13 +68,6 @@
 			<version>${selenium_version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>ru.yandex.qatools.ashot</groupId>
-			<artifactId>ashot</artifactId>
-			<version>1.5.4-SNAPSHOT</version>
-		</dependency>
-
-
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
