@@ -43,10 +43,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import ru.yandex.qatools.ashot.AShot;
-import ru.yandex.qatools.ashot.cropper.indent.IndentCropper;
-import ru.yandex.qatools.ashot.cropper.indent.IndentFilerFactory;
-import ru.yandex.qatools.ashot.util.ImageTool;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, Locatable, UiDriverPlugin {
