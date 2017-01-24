@@ -458,7 +458,6 @@ public class AllureStoryReporter implements StoryReporter {
 		environmentToShow = populateProperty("grid.url", environmentToShow);
 		environmentToShow = populateProperty("webdriver.session", environmentToShow);
 		populateVideos(environmentToShow);
-		ArtefactsStore.populate(environmentToShow);
 		LOG.info("Properties ready");
 		try {
 			environmentToShow.store(Files.newWriter(Paths.get(directory,"environment.properties").toFile(), Charset.defaultCharset()), "execution properties");
