@@ -28,11 +28,7 @@ import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.UiParts;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 
 import ru.yandex.qatools.htmlelements.element.Link;
@@ -45,6 +41,9 @@ public class UiPartDelegate implements UiPart {
 	private final Class<? extends UiPart> view;
 	public UiPartDelegate(Class<? extends UiPart> view){
 		this.view = view;
+		if (view.getAnnotation(InitialPage.class)!=null) {
+			initialPageSetUp();
+		}
 	}
 
 	public String name() {
@@ -97,33 +96,7 @@ public class UiPartDelegate implements UiPart {
 		}
 	};
 	public WebElement getWrappedElement() {
-		if (view.getAnnotation(InitialPage.class) != null){
-			if (view.getAnnotation(InitialPage.class).restartBrowser()){
-				DriverFactory.closeDriver();
-			}
-			if (! DriverFactory.canScreenshot() || 
-					view.getAnnotation(InitialPage.class).reload()
-					|| ! DriverFactory.getDriver().getCurrentUrl().startsWith("http")){
-				String url = FluentIterable.from(Lists.newArrayList(DriverFactory.url(),
-						ConfigLoader.config().getString("url"),
-						view.getAnnotation(InitialPage.class).url())).firstMatch(new Predicate() {
-
-					@Override
-					public boolean apply(@Nullable Object o) {
-						return o != null;
-					}
-				}).get();
-				DriverFactory.getDriver().get(url);
-			} 			
-			if (! loaded.get()){				
-				String desiredUrl = ConfigLoader.config().getString("url",view.getAnnotation(InitialPage.class).url());
-				if (desiredUrl != null && ! DriverFactory.getDriver().getCurrentUrl().contains(desiredUrl)){
-					DriverFactory.getDriver().get(desiredUrl);
-				}
-				loaded.set(Boolean.TRUE);			
-			}
-			handleBrowserSpecifics();
-		}
+		initialPageSetUp();
 		if (wrapped == null){
 			wrapped = new UiObject(getLocator());
 			wrapped.setName(name());
@@ -134,6 +107,36 @@ public class UiPartDelegate implements UiPart {
 			}
 		} 
 		return wrapped;
+	}
+
+	void initialPageSetUp() {
+		if (view.getAnnotation(InitialPage.class) != null){
+			if (view.getAnnotation(InitialPage.class).restartBrowser()){
+				DriverFactory.closeDriver();
+			}
+			if (! DriverFactory.canScreenshot() ||
+					view.getAnnotation(InitialPage.class).reload()
+					|| ! DriverFactory.getDriver().getCurrentUrl().startsWith("http")){
+				String url = (String) FluentIterable.from(Lists.newArrayList(DriverFactory.url(),
+						ConfigLoader.config().getString("url"),
+						view.getAnnotation(InitialPage.class).url())).firstMatch(new Predicate() {
+
+					@Override
+					public boolean apply(@Nullable Object o) {
+						return o != null;
+					}
+				}).get();
+				DriverFactory.getDriver().get(url);
+			}
+			if (! loaded.get()){
+				String desiredUrl = ConfigLoader.config().getString("url",view.getAnnotation(InitialPage.class).url());
+				if (desiredUrl != null && ! DriverFactory.getDriver().getCurrentUrl().contains(desiredUrl)){
+					DriverFactory.getDriver().get(desiredUrl);
+				}
+				loaded.set(Boolean.TRUE);
+			}
+			handleBrowserSpecifics();
+		}
 	}
 
 	public void handleIeSpecifics(){
