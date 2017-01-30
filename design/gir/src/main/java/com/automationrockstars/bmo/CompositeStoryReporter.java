@@ -249,9 +249,10 @@ public class CompositeStoryReporter implements StoryReporter {
 
 	public static void add(final StoryReporter reporter){
 		lock.lock();
-		if (reporter.getClass().getAnnotation(RunReporter.class) == null){
-			reporters.add(reporter);
-		} else if (! Iterables.tryFind(reporters, new Predicate<StoryReporter>() {
+//		if (reporter.getClass().getAnnotation(RunReporter.class) == null){
+//			reporters.add(reporter);
+//		} else 
+		if (! Iterables.tryFind(reporters, new Predicate<StoryReporter>() {
 			@Override
 			public boolean apply(StoryReporter input) {
 				return input.getClass().equals(reporter.getClass());

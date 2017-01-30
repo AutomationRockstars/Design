@@ -116,8 +116,10 @@ public class DataLoader {
 				if (Lists.newArrayList(m.getDeclaringClass().getInterfaces()).contains(TestDataRecord.class)
 						&& ! m.getDeclaringClass().equals(TestDataRecord.class)
 						&& ! Lists.newArrayList(m.getReturnType().getInterfaces()).contains(TestDataRecord.class)){
-					Object tdr = TestDataProxyFactory.createProxy(new MapTestDataRecord((Map<String, Object>) o),(Class<? extends TestDataRecord>) type);
-					result.append("\n").append(m.getName()).append(": ").append(m.invoke(tdr, null));
+					Object tdr = TestDataProxyFactory.createProxy(new MapTestDataRecord((Map<String, Object>) o),(Class<? extends TestDataRecord>) type);					
+					result.append("\n").append(m.getName()).append(": ").append(
+							m.invoke(tdr, null)
+							);
 				}
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				LOG.error("Cannot call mapped method on {} of {}",o,type,e);

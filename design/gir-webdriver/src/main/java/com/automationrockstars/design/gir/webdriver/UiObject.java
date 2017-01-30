@@ -39,6 +39,7 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -180,8 +181,6 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		try {
 			getWrappedElement().sendKeys(keysToSend);
 		} catch (InvalidElementStateException e){
-			System.err.println("CANNOT SEND KEYS");
-			e.printStackTrace();
 			this.getWrappedElement();
 			Page.scrollTo(this);
 			click();
@@ -192,6 +191,21 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		actionPlugins().afterSendKeys(this, keysToSend);
 	}
 
+	public void clearAndSendKeys(CharSequence... keysToSend){
+		actionPlugins().beforeClear(this);
+		clear();
+		actionPlugins().afterClear(this);
+		actionPlugins().beforeSendKeys(this, keysToSend);
+		sendKeys(keysToSend);
+		actionPlugins().afterSendKeys(this, keysToSend);
+	}
+	
+	public void sendKeysIfDifferent(CharSequence... keysToSend){
+		String currentText = getText();
+		if (! Joiner.on("").join(keysToSend).equals(currentText)){
+			clearAndSendKeys(keysToSend);
+		}
+	}
 	public void clear() {
 		actionPlugins().beforeClear(this);
 		getWrappedElement().clear();

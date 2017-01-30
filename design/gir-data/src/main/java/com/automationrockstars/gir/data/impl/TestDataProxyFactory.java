@@ -54,6 +54,9 @@ public class TestDataProxyFactory {
 					propertyName = getPropertyName(propertyName);
 				}
 				value = data.get(propertyName);
+				if (value == null && method.getName().startsWith("get")){
+					value = data.get(propertyName.substring(4));	
+				}
 			}
 
 			if (isTestDataRecord(method.getReturnType())){
@@ -72,9 +75,6 @@ public class TestDataProxyFactory {
 		}
 	}
 	public static String getPropertyName(String name) {
-		if (name.startsWith("get")){
-			name = name.substring(3);
-		}
 		return separatedWords(name); 
 
 	}
