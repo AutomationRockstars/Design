@@ -8,7 +8,7 @@ import ru.yandex.qatools.htmlelements.element.Button;
 import ru.yandex.qatools.htmlelements.element.TextInput;
 
 
-@InitialPage
+@InitialPage(url="http://google.com")
 @Name("Google initial page")
 public interface GoogleHome extends UiPart{
 	

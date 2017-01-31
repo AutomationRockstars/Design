@@ -45,7 +45,12 @@ public class UiPartDelegate implements UiPart {
 			initialPageSetUp();
 		}
 	}
-
+	
+	public UiPartDelegate(Class<? extends UiPart> view,UiObject toWrap){
+		this.view = view;
+		this.wrapped = toWrap;
+		loaded.set(true);
+	}
 	public String name() {
 		if (view.getAnnotation(Name.class) != null){
 			return view.getAnnotation(Name.class).value();

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
+import com.automationrockstars.gir.ui.FindBy;
 import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Optional;
@@ -51,6 +53,9 @@ public class UiPartProxy implements InvocationHandler{
 		ui = new UiPartDelegate(generic);
 	}
 
+	public UiPartProxy(Class<? extends UiPart> generic, UiObject toWrap) {
+		ui = new UiPartDelegate(generic,toWrap);
+	}
 	private static boolean isCustom(Method method){
 		Class<?> declaringClass = method.getDeclaringClass();
 		List<Class<?>> nativeMethodOwners = Lists.newArrayList(UiPart.class.getInterfaces());
@@ -140,6 +145,17 @@ public class UiPartProxy implements InvocationHandler{
 	@SuppressWarnings("unchecked")
 	private static <T> T convert(WebElement initial,final Class<T> wanted,Class<? extends WebElementDecorator>... decorators ){
 		initial = decorate(initial, decorators);
+		if (UiPart.class.isAssignableFrom(wanted)){
+			Class<? extends UiPart> resulting = (Class<? extends UiPart>) wanted;
+			UiObject toWrap = null;
+			if (initial instanceof UiObject){
+				toWrap = (UiObject) initial;
+			} else {
+				toWrap = new UiObject(initial, UiParts.buildBy(resulting));
+			}
+			return (T) Proxy.newProxyInstance(wanted.getClassLoader(), 
+					new Class[] {resulting}, new UiPartProxy(resulting,toWrap));
+		}
 		if (wanted.isAssignableFrom(initial.getClass())){
 			return (T) initial;	
 		}
@@ -205,14 +221,26 @@ public class UiPartProxy implements InvocationHandler{
 	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
+		final Class<?> wantedResult = method.getReturnType();
+		org.openqa.selenium.By by = null;
+
 		if (UiPart.class.isAssignableFrom(method.getReturnType())){
 			ui.initialPageSetUp();
 			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
 			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
+		} else if (Iterable.class.isAssignableFrom(wantedResult)){
+			if (method.getGenericReturnType() instanceof ParameterizedType){
+				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
+				if (UiPart.class.isAssignableFrom(collectionOf)){
+					by = UiParts.buildBy((Class<? extends UiPart>)collectionOf);
+				}
+			}
 		}
 		List<WebElement> result = Lists.newArrayList();
-		final org.openqa.selenium.By by = UiParts.buildBy(method);
+		if (by == null){
+			by = UiParts.buildBy(method);
+		}
 		final int timeout = calculateTimeout(method);
 		final int minimumSize = minimumSize(method);
 		LOG.debug("Using timeout {} to wait for at least {} elements",timeout,minimumSize);
@@ -251,7 +279,7 @@ public class UiPartProxy implements InvocationHandler{
 			LOG.error("Error on {} inside {}: NoSuchElement",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 			throw new NoSuchElementException("WebElement identified " + by+ " not found");
 		}
-		
+
 		return adjustResults(setNames(result,method), method.getGenericReturnType(),decorators(uiPartOf(host)));
 
 	}
@@ -291,7 +319,7 @@ public class UiPartProxy implements InvocationHandler{
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
 		List<WebElement> previous = initial;
 		FluentIterable<WebElement> hidden = FluentIterable.from(previous);
-		
+
 		while (hidden.firstMatch(new Predicate<WebElement>(){
 			public boolean apply(WebElement input) {
 				//						boolean vis = input.isDisplayed();

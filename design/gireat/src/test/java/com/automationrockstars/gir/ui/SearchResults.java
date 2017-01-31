@@ -30,4 +30,6 @@ public interface SearchResults extends UiPart {
 	@FindBy(tagName="a")
 	@Filter("text.contains('GitHub')")
 	Link githubLink();
+	
+	FluentIterable<SearchResultDiv> allResults();
 }
