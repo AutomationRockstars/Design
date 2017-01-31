@@ -233,6 +233,7 @@ public class UiPartProxy implements InvocationHandler{
 			if (method.getGenericReturnType() instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
+					ui.initialPageSetUp();
 					by = UiParts.buildBy((Class<? extends UiPart>)collectionOf);
 				}
 			}
