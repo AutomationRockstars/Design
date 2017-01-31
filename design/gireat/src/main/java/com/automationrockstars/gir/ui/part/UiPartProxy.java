@@ -229,7 +229,7 @@ public class UiPartProxy implements InvocationHandler{
 			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
 			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
-		} else if (Iterable.class.isAssignableFrom(wantedResult)){
+		} else if (Iterable.class.isAssignableFrom(wantedResult) || wantedResult.isArray()){
 			if (method.getGenericReturnType() instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
