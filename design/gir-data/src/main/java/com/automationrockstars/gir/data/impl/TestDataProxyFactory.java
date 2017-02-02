@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.commons.beanutils.ConvertUtils;
 
 import com.automationrockstars.gir.data.TestDataRecord;
+import com.automationrockstars.gir.data.converter.NullConverter;
 import com.automationrockstars.gir.data.converter.SmartDateConverter;
 import com.google.common.base.Preconditions;
 
@@ -26,6 +27,7 @@ public class TestDataProxyFactory {
 	static {
 
 		SmartDateConverter dateConverter = new SmartDateConverter();
+		
 		ConvertUtils.register(dateConverter, Date.class);
 		ConvertUtils.register(tdrConverter, TestDataRecordConverter.convertible);
 	}
@@ -62,7 +64,7 @@ public class TestDataProxyFactory {
 			if (isTestDataRecord(method.getReturnType())){
 				return tdrConverter.convert(method.getReturnType(), value);
 			} else {
-				return convert(value,method.getReturnType());//(value == null)?value :ConvertUtils.convert(value, method.getReturnType());
+				return (value == null)? NullConverter.nullConvert(method.getReturnType()) :convert(value, method.getReturnType());
 			}
 
 		}
@@ -71,7 +73,7 @@ public class TestDataProxyFactory {
 			if ( ! ConvertUtils.lookup(Date.class).getClass().equals(SmartDateConverter.class)){
 				ConvertUtils.register(new SmartDateConverter(), Date.class);
 			}
-			return (value == null)?value :ConvertUtils.convert(value, returnType);
+			return ConvertUtils.convert(value, returnType);
 		}
 	}
 	public static String getPropertyName(String name) {
