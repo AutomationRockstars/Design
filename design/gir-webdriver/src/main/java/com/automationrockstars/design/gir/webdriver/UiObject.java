@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.automationrockstars.design.gir.webdriver;
 
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService.actionPlugins;
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
+import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.InvalidElementStateException;
@@ -34,17 +34,14 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
-
-import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
-import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService.actionPlugins;
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
 
 public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, Locatable, UiDriverPlugin {
 
@@ -124,7 +121,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				try {
 					
 				DriverFactory.actions().moveToElement(unwrap(getWrappedElement())).perform();
-				} catch (WebDriverException ignore){
+				} catch (Throwable ignore){
 					
 				}
 				Waits.waitUntilClickable(getWrappedElement()).click();
