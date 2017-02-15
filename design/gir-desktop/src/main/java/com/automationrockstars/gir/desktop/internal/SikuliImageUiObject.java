@@ -26,6 +26,7 @@ import com.automationrockstars.gir.desktop.ByImage;
 import com.automationrockstars.gir.desktop.ImageUiObject;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -41,13 +42,10 @@ public class SikuliImageUiObject implements ImageUiObject {
 	public SikuliImageUiObject(String imagePath) {
 		this.imagePath = Paths.get(imagePath);
 	}
-	
-	
-	
 
 	public Match getWrappedElement(){
 		if (wrapped == null){
-			wrapped = findWrapper(SikuliDriver.screen(), imagePath.toString(), name);			
+			wrapped = SikuliDriver.wait(imagePath, timeout);			
 		}
 		return wrapped;
 	}
@@ -61,7 +59,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 	}
 
 	public void waitUntilVisible(){
-		SikuliDriver.wait(imagePath, timeout);
+		getWrappedElement();
 	}
 
 	public void waitUntilHidden(){
@@ -228,6 +226,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public ImageUiObject findElement(String imagePath) {
+		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
 		return wrap(findWrapper(getWrappedElement(), imagePath, null),imagePath,null);
 	}
 
@@ -238,9 +237,13 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public Iterator<ImageUiObject> findElements(String imagePath) {
+		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
 		return wrap(findAllWrapper(getWrappedElement(), imagePath, null),imagePath,null);
 	}
 
+	public void highlight(){
+		getWrappedElement().highlight(1);
+	}
 
 	public static ImageUiObject wrap(Match toWrap, String imagePath,@Nullable String name){
 		SikuliImageUiObject result = new SikuliImageUiObject(imagePath);
@@ -255,6 +258,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 			@Override
 			public ImageUiObject apply(Match input) {
+				System.out.println("wrapping");
 				return wrap(input, imagePath, name);
 			}
 		});

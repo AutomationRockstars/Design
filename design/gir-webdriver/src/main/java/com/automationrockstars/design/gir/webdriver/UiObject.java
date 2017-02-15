@@ -124,7 +124,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				try {
 					
 				DriverFactory.actions().moveToElement(unwrap(getWrappedElement())).perform();
-				} catch (WebDriverException ignore){
+				} catch (Throwable ignore){
 					
 				}
 				Waits.waitUntilClickable(getWrappedElement()).click();
@@ -467,3 +467,4 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	}
 
 }
+	

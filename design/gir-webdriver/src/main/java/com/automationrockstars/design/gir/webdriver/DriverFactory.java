@@ -70,6 +70,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -86,7 +87,7 @@ public class DriverFactory {
 	public static final String WEBDRIVER_SESSION = "webdriver.session"; 
 	private static final ThreadLocal<WebDriver> instances = new InheritableThreadLocal<>();
 	private static final List<WebDriver> activeDrivers = Lists.newCopyOnWriteArrayList();
-	
+
 	private static final WebDriver instance(){
 		return instances.get();
 	};
@@ -187,12 +188,14 @@ public class DriverFactory {
 
 		return result;
 	}
-	private static void checkGridExtras(String gridUrl, RemoteWebDriver driver){
+	private static boolean checkGridExtras(String gridUrl, RemoteWebDriver driver){
 		String gridExtras = GridUtils.getNodeExtras(gridUrl, driver);
 		if (gridExtras == null){
 			log.info("No grid extras foud");
+			return false;
 		} else {
 			log.info("Grid extras available at {}",gridExtras);
+			return true;
 		}
 
 	}
@@ -253,6 +256,53 @@ public class DriverFactory {
 	public static void setBrowser(String browser){
 		DriverFactory.browser.set(browser);
 	}
+	
+	private static synchronized void enableGridExtras(RemoteWebDriver driver){
+		if (checkGridExtras(GRID_URL,driver)){
+			String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver),driver.getSessionId().toString());
+			ConfigLoader.config().addProperty("webdriver.video", videoLink);
+			List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String,String>>());
+			String story = null;
+			try {
+				if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
+					story = GenericAllureStoryReporter.storyName();
+				} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
+					story = AllureStoryReporter.storyName();
+				} 
+			} catch (Throwable t){
+
+			}
+			if (Strings.isNullOrEmpty(story)){
+				story = "recording " + driver.getSessionId();
+			}
+
+			String title = "video_" + story;
+			int videoRepetition = 0;
+			String titlePostfix = "";
+			Optional<Object> titleAlreadyThere = Optional.absent();
+			do {
+				if (videoRepetition > 0){
+					titlePostfix = String.format("_%s", videoRepetition);
+				}
+				final String titleBase = title + titlePostfix;
+				titleAlreadyThere = FluentIterable.from(videos).firstMatch(new Predicate<Object>() {
+
+					@Override
+					public boolean apply(Object input) {
+						return ((Map<String, String>) input).keySet().contains(titleBase);
+					}
+				});
+				if (! titleAlreadyThere.isPresent()){
+					title = titleBase;
+				} else {
+					videoRepetition++;
+				}
+			} while (titleAlreadyThere.isPresent());
+			log.info("Session for story {}",title);
+			videos.add(Collections.singletonMap(title, videoLink));
+			ConfigLoader.config().setProperty("webdriver.videos", videos);
+		}
+	}
 	private static WebDriver createRemoteDriver(){
 		if (ConfigLoader.config().containsKey("noui")){
 			return new HtmlUnitDriver(true);
@@ -281,29 +331,7 @@ public class DriverFactory {
 				log.info("Driver instance created {}",result);
 				log.debug("Test session id {}",result.getSessionId());
 				log.info("Executing on node {}",GridUtils.getNode(GRID_URL, result));
-				String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(gridUrl.toString(), result),result.getSessionId().toString());
-				ConfigLoader.config().addProperty("webdriver.video", videoLink);
-				List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String,String>>());
-
-				String story = null;
-				try {
-					if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
-						story = GenericAllureStoryReporter.storyName();
-					} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
-						story = AllureStoryReporter.storyName();
-					} 
-				} catch (Throwable t){
-
-				}
-				if (Strings.isNullOrEmpty(story)){
-					story = "recording " + result.getSessionId();
-				}
-				String title = "video_" + story;
-
-				log.info("Session for story {}",title);
-				videos.add(Collections.singletonMap(title, videoLink));
-				ConfigLoader.config().setProperty("webdriver.videos", videos);
-				checkGridExtras(GRID_URL,result);
+				enableGridExtras(result);
 				return result;
 			}
 		} catch (MalformedURLException e) {
@@ -339,7 +367,7 @@ public class DriverFactory {
 			}
 		}));
 	}
-	
+
 	public static boolean isSessionOpened(final String session){
 		return Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
 
@@ -349,11 +377,11 @@ public class DriverFactory {
 			}
 		}).isPresent();
 	}
-	
+
 	public static List<WebDriver> activeInstances(){
 		return UnmodifiableList.decorate(activeDrivers);
 	}
-	
+
 	public static void closeSession(final String session){
 		Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
 
@@ -489,7 +517,7 @@ public class DriverFactory {
 			activeDrivers.add(dr);
 			Runtime.getRuntime().addShutdownHook(createDriverCloser(instance()));
 			UiDriverPluginService.driverPlugins().afterInstantiateDriver(dr);
-			
+
 		}
 		UiDriverPluginService.driverPlugins().afterGetDriver(instance());
 		return instance();

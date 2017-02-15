@@ -24,7 +24,7 @@ public class ErrorHandlingService {
 			Files.write(DriverFactory.getDriver().getPageSource().getBytes(), Paths.get(fileName+".html").toFile());
 		} catch (IOException ignore) {
 		}
-		boolean display = ConfigLoader.config().getBoolean(SHOW_SCREENSHOT,true);
+		boolean display = ConfigLoader.config().getBoolean(SHOW_SCREENSHOT,false);
 		if (display) {
 			DriverFactory.displayScreenshotFile();
 		} else {

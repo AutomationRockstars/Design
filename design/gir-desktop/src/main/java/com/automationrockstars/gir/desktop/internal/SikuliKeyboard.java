@@ -9,9 +9,7 @@ public class SikuliKeyboard implements Keyboard{
 
 	private final Region region;
 	
-	public SikuliKeyboard() {
-		this(SikuliDriver.screen());
-	}
+	
 	public SikuliKeyboard(Region region) {
 		this.region = region;
 	}

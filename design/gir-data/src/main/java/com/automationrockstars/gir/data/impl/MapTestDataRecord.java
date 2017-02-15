@@ -1,6 +1,7 @@
 package com.automationrockstars.gir.data.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.automationrockstars.gir.data.TestDataRecord;
@@ -10,6 +11,10 @@ public class MapTestDataRecord implements TestDataRecord{
 
 	
 	private final Map<String,Object> data;
+	
+	public static MapTestDataRecord empty(){
+		return new MapTestDataRecord(new HashMap<String,Object>());
+	}
 	
 	public MapTestDataRecord(Map<String,Object> data) {
 		this.data = data;
