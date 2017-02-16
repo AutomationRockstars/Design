@@ -6,6 +6,7 @@ public class GoogleSearch {
 	
 
 	public static SearchResults performSearch(String query){
+		on(GoogleHome.class).query().clear();
 		on(GoogleHome.class).query().sendKeys(query);		
 		on(GoogleHome.class).search().click();
 		return get(SearchResults.class);

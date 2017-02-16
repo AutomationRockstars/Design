@@ -25,6 +25,7 @@
 		<module>gireat</module>
 		<module>gir-rest</module>
 		<module>gir-mobile</module>
+		<module>gir-desktop</module>
 	</modules>
 	
 	<build>

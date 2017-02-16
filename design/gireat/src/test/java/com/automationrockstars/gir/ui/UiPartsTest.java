@@ -53,12 +53,16 @@ public class UiPartsTest {
 		}
 	}
 	
-	@Test
-	public void should_doTheThing() {
+	private void doSearch(){
 		preparePhantom();
 		GoogleHome init = UiParts.get(GoogleHome.class);
+		init.query().clear();
 		init.query().sendKeys("automationrockstars");
 		init.search().click();
+	}
+	@Test
+	public void should_doTheThing() {
+		doSearch();
 
 		SearchResults result = UiParts.get(SearchResults.class);
 		assertThat(result.results().size(),is(greaterThan(5)));
@@ -79,10 +83,7 @@ public class UiPartsTest {
 	
 	@Test
 	public void should_useUiPartInsideUiPart(){
-		preparePhantom();
-		GoogleHome init = UiParts.get(GoogleHome.class);
-		init.query().sendKeys("automationrockstars");
-		init.search().click();
+		doSearch();
 		
 		SearchResults result = UiParts.get(SearchResults.class);
 		assertThat(result.allResults().size(),is(greaterThan(5)));

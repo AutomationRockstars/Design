@@ -28,7 +28,7 @@ public class TestDataProxyFactoryTest {
 	public void should_getPropertyName() {
 		assertThat(TestDataProxyFactory.getPropertyName("lowerUpper"),is(equalTo("lower upper")));
 		assertThat(TestDataProxyFactory.getPropertyName("UowerUpper"),is(equalTo("uower upper")));
-		assertThat(TestDataProxyFactory.getPropertyName("getLowerUpper"),is(equalTo("lower upper")));
+		assertThat(TestDataProxyFactory.getPropertyName("getLowerUpper"),is(equalTo("get lower upper")));
 	}
 	
 
