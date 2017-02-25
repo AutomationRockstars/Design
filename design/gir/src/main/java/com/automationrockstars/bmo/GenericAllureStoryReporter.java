@@ -506,6 +506,11 @@ public class GenericAllureStoryReporter implements StoryReporter {
 		return "Allure";
 	}
 
+	
+	public int order() {
+		return 1000;
+	}
+
 
 
 }

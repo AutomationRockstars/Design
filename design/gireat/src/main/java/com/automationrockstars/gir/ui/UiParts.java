@@ -5,7 +5,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By.ByTagName;
 import org.openqa.selenium.SearchContext;
@@ -14,9 +17,12 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.pagefactory.AbstractAnnotations;
 import org.openqa.selenium.support.pagefactory.ByAll;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.InitialPage;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.part.UiPartProxy;
@@ -27,6 +33,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class UiParts {
 
@@ -277,7 +284,6 @@ public class UiParts {
 				Preconditions.checkState(getText.isPresent(),"Method getText() cannot be invoked on %s",input.getClass());
 				try {
 					String actualText = getText.get().invoke(input,(Object[]) null).toString();
-					LOG.info(actualText);
 					return actualText.contains(text);
 				} catch (Exception e) {
 					return false;
@@ -295,6 +301,39 @@ public class UiParts {
 	
 	public static Head head(){
 		return on(Head.class);
+	}
+	
+	public static Body body(){
+		return on(Body.class);
+	}
+	public static long DEFAULT_DELAY = ConfigLoader.config().getLong("webdriver.uipart.delay",5);
+	
+	
+	
+	
+	@SafeVarargs
+	public static <T extends UiPart> T getFirstVisible(final Class<? extends UiPart>... parts){
+		final Map<org.openqa.selenium.By,Class<? extends UiPart>> byToPart = Maps.newHashMap();
+		for (Class<? extends UiPart> part : parts){
+			byToPart.put(buildBy(part),part);
+		}
+		return new FluentWait<SearchContext>(DriverFactory.getUnwrappedDriver())
+		.withTimeout(DEFAULT_DELAY, TimeUnit.SECONDS)
+		.withMessage(String.format("None of UiParts %s found",Arrays.toString(parts)))
+		.until( new Function<SearchContext,T>() {
+			public T apply(SearchContext driver){
+				T result = null;
+				Iterator<org.openqa.selenium.By> bys = byToPart.keySet().iterator();
+				while (result == null && bys.hasNext()){
+					org.openqa.selenium.By by = bys.next();
+					if (! driver.findElements(by).isEmpty() && get(byToPart.get(by)).isVisible()){
+						result = (T) get(byToPart.get(by));
+					}
+				}
+				return result;
+			}
+		});
+		
 	}
 	 
 }

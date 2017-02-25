@@ -1,7 +1,6 @@
 package com.automationrockstars.gir.desktop;
 
-import java.nio.file.Path;
-
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -23,7 +22,7 @@ public interface ImageUiObject  extends HasInputDevices,Locatable, WebElement, I
 	
 	public String getName();
 	
-	public Path getLocator();
+	public By getLocator();
 	
 	public Point getLocation();
 	

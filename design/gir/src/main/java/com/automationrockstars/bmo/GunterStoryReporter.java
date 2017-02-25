@@ -217,4 +217,8 @@ public class GunterStoryReporter implements StoryReporter{
 		}
 	}
 
+	public int order() {
+		return 1000;
+	}
+
 }

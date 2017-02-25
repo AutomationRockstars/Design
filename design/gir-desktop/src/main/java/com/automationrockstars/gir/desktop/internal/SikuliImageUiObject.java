@@ -1,6 +1,5 @@
 package com.automationrockstars.gir.desktop.internal;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 import org.sikuli.script.Region;
 
+import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.desktop.ByImage;
 import com.automationrockstars.gir.desktop.ImageUiObject;
 import com.google.common.base.Function;
@@ -31,35 +31,37 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
-public class SikuliImageUiObject implements ImageUiObject {
+public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 
-	private final Path imagePath;
+	private final String imagePath;
 
 	private Match wrapped = null;
 	private String name = null;
 	private double timeout = 5;
 	
 	public SikuliImageUiObject(String imagePath) {
-		this.imagePath = Paths.get(imagePath);
+		this.imagePath = imagePath;
 	}
-
-	public Match getWrappedElement(){
+	public Match getImageElement(){
 		if (wrapped == null){
 			wrapped = SikuliDriver.wait(imagePath, timeout);			
 		}
 		return wrapped;
 	}
+	public WebElement getWrappedElement(){
+		return this;	
+	}
 
 	public void click() {
-		getWrappedElement().click();
+		getImageElement().click();
 	}
 
 	public void sendKeys(CharSequence... keys){
-		getWrappedElement().type(Joiner.on("").join(keys));
+		getImageElement().type(Joiner.on("").join(keys));
 	}
 
 	public void waitUntilVisible(){
-		getWrappedElement();
+		getImageElement();
 	}
 
 	public void waitUntilHidden(){
@@ -68,7 +70,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public String getText() {
-		return getWrappedElement().text();
+		return getImageElement().text();
 	}
 
 	@Override
@@ -81,18 +83,18 @@ public class SikuliImageUiObject implements ImageUiObject {
 	}
 
 	@Override
-	public Path getLocator() {
-		return imagePath;
+	public By getLocator() {
+		return new ByImage(imagePath);
 	}
 
 	@Override
 	public Point getLocation() {
-		return new Point(getWrappedElement().x, getWrappedElement().y);
+		return new Point(getImageElement().x, getImageElement().y);
 	}
 
 	@Override
 	public Dimension getSize() {
-		return new Dimension(getWrappedElement().getW(), getWrappedElement().getH());
+		return new Dimension(getImageElement().getW(), getImageElement().getH());
 	}
 
 	public String toString(){
@@ -115,12 +117,12 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public Keyboard getKeyboard() {
-		return new SikuliKeyboard(getWrappedElement());
+		return new SikuliKeyboard(getImageElement());
 	}
 
 	@Override
 	public Mouse getMouse() {
-		return new SikuliMouse(getWrappedElement());
+		return new SikuliMouse(getImageElement());
 	}
 
 	@Override
@@ -129,7 +131,8 @@ public class SikuliImageUiObject implements ImageUiObject {
 			
 			@Override
 			public Point onScreen() {
-				return getLocation();
+				Point location = getLocation();
+				return location;
 			}
 			
 			@Override
@@ -144,7 +147,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 			
 			@Override
 			public Object getAuxiliary() {
-				return getWrappedElement().toStringShort();
+				return getImageElement().toStringShort();
 			}
 		};
 	}
@@ -158,8 +161,8 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public void clear() {
-		getWrappedElement().type(org.sikuli.script.Key.CTRL + "a");
-		getWrappedElement().type(org.sikuli.script.Key.DELETE);
+		getImageElement().type(org.sikuli.script.Key.CTRL + "a");
+		getImageElement().type(org.sikuli.script.Key.DELETE);
 		
 	}
 
@@ -175,17 +178,18 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public boolean isSelected() {
-		throw new IllegalAccessError("Not supported");
+		return true;
+//		throw new IllegalAccessError("Not supported");
 	}
 
 	@Override
 	public boolean isEnabled() {
-		throw new IllegalAccessError("Not supported");
+		return true;
 	}
 
 	@Override
 	public List<WebElement> findElements(By by) {
-		return Lists.newArrayList(Iterators.transform(wrap(findAllWrapper(getWrappedElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null),new Function<ImageUiObject, WebElement>() {
+		return Lists.newArrayList(Iterators.transform(wrap(findAllWrapper(getImageElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null),new Function<ImageUiObject, WebElement>() {
 			@Override
 			public WebElement apply(ImageUiObject input) {
 				return input;
@@ -195,7 +199,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 	@Override
 	public WebElement findElement(By by) {
-		return wrap(findWrapper(getWrappedElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null);
+		return wrap(findWrapper(getImageElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null);
 	}
 
 	@Override
@@ -227,7 +231,7 @@ public class SikuliImageUiObject implements ImageUiObject {
 	@Override
 	public ImageUiObject findElement(String imagePath) {
 		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
-		return wrap(findWrapper(getWrappedElement(), imagePath, null),imagePath,null);
+		return wrap(findWrapper(getImageElement(), imagePath, null),imagePath,null);
 	}
 
 	@Override
@@ -238,11 +242,11 @@ public class SikuliImageUiObject implements ImageUiObject {
 	@Override
 	public Iterator<ImageUiObject> findElements(String imagePath) {
 		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
-		return wrap(findAllWrapper(getWrappedElement(), imagePath, null),imagePath,null);
+		return wrap(findAllWrapper(getImageElement(), imagePath, null),imagePath,null);
 	}
 
 	public void highlight(){
-		getWrappedElement().highlight(1);
+		getImageElement().highlight(1);
 	}
 
 	public static ImageUiObject wrap(Match toWrap, String imagePath,@Nullable String name){
@@ -258,7 +262,6 @@ public class SikuliImageUiObject implements ImageUiObject {
 
 			@Override
 			public ImageUiObject apply(Match input) {
-				System.out.println("wrapping");
 				return wrap(input, imagePath, name);
 			}
 		});

@@ -1,7 +1,5 @@
 package com.automationrockstars.gir.desktop.internal;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -41,7 +39,7 @@ public class SikuliDriver implements ImageSearchContext {
 	private final static SikuliDriver instance = new SikuliDriver();
 	
 	private SikuliDriver() {
-		int logLevel = 0;
+		int logLevel = -1;
 		if (LOG.isErrorEnabled()){
 			logLevel++;
 		}
@@ -67,7 +65,7 @@ public class SikuliDriver implements ImageSearchContext {
 		}
 	}
 
-	private static final double TIMEOUT = ConfigLoader.config().getDouble("imagedriver.default.timeout", 30);
+	private static final double TIMEOUT = ConfigLoader.config().getDouble("imagedriver.default.timeout", 5);
 
 	private static final ExecutorService searchService = Executors.newCachedThreadPool();
 
@@ -125,15 +123,13 @@ public class SikuliDriver implements ImageSearchContext {
 		};
 	}
 
-	public static Match wait(Path image) {
-		return wait(image, TIMEOUT);
-	}
-
 	public static Match wait(String image) {
 		return wait(image, TIMEOUT);
 	}
 
 	public static synchronized Match wait(String image, double timeout) {
+		LOG.info("Looking for match of image {}",image);
+		image = ImageCache.path(image);
 		List<Future<Match>> futures = Lists.newArrayList();
 		found.set(-1);
 		for (int i = 0; i < screens.size(); i++) {
@@ -167,9 +163,6 @@ public class SikuliDriver implements ImageSearchContext {
 
 	}
 
-	public static Match wait(Path image, double timeout) {
-		return wait(image.toString(), timeout);
-	}
 
 	private static class FindAllIterator extends UnmodifiableIterator<Match> {
 
@@ -254,11 +247,12 @@ public class SikuliDriver implements ImageSearchContext {
 		return new FindAllIterator(psi, timeout);
 	}
 
-	public static synchronized Match isVisible(Path image) {
+	public static synchronized Match isVisible(String image) {
+		image = ImageCache.path(image);
 		existResult.set(-1);
 		final List<Future<Match>> futures = Lists.newArrayList();
 		for (int i = 0; i < screens.size(); i++) {
-			futures.add(searchService.submit(existTask(i, image.toString())));
+			futures.add(searchService.submit(existTask(i, image)));
 		}
 		new FluentWait<AtomicInteger>(existResult)
 		.withTimeout(20, TimeUnit.SECONDS)
@@ -289,15 +283,15 @@ public class SikuliDriver implements ImageSearchContext {
 		}
 	}
 	
-	public static void waitUntilInvisible(Path imagePath, double timeout) {
+	public static void waitUntilInvisible(String imagePath, double timeout) {
 		
-		new FluentWait<Path>(imagePath)
+		new FluentWait<String>(imagePath)
 		.withTimeout(new Double(timeout).longValue(), TimeUnit.SECONDS)
 		.pollingEvery(500, TimeUnit.MILLISECONDS)
 		.withMessage("Element " + imagePath + " still visible on screen")
-		.until(new Predicate<Path>() {
+		.until(new Predicate<String>() {
 			@Override
-			public boolean apply(Path input) {
+			public boolean apply(String input) {
 				return isVisible(input) == null;
 			}
 		});
@@ -329,8 +323,8 @@ public class SikuliDriver implements ImageSearchContext {
 
 	@Override
 	public ImageUiObject findElement(String imagePath) {
-		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
-		return SikuliImageUiObject.wrap(wait(imagePath), imagePath, null);
+		Preconditions.checkArgument(ImageCache.has(imagePath),"Cannot read file %s",imagePath);
+		return SikuliImageUiObject.wrap(wait(ImageCache.path(imagePath)), imagePath, null);
 	}
 
 	@Override
@@ -340,8 +334,8 @@ public class SikuliDriver implements ImageSearchContext {
 
 	@Override
 	public Iterator<ImageUiObject> findElements(String imagePath) {
-		Preconditions.checkArgument(Paths.get(imagePath).toFile().canRead(),"Cannot read file %s",imagePath);
-		return SikuliImageUiObject.wrap(waitAll(imagePath), imagePath, null);
+		Preconditions.checkArgument(ImageCache.has(imagePath),"Cannot read file %s",imagePath);
+		return SikuliImageUiObject.wrap(waitAll(ImageCache.path(imagePath)), imagePath, null);
 	}
 
 	

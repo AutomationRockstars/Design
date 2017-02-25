@@ -232,6 +232,7 @@ public class DriverFactory {
 			UiObjectFindPluginService.findPlugins();
 			UiObjectActionPluginService.actionPlugins();
 			UiObjectInfoPluginService.infoPlugins();
+			UiDriverPluginService.driverPlugins();
 			pluginInitialized = true;
 		}
 
@@ -287,6 +288,7 @@ public class DriverFactory {
 				final String titleBase = title + titlePostfix;
 				titleAlreadyThere = FluentIterable.from(videos).firstMatch(new Predicate<Object>() {
 
+					@SuppressWarnings("unchecked")
 					@Override
 					public boolean apply(Object input) {
 						return ((Map<String, String>) input).keySet().contains(titleBase);
@@ -309,10 +311,13 @@ public class DriverFactory {
 		}
 		log.info("Creating browser for {}",browser.get());
 		try {
+			String name = browser.get().toLowerCase();
+			if(name.equalsIgnoreCase("ie") || name.equals("internet_explorer") || name.equals("internet explorer")){
+				name= BrowserType.IE;
+			}
 			if (Strings.isNullOrEmpty(GRID_URL) || ! isGridAvailable(GRID_URL)){			
 				log.info("Grid not detected");
-				String name = browser.get().toLowerCase();
-				if(name.equalsIgnoreCase("ie") || name.equals("internet_explorer") || name.equals("internet explorer")){				
+				if(name.equals(BrowserType.IE)){				
 					return new InternetExplorerDriver(getCapabilities(BrowserType.IE));
 				} 					
 				String browserName = StringUtils.capitalize(name + "Driver");
@@ -325,9 +330,8 @@ public class DriverFactory {
 				return res;
 			} else {
 				log.info("Using Selenium grid at {}",GRID_URL);
-				String browserType = browser.get();
 				URL gridUrl = new URL(GRID_URL);
-				RemoteWebDriver result = new RemoteWebDriver(gridUrl,getCapabilities(browserType));
+				RemoteWebDriver result = new RemoteWebDriver(gridUrl,getCapabilities(name));
 				log.info("Driver instance created {}",result);
 				log.debug("Test session id {}",result.getSessionId());
 				log.info("Executing on node {}",GridUtils.getNode(GRID_URL, result));
@@ -378,6 +382,7 @@ public class DriverFactory {
 		}).isPresent();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<WebDriver> activeInstances(){
 		return UnmodifiableList.decorate(activeDrivers);
 	}
@@ -437,6 +442,7 @@ public class DriverFactory {
 			result = DesiredCapabilities.internetExplorer();
 			result.setCapability("ignoreProtectedModeSettings", true);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+			result.setCapability("ie.validateCookieDocumentType", false);
 			break;
 		case BrowserType.CHROME:
 			result = DesiredCapabilities.chrome();
@@ -512,7 +518,10 @@ public class DriverFactory {
 		if (isWds()) return wdsInstance();
 		if (instance() == null || isWrong(instance())){
 			UiDriverPluginService.driverPlugins().beforeInstantiateDriver();
-			WebDriver dr =new VisibleElementFilter(createRemoteDriver());
+			WebDriver dr = createRemoteDriver();
+			if (wrap(dr)){
+				dr =new VisibleElementFilter(dr);
+			}
 			instances.set(dr);
 			activeDrivers.add(dr);
 			Runtime.getRuntime().addShutdownHook(createDriverCloser(instance()));
@@ -521,6 +530,13 @@ public class DriverFactory {
 		}
 		UiDriverPluginService.driverPlugins().afterGetDriver(instance());
 		return instance();
+	}
+
+	private static boolean wrap(WebDriver driver) {
+		if (HasCapabilities.class.isAssignableFrom(driver.getClass())){
+		return ! ((HasCapabilities)driver).getCapabilities().is("cannot_wrap");
+		} else return true;
+		
 	}
 
 	private static boolean hasCapabilities(WebDriver driver, Capabilities capabilities){

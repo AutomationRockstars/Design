@@ -1,6 +1,5 @@
 package com.automationrockstars.gir.desktop.internal;
 
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -48,7 +47,7 @@ public class ScreenProxyDelegate implements ExtendedUiPart  {
 		if (getLocator() != null){
 			return ! getWrappedElement().findElements(element).isEmpty();
 		} else {
-			return SikuliDriver.driver().isVisible(Paths.get(((ByImage)element).path())) != null;
+			return SikuliDriver.isVisible(((ByImage)element).path()) != null;
 		}
 	}
 	@Override

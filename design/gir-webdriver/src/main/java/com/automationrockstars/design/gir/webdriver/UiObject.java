@@ -82,6 +82,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				wrapped = DriverFactory.getDriver().findElement(getLocator());
 			}
 		}
+		System.out.println("UIWRAAAA " + wrapped);
 		return wrapped;
 	}
 
@@ -122,7 +123,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 					
 				DriverFactory.actions().moveToElement(unwrap(getWrappedElement())).perform();
 				} catch (Throwable ignore){
-					
+					ignore.printStackTrace();
 				}
 				Waits.waitUntilClickable(getWrappedElement()).click();
 			}

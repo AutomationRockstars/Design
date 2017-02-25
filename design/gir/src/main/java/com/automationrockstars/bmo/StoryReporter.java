@@ -15,6 +15,7 @@ import java.util.Map;
 public interface StoryReporter {
 
 	String name();
+		
 	void start();
 	void finish();
 	

@@ -323,7 +323,6 @@ public class AllureStoryReporter implements StoryReporter {
 
 	public static void attachScreenshot(String name, byte[] content){
 		try {
-			LOG.info("Attaching screenshot to {}",name);		
 			if (content != null){
 				Allure.LIFECYCLE.fire(new MakeAttachmentEvent(content, name, "image/png"));
 			}		
