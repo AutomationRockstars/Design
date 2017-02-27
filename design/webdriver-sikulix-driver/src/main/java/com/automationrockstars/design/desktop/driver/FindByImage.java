@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop;
+package com.automationrockstars.design.desktop.driver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

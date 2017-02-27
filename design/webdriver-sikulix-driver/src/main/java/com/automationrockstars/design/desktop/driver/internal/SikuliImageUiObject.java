@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop.internal;
+package com.automationrockstars.design.desktop.driver.internal;
 
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -21,9 +21,9 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 import org.sikuli.script.Region;
 
+import com.automationrockstars.design.desktop.driver.ByImage;
+import com.automationrockstars.design.desktop.driver.ImageUiObject;
 import com.automationrockstars.design.gir.webdriver.UiObject;
-import com.automationrockstars.gir.desktop.ByImage;
-import com.automationrockstars.gir.desktop.ImageUiObject;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;

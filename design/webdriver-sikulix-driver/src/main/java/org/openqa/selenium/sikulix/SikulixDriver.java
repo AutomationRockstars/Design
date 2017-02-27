@@ -26,11 +26,11 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.sikuli.script.Screen;
 
-import com.automationrockstars.gir.desktop.ByImage;
-import com.automationrockstars.gir.desktop.internal.ImageCache;
-import com.automationrockstars.gir.desktop.internal.SikuliDriver;
-import com.automationrockstars.gir.desktop.internal.SikuliKeyboard;
-import com.automationrockstars.gir.desktop.internal.SikuliMouse;
+import com.automationrockstars.design.desktop.driver.ByImage;
+import com.automationrockstars.design.desktop.driver.internal.ImageCache;
+import com.automationrockstars.design.desktop.driver.internal.SikuliDriver;
+import com.automationrockstars.design.desktop.driver.internal.SikuliKeyboard;
+import com.automationrockstars.design.desktop.driver.internal.SikuliMouse;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 

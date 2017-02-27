@@ -2,8 +2,9 @@ package com.sikulix.first;
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 
-import com.automationrockstars.gir.desktop.ImageUiObject;
-import com.automationrockstars.gir.desktop.internal.SikuliDriver;
+import com.automationrockstars.design.desktop.driver.ImageUiObject;
+import com.automationrockstars.design.desktop.driver.internal.SikuliDriver;
+import com.automationrockstars.gir.desktop.ExtendedUiParts;
 public class TheRun {
 
 	@Test
@@ -44,10 +45,7 @@ public class TheRun {
 		
 		
 		
-//		ExtendedUiParts.on(Nic.class).dd().click();
-	    ImageUiObject nic = SikuliDriver.driver().findElement("c:/tmp/fulljson.png");
-	    System.out.println(nic.getText());
-		new Actions(nic.getKeyboard(),nic.getMouse()).moveToElement(nic).click().perform();
-	  }
+		ExtendedUiParts.on(Nic.class).dd().click();
+	    }
 	
 }

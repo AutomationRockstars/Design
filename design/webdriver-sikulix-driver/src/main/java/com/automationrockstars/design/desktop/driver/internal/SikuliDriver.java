@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop.internal;
+package com.automationrockstars.design.desktop.driver.internal;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.gir.desktop.ByImage;
-import com.automationrockstars.gir.desktop.ImageSearchContext;
-import com.automationrockstars.gir.desktop.ImageUiObject;
+import com.automationrockstars.design.desktop.driver.ByImage;
+import com.automationrockstars.design.desktop.driver.ImageSearchContext;
+import com.automationrockstars.design.desktop.driver.ImageUiObject;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;

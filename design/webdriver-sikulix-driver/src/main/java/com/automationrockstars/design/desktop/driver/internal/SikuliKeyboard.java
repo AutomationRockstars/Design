@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop.internal;
+package com.automationrockstars.design.desktop.driver.internal;
 
 import org.openqa.selenium.interactions.Keyboard;
 import org.sikuli.script.Region;

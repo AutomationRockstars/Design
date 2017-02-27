@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop;
+package com.automationrockstars.design.desktop.driver;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.automationrockstars.gir.desktop.internal.ImageCache;
+import com.automationrockstars.design.desktop.driver.internal.ImageCache;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;

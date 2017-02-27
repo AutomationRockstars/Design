@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -69,15 +70,21 @@ public class GridUtils {
 			@SuppressWarnings("unchecked")
 			Map<String,String> result = new Gson().fromJson(response, HashMap.class);
 			nodeUrl = result.get("proxyId");
+			
 		} catch (IOException | URISyntaxException | JsonSyntaxException e) {
 			try {
 				URI gridUri = new URI(gridUrl);
 
-				if (200 == cl.execute(new HttpGet(
-						new URI(
-								String.format("%s://%s:%s/", 
-										gridUri.getScheme(),gridUri.getHost(),3000)))
-						).getStatusLine().getStatusCode()){
+				RequestConfig requestConfig = RequestConfig.custom()
+					    .setConnectionRequestTimeout(10000)
+					    .setConnectTimeout(10000)
+					    .setSocketTimeout(10000)
+					    .build();
+				HttpGet getExtras = new HttpGet(
+						String.format("%s://%s:%s/", 
+								gridUri.getScheme(),gridUri.getHost(),3000));
+				getExtras.setConfig(requestConfig);
+				if (200 == cl.execute(getExtras).getStatusLine().getStatusCode()){
 					nodeUrl = gridUrl; 
 				}
 
@@ -138,7 +145,14 @@ public class GridUtils {
 		String confrimedUrl = null;
 		try {
 			cl = HttpClients.createDefault();
-			HttpResponse resp = cl.execute(new HttpGet(extrasUrl));
+			RequestConfig requestConfig = RequestConfig.custom()
+				    .setConnectionRequestTimeout(10000)
+				    .setConnectTimeout(10000)
+				    .setSocketTimeout(10000)
+				    .build();
+			HttpGet get = new HttpGet(extrasUrl);
+			get.setConfig(requestConfig);
+			HttpResponse resp = cl.execute(get);
 			if (resp.getStatusLine().getStatusCode() == 200){
 				confrimedUrl = extrasUrl;
 			}

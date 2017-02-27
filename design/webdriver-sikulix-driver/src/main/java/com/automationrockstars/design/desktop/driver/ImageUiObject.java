@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.desktop;
+package com.automationrockstars.design.desktop.driver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;

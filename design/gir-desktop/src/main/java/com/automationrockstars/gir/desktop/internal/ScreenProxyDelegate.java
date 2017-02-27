@@ -12,11 +12,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import com.automationrockstars.design.desktop.driver.ByImage;
+import com.automationrockstars.design.desktop.driver.FindByImage;
+import com.automationrockstars.design.desktop.driver.ImageUiObject;
+import com.automationrockstars.design.desktop.driver.internal.SikuliDriver;
 import com.automationrockstars.design.gir.webdriver.UiObject;
-import com.automationrockstars.gir.desktop.ByImage;
 import com.automationrockstars.gir.desktop.ExtendedUiPart;
-import com.automationrockstars.gir.desktop.FindByImage;
-import com.automationrockstars.gir.desktop.ImageUiObject;
 import com.automationrockstars.gir.ui.Name;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.FluentIterable;
