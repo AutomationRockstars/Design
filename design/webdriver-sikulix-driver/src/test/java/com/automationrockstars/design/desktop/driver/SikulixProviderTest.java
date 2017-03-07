@@ -2,6 +2,7 @@ package com.automationrockstars.design.desktop.driver;
 
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncher;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +17,7 @@ import com.automationrockstars.design.gir.webdriver.DriverFactory;
 
 public class SikulixProviderTest {
 
+	@Ignore
 	@Test
 	public void test() throws Exception {
 		GridLauncher.main(new String[]{"-role","hub"});

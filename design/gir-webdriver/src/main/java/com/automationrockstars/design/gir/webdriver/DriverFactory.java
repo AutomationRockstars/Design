@@ -225,7 +225,6 @@ public class DriverFactory {
 	private static boolean pluginInitialized = false;
 	private static synchronized Iterator<String> browserQueue(){		
 		while (matrix == null || ! matrix.hasNext() || matrix.peek() == null ){
-			System.out.println("asdasdas");
 			matrix = browserMatrix();
 		}
 		if (! pluginInitialized){
