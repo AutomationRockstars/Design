@@ -21,6 +21,18 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.automationrockstars</groupId>
+			<artifactId>webdriver-sikulix-driver</artifactId>
+			<version>1.0.4-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>2.53.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

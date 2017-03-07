@@ -70,7 +70,7 @@ public class UiPartsTest {
 		result.results().filter(new Predicate<WebElement>(){
 
 			public boolean apply(WebElement input) {
-				return input.getText().contains("automationrockstars.com");
+				return input.getText().contains("github");
 			}} ).transform(new Function<WebElement, WebElement>() {
 
 				public WebElement apply(WebElement input) {
@@ -92,7 +92,7 @@ public class UiPartsTest {
 			
 			@Override
 			public boolean apply(SearchResultDiv input) {
-				return input.getText().contains("automationrockstars.com");
+				return input.getText().contains("github");
 			}} ).transform(new Function<SearchResultDiv, Link>() {
 
 				@Override
@@ -122,4 +122,10 @@ public class UiPartsTest {
 		DriverFactory.closeDriver();
 	}
 
+	
+	@Test
+	public void should_doTheMixThing(){
+		doSearch();
+		UiParts.on(SearchResults.class).googleLogo().getSize();
+	}
 }

@@ -51,7 +51,7 @@ public class GridUtils {
 			URI sessionUri = new URI(
 					String.format("%s://%s:%s/grid/api/testsession?session=%s", 
 							gridUri.getScheme(),gridUri.getHost(),gridUri.getPort()
-							,((RemoteWebDriver)driver).getSessionId()));
+							,((RemoteWebDriver)DriverFactory.unwrap(driver)).getSessionId()));
 
 			LOG.debug("Using session uri {}",sessionUri);
 

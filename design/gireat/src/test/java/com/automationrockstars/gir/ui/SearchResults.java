@@ -6,6 +6,7 @@ import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.WebElement;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.automationrockstars.gir.ui.context.Image;
 import com.google.common.collect.FluentIterable;
 
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -32,4 +33,8 @@ public interface SearchResults extends UiPart {
 	Link githubLink();
 	
 	FluentIterable<SearchResultDiv> allResults();
+	
+	@FindBy(id="image:glogo.png")
+	@Image
+	WebElement googleLogo();
 }

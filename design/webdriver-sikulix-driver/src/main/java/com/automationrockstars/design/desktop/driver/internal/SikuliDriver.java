@@ -36,7 +36,13 @@ import com.google.common.collect.UnmodifiableIterator;
 public class SikuliDriver implements ImageSearchContext {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SikuliDriver.class);
-	private final static SikuliDriver instance = new SikuliDriver();
+	private final static ThreadLocal<SikuliDriver> instances = new ThreadLocal<SikuliDriver>(){
+		
+		@Override
+		protected SikuliDriver initialValue(){
+			return new SikuliDriver();
+		}
+	};
 	
 	private SikuliDriver() {
 		int logLevel = -1;
@@ -54,7 +60,7 @@ public class SikuliDriver implements ImageSearchContext {
 	
 
 	public static SikuliDriver driver() {
-		return instance;
+		return instances.get();
 	}
 
 	private static final List<Screen> screens = Lists.newArrayList();

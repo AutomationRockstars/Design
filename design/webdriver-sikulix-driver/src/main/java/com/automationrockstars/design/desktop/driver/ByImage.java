@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.automationrockstars.design.desktop.driver.internal.ImageCache;
 import com.google.common.base.Function;
@@ -20,7 +21,7 @@ public class ByImage extends By {
 	@Override
 	public List<WebElement> findElements(SearchContext context) {
 		Preconditions.checkArgument(ImageSearchContext.class.isAssignableFrom(context.getClass()) || context.toString().toLowerCase().contains("sikuli"), "ByImage works only with SikuliDriver");
-		if (context instanceof RemoteWebDriver) return searchRemote(imagePath, context);
+		if (context instanceof RemoteWebDriver || context instanceof RemoteWebElement) return searchRemote(imagePath, context);
 		List<WebElement> result = Lists.newArrayList(Iterators.transform(((ImageSearchContext)context).findElements(imagePath), new Function<ImageUiObject, WebElement>() {
 			@Override
 			public WebElement apply(ImageUiObject input) {

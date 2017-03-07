@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPluginService;
 import com.google.common.base.Predicate;
@@ -39,6 +40,7 @@ public class WebCache  {
 
 		@Override
 		public void beforeCloseDriver(WebDriver driver) {
+			
 		}
 
 		@Override
@@ -62,11 +64,19 @@ public class WebCache  {
 	
 	
 	private static final ThreadLocal<Entry<SearchContext,By>> lastQuery = new ThreadLocal();
+	private static final ThreadLocal<Integer> lastQueryCount = new ThreadLocal<>();
+	private static final Integer REPEAT_TRESHOLD = ConfigLoader.config().getInteger("web.cache.max.repeat", 10); 
 	private boolean isRepeated(SearchContext s, By by){
-		if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
-			return true;
+	if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
+			if (lastQueryCount.get() > REPEAT_TRESHOLD){
+				return true;
+			} else {
+				lastQueryCount.set(lastQueryCount.get()+1);
+				return false;
+			}
 		} else {
 			lastQuery.set(Collections.singletonMap(s, by).entrySet().iterator().next());
+			lastQueryCount.set(0);
 			return false;
 		}
 	}
@@ -102,7 +112,7 @@ public class WebCache  {
 			if (result.isEmpty()){
 				els.put(by,new SoftReference( s.findElements(by)));
 				valid = true;
-			}			
+			} 
 		}
 		return webCache.get().get(s).get(by).get();
 	}

@@ -56,8 +56,8 @@ public class SimpleTestDataService implements TestDataService{
 		else return null;
 	}
 
-
-	private static final Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> RECORDS_CACHE = Maps.newConcurrentMap();
+//cache disabled
+	private final Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> RECORDS_CACHE = Maps.newConcurrentMap();
 
 	public static final String NAME = "DEFAULT";
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleTestDataService.class);

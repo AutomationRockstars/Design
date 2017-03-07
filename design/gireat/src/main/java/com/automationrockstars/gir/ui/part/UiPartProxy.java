@@ -11,10 +11,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +33,8 @@ import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.UiParts;
 import com.automationrockstars.gir.ui.WebElementDecorator;
 import com.automationrockstars.gir.ui.WithDecorators;
+import com.automationrockstars.gir.ui.context.Image;
+import com.automationrockstars.gir.ui.context.SearchContextService;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -48,20 +53,20 @@ public class UiPartProxy implements InvocationHandler{
 
 	private static final Logger LOG = LoggerFactory.getLogger(UiPart.class);
 
-	private final UiPartDelegate ui;
+	private final WebUiPartDelegate ui;
 	public UiPartProxy(Class<? extends UiPart> generic) {
-		ui = new UiPartDelegate(generic);
+		ui = new WebUiPartDelegate(generic);
 	}
 
 	public UiPartProxy(Class<? extends UiPart> generic, UiObject toWrap) {
-		ui = new UiPartDelegate(generic,toWrap);
+		ui = new WebUiPartDelegate(generic,toWrap);
 	}
 	private static boolean isCustom(Method method){
 		Class<?> declaringClass = method.getDeclaringClass();
 		List<Class<?>> nativeMethodOwners = Lists.newArrayList(UiPart.class.getInterfaces());
 		nativeMethodOwners.add(UiPart.class);
 		nativeMethodOwners.add(Object.class);
-		nativeMethodOwners.add(UiPartDelegate.class);
+		nativeMethodOwners.add(WebUiPartDelegate.class);
 		return ! nativeMethodOwners.contains(declaringClass);
 	}
 
@@ -256,7 +261,11 @@ public class UiPartProxy implements InvocationHandler{
 				}
 				FilterableSearchContext.setWait(method.getAnnotation(Optional.class).timeout());
 			}
-			result = search((UiPart)host,by, timeout, minimumSize);
+			if (isImage(method)){
+				result = searchByImage(host,by,timeout,minimumSize);
+			} else {
+				result = search((UiPart)host,by, timeout, minimumSize);
+			}
 			if (result.isEmpty() && method.getAnnotation(Optional.class)!= null){
 				result.add(new EmptyUiObject());
 			}
@@ -283,6 +292,28 @@ public class UiPartProxy implements InvocationHandler{
 
 		return adjustResults(setNames(result,method), method.getGenericReturnType(),decorators(uiPartOf(host)));
 
+	}
+
+	private List<WebElement> searchByImage(Object host, final By by, int timeout, final int minimumSize) {
+		return new FluentWait<SearchContext>(SearchContextService.provideForImage())
+				.withTimeout(timeout,TimeUnit.SECONDS)
+				.withMessage(String.format("Element identified %s not found", by))
+				.until(new Function<SearchContext,List<WebElement>>() {
+					@Override
+					public List<WebElement> apply(SearchContext input) {
+						List<WebElement> result = input.findElements(by);
+						if (result.size() < minimumSize){
+							result = null;
+						}
+						return result;
+					}
+				});
+				
+		
+	}
+
+	private boolean isImage(Method method) {
+		return method.getAnnotation(Image.class) != null;
 	}
 
 	private List<WebElement> setNames(List<WebElement> elements,final Method method){

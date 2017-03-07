@@ -33,5 +33,6 @@ public abstract interface UiPart extends WrapsElement,WebElement, HasLocator {
 	
 	Link childLinkWithText(String text);
 	
+	SearchContext parent();
 	
 }

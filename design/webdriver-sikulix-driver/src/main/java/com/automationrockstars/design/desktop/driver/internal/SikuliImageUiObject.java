@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.By.ById;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -35,17 +36,16 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 
 	private final String imagePath;
 
-	private Match wrapped = null;
+	private Match wrapped;
 	private String name = null;
 	private double timeout = 5;
 	
-	public SikuliImageUiObject(String imagePath) {
+	public SikuliImageUiObject(Match image, String imagePath) {
 		this.imagePath = imagePath;
+		this.wrapped = image;
+		
 	}
 	public Match getImageElement(){
-		if (wrapped == null){
-			wrapped = SikuliDriver.wait(imagePath, timeout);			
-		}
 		return wrapped;
 	}
 	public WebElement getWrappedElement(){
@@ -57,6 +57,7 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 	}
 
 	public void sendKeys(CharSequence... keys){
+		click();
 		getImageElement().type(Joiner.on("").join(keys));
 	}
 
@@ -189,6 +190,9 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 
 	@Override
 	public List<WebElement> findElements(By by) {
+		if (by instanceof ById){
+			by = new ByImage(((ById)by).toString().split(" ")[1]);
+		}
 		return Lists.newArrayList(Iterators.transform(wrap(findAllWrapper(getImageElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null),new Function<ImageUiObject, WebElement>() {
 			@Override
 			public WebElement apply(ImageUiObject input) {
@@ -250,8 +254,7 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 	}
 
 	public static ImageUiObject wrap(Match toWrap, String imagePath,@Nullable String name){
-		SikuliImageUiObject result = new SikuliImageUiObject(imagePath);
-		result.wrapped = toWrap;
+		SikuliImageUiObject result = new SikuliImageUiObject(toWrap,imagePath);
 		result.setName(name);
 		return result;
 		
@@ -268,7 +271,7 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 	}
 	static Iterator<Match> findAllWrapper(Region where, String locator, @Nullable String name){
 		try {
-			return where.findAll(locator);
+			return where.findAll(ImageCache.path(locator));
 		} catch (FindFailed e) {
 			throw new NoSuchElementException(String.format("Element %s not found on the screen", (name==null)?locator:name));
 		}
@@ -276,7 +279,7 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 	
 	static Match findWrapper(Region where, String locator,@Nullable String name){
 		try {
-			return where.wait(locator,5);
+			return where.wait(ImageCache.path(locator),0);
 		} catch (FindFailed e) {
 			throw new NoSuchElementException(String.format("Element %s not found on the screen", (name==null)?locator:name));
 		}
