@@ -65,7 +65,7 @@ public class WebCache  {
 	
 	private static final ThreadLocal<Entry<SearchContext,By>> lastQuery = new ThreadLocal();
 	private static final ThreadLocal<Integer> lastQueryCount = new ThreadLocal<>();
-	private static final Integer REPEAT_TRESHOLD = ConfigLoader.config().getInteger("web.cache.max.repeat", 10); 
+	private static final Integer REPEAT_TRESHOLD = ConfigLoader.config().getInteger("webcache.max.repeat", 10); 
 	private boolean isRepeated(SearchContext s, By by){
 	if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
 			if (lastQueryCount.get() > REPEAT_TRESHOLD){
@@ -82,7 +82,7 @@ public class WebCache  {
 	}
 	private List<WebElement> find(SearchContext s, By by){
 		Map<By,SoftReference<List<WebElement>>> els = webCache.get().get(s);
-		boolean valid = false;
+		boolean valid = ! ConfigLoader.config().getBoolean("webcache.validate",true);
 		if (els == null){
 			els = Maps.newConcurrentMap();
 			els.put(by,new SoftReference(s.findElements(by)));

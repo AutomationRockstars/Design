@@ -58,20 +58,14 @@ public class FilterableSearchContext implements SearchContext {
 	}
 
 
+
 	public static boolean isVisible(WebElement element){
 		try {
-//			if (! element.isDisplayed()){
-//				try {
-//					System.out.println("SCROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLING");
-//					Page.scrollTo(element);						
-//				} catch (Exception cantMove){
-//					log.trace("Can't move due to",cantMove);
-//				}
-//			}
 			boolean vis = element.isDisplayed();
-			boolean click = element.isEnabled();
-			Point loc  = ((Locatable)element).getCoordinates().inViewPort();
-			return vis || (click && loc.getX() >0 && loc.getY()>0);
+			if ((! vis ) && ConfigLoader.config().getBoolean("webdriver.deepcheck",true)){
+				Point loc  = ((Locatable)element).getCoordinates().inViewPort();
+				return loc.getX() >0 && loc.getY()>0;
+			} else return vis;
 		} catch (StaleElementReferenceException e){
 			return false;
 		}
