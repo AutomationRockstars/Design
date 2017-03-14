@@ -2,8 +2,8 @@ package com.automationrockstars.gir.ui;
 
 import java.util.List;
 
-import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.How;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.context.Image;
@@ -17,7 +17,7 @@ import ru.yandex.qatools.htmlelements.element.Link;
 @Name("Search Results")
 public interface SearchResults extends UiPart {
 
-	@Find(@By(how=ByClassName.class,using="g"))
+	@FindBy(how=How.CLASS_NAME,using="g")
 	FluentIterable<WebElement> results();
 
 	@WithFindByAugmenter(TestFixingAugmenter.class)

@@ -21,6 +21,7 @@ import com.automationrockstars.design.gir.webdriver.Waits;
 import com.automationrockstars.gir.ui.FilteredBy;
 import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
+import com.automationrockstars.gir.ui.WithFindByAugmenter;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -84,6 +85,7 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 			} else if (view.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Timeout.class)!= null){
 				wrapped.setTimeout(view.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Timeout.class).value());
 			}
+			
 		} 
 		return wrapped;
 	}

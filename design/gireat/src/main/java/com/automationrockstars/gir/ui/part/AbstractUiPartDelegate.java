@@ -126,7 +126,7 @@ public abstract class AbstractUiPartDelegate implements UiPart{
 		}
 	};
 	public org.openqa.selenium.By getLocator() {
-		return UiParts.buildBy(view);
+		return UiPartProxy.buildBy(this,view);
 	}
 
 

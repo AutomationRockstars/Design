@@ -121,7 +121,7 @@ public class UiPartsTest {
 
 			public String apply(WebElement input) {
 				return input.getText().replaceAll("\\n.*", "");
-			}}),hasItem(containsString("AutomationRockstars ï¿½ GitHub")));
+			}}),hasItem(containsString("AutomationRockstars · GitHub")));
 		
 		
 		UiParts.on(SearchResults.class).githubLink().click();

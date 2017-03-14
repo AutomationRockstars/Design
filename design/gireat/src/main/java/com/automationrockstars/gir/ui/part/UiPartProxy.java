@@ -253,7 +253,7 @@ public class UiPartProxy implements InvocationHandler{
 		for (org.openqa.selenium.support.FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), FindByAugmenters.translate(locator)));
 		}
-		return (By[]) result.toArray();
+		return result.toArray(new By[] {By.id("empty") });
 	}
 	
 	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
@@ -261,7 +261,8 @@ public class UiPartProxy implements InvocationHandler{
 		for (FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), locator));
 		}
-		return (By[]) result.toArray();
+		
+		return result.toArray(new By[] {By.id("empty") });
 	}
 	
 	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
@@ -292,7 +293,7 @@ public class UiPartProxy implements InvocationHandler{
 			} else if (uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class) != null){
 				return chainedBuilder(host, augmenter, uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class));
 			}
-			return augmenter.augment(uiPartOf(host),getFindBy(uiPartClass));
+			return augmenter.augment(uiPartClass,getFindBy(uiPartClass));
 		} else return UiParts.buildBy(uiPartClass);
 	}
 	
@@ -515,5 +516,9 @@ public class UiPartProxy implements InvocationHandler{
 				return UiPart.class.isAssignableFrom(input);
 			}
 		});
+	}
+	
+   static By buildBy(Object host, Class<? extends UiPart> uiPart){
+		return new UiPartProxy(uiPart).byBuilder(host, uiPart);
 	}
 }
