@@ -19,10 +19,22 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import static org.openqa.selenium.support.How.*;
 import static com.google.common.base.Strings.*;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+/**
+ * 
+ * Utility class for FindByAugmenter operations
+ */
 public class FindByAugmenters {
 
+	/**
+	 * Create or retrieve instance of FindByAugmenter 
+	 * @param value
+	 * @return
+	 */
 	public static FindByAugmenter instance(Class<? extends FindByAugmenter> value) {
 		try {
 			return value.newInstance();
@@ -32,6 +44,13 @@ public class FindByAugmenters {
 		}
 	}
 
+	/**
+	 * Find out what kind of FindBy is passed to method. It works for long (@FindBy(how = How.ID, using="someId"))
+	 * and short (@FindBy(id="someId)) FindBy annotations returning same result for both
+	 * 
+	 * @param toBeAugmented
+	 * @return
+	 */
 	public static How how(FindBy toBeAugmented) {
 		if (toBeAugmented.how() != null  && (! toBeAugmented.how().equals(How.UNSET))){
 			return toBeAugmented.how();
@@ -54,6 +73,13 @@ public class FindByAugmenters {
 		}  else return How.UNSET;
 	}
 	
+	
+	/**
+	 * Method to retrieve string value of FindBy annotation. It works for long (@FindBy(how = How.ID, using="someId"))
+	 * and short (@FindBy(id="someId)) FindBy annotations returning same result for both
+	 * @param toBeAugmented
+	 * @return
+	 */
 	public static String using(FindBy toBeAugmented){
 		if (! Strings.isNullOrEmpty(toBeAugmented.using())){
 			return toBeAugmented.using();
@@ -76,6 +102,12 @@ public class FindByAugmenters {
 		}  else return null;
 	}
 	
+	/**
+	 * Returns Class extending {@see org.openq.selenium.By} for provided FindBy annotation
+	 * 
+	 * @param toBeAugmented
+	 * @return
+	 */
 	public static Class<? extends By> classFor(FindBy toBeAugmented){
 		switch (how(toBeAugmented)) {
 		case ID:
@@ -101,6 +133,13 @@ public class FindByAugmenters {
 		}
 	}
 	
+	/**
+	 * Method returns constructor of class extending {@see org.openqa.selenium.By} that accepts one String parameter
+	 * as it would be executed directly from FindBy annotation processor
+	 * 
+	 * @param toBeAugmented
+	 * @return
+	 */
 	public static Constructor<? extends By> constructorFor(FindBy toBeAugmented){
 		try {
 			final Class<? extends By> byClass = classFor(toBeAugmented);
@@ -112,6 +151,13 @@ public class FindByAugmenters {
 		} 
 	}
 	
+	/**
+	 * Method returns instance of class extending {@see org.openqa.selenium.By} created with constructor accepting String.
+	 * The String value used for constructing By is second parameter of the method
+	 * @param toBeAugmented
+	 * @param newValue
+	 * @return
+	 */
 	public static By instanceForValue(FindBy toBeAugmented, String newValue){
 		try {
 			return constructorFor(toBeAugmented).newInstance(newValue);
@@ -120,6 +166,67 @@ public class FindByAugmenters {
 			Throwables.propagate(e);
 			return null;
 		}
+	}
+	
+	
+	static FindBy translate(final org.openqa.selenium.support.FindBy original){
+		return new FindBy() {
+			
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return FindBy.class;
+			}
+			
+			@Override
+			public String xpath() {
+				return original.xpath();
+			}
+			
+			@Override
+			public String using() {
+				return original.using();
+			}
+			
+			@Override
+			public String tagName() {
+				return original.tagName();
+			}
+			
+			@Override
+			public String partialLinkText() {
+				return original.partialLinkText();
+			}
+			
+			@Override
+			public String name() {
+				return original.name();
+			}
+			
+			@Override
+			public String linkText() {
+				return original.linkText();
+			}
+			
+			@Override
+			public String id() {
+				return original.id();
+			}
+			
+			@Override
+			public How how() {
+				return original.how();
+			}
+			
+			@Override
+			public String css() {
+				return original.css();
+			}
+			
+			@Override
+			public String className() {
+				return original.className();
+			}
+		};
 	}
 
 }

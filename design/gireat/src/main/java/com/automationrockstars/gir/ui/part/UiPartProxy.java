@@ -17,6 +17,8 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ByAll;
+import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +27,10 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
+import com.automationrockstars.gir.ui.FindAll;
 import com.automationrockstars.gir.ui.FindBy;
 import com.automationrockstars.gir.ui.FindByAugmenter;
+import com.automationrockstars.gir.ui.FindBys;
 import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Optional;
@@ -224,15 +228,87 @@ public class UiPartProxy implements InvocationHandler{
 		return result;
 	}
 	
+	private FindBy getFindBy(Method method){
+		if (method.getAnnotation(FindBy.class) != null){
+			return method.getAnnotation(FindBy.class);
+		} else if (method.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
+			return FindByAugmenters.translate(method.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else {
+			throw new IllegalArgumentException(String.format("Method %s doesn't have FindBy annotation", method));
+		}
+	}
+	
+	private FindBy getFindBy(Class<? extends UiPart> clazz){
+		if (clazz.getAnnotation(FindBy.class) != null){
+			return clazz.getAnnotation(FindBy.class);
+		} else if (clazz.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
+			return FindByAugmenters.translate(clazz.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else {
+			throw new IllegalArgumentException(String.format("Class %s doesn't have FindBy annotation", clazz));
+		}
+	}
+	
+	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
+		List<org.openqa.selenium.By> result = Lists.newArrayList();
+		for (org.openqa.selenium.support.FindBy locator : locators){
+			result.add(augmenter.augment(uiPartOf(host), FindByAugmenters.translate(locator)));
+		}
+		return (By[]) result.toArray();
+	}
+	
+	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
+		List<org.openqa.selenium.By> result = Lists.newArrayList();
+		for (FindBy locator : locators){
+			result.add(augmenter.augment(uiPartOf(host), locator));
+		}
+		return (By[]) result.toArray();
+	}
+	
+	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
+		return new ByChained(byBuilder(host, augmenter,locator.value()));
+	}
+	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
+		return new ByChained(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
+		return new ByAll(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
+		return new ByAll(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	
 	private org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
 		if (uiPartClass.getAnnotation(WithFindByAugmenter.class) != null){
-			return FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value()).augment(uiPartOf(host),uiPartClass.getAnnotation(FindBy.class));
+			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value());
+			if (uiPartClass.getAnnotation(FindAll.class) != null){
+				return allBuilder(host, augmenter,uiPartClass.getAnnotation(FindAll.class));
+			} else if ((uiPartClass.getAnnotation(org.openqa.selenium.support.FindAll.class) != null)){
+				return allBuilder(host, augmenter,uiPartClass.getAnnotation(org.openqa.selenium.support.FindAll.class));
+			} else if (uiPartClass.getAnnotation(FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartClass.getAnnotation(FindBys.class));
+			} else if (uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class));
+			}
+			return augmenter.augment(uiPartOf(host),getFindBy(uiPartClass));
 		} else return UiParts.buildBy(uiPartClass);
 	}
 	
 	private org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
 		if (uiPartChild.getAnnotation(WithFindByAugmenter.class) != null){
-			return FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value()).augment(uiPartOf(host),uiPartChild.getAnnotation(FindBy.class));
+			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value());
+			if (uiPartChild.getAnnotation(FindAll.class) != null){
+				return allBuilder(host, augmenter,uiPartChild.getAnnotation(FindAll.class));
+			} else if ((uiPartChild.getAnnotation(org.openqa.selenium.support.FindAll.class) != null)){
+				return allBuilder(host, augmenter,uiPartChild.getAnnotation(org.openqa.selenium.support.FindAll.class));
+			} else if (uiPartChild.getAnnotation(FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartChild.getAnnotation(FindBys.class));
+			} else if (uiPartChild.getAnnotation(org.openqa.selenium.support.FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartChild.getAnnotation(org.openqa.selenium.support.FindBys.class));
+			}
+			return augmenter.augment(uiPartOf(host),getFindBy(uiPartChild));
 		} else return UiParts.buildBy(uiPartChild);
 	}
 	

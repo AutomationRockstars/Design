@@ -12,21 +12,24 @@ import com.google.common.collect.FluentIterable;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
 
-@org.openqa.selenium.support.FindBy(id="res")
+@WithFindByAugmenter(TestFixingAugmenter.class)
+@org.openqa.selenium.support.FindBy(id="removemeres")
 @Name("Search Results")
 public interface SearchResults extends UiPart {
 
 	@Find(@By(how=ByClassName.class,using="g"))
 	FluentIterable<WebElement> results();
 
+	@WithFindByAugmenter(TestFixingAugmenter.class)
 	@FindAll({
-			@FindBy(tagName="a"),
+			@FindBy(tagName="removemea"),
 			@FindBy(tagName="div")})
 	List links();
 	
 	@Filter("href.contains('automationrockstars.com')")
 	@FindBy(tagName="a")
 	UiObject arsLink();
+	
 	
 	@FindBy(tagName="a")
 	@Filter("text.contains('GitHub')")
