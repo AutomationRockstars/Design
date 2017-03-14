@@ -26,6 +26,7 @@ import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
 import com.automationrockstars.gir.ui.FindBy;
+import com.automationrockstars.gir.ui.FindByAugmenter;
 import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Optional;
@@ -33,6 +34,7 @@ import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.UiParts;
 import com.automationrockstars.gir.ui.WebElementDecorator;
 import com.automationrockstars.gir.ui.WithDecorators;
+import com.automationrockstars.gir.ui.WithFindByAugmenter;
 import com.automationrockstars.gir.ui.context.Image;
 import com.automationrockstars.gir.ui.context.SearchContextService;
 import com.google.common.base.Function;
@@ -47,7 +49,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
-import ru.yandex.qatools.htmlelements.element.Named;
 
 public class UiPartProxy implements InvocationHandler{
 
@@ -222,6 +223,19 @@ public class UiPartProxy implements InvocationHandler{
 		LOG.trace("Required size {} actual {}",minimumSize,result.size());
 		return result;
 	}
+	
+	private org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
+		if (uiPartClass.getAnnotation(WithFindByAugmenter.class) != null){
+			return FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value()).augment(uiPartOf(host),uiPartClass.getAnnotation(FindBy.class));
+		} else return UiParts.buildBy(uiPartClass);
+	}
+	
+	private org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
+		if (uiPartChild.getAnnotation(WithFindByAugmenter.class) != null){
+			return FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value()).augment(uiPartOf(host),uiPartChild.getAnnotation(FindBy.class));
+		} else return UiParts.buildBy(uiPartChild);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
@@ -239,13 +253,13 @@ public class UiPartProxy implements InvocationHandler{
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
 					ui.initialPageSetUp();
-					by = UiParts.buildBy((Class<? extends UiPart>)collectionOf);
+					by = byBuilder(host, (Class<? extends UiPart>)collectionOf);
 				}
 			}
 		}
 		List<WebElement> result = Lists.newArrayList();
 		if (by == null){
-			by = UiParts.buildBy(method);
+			by = byBuilder(host, method);
 		}
 		final int timeout = calculateTimeout(method);
 		final int minimumSize = minimumSize(method);
@@ -415,6 +429,9 @@ public class UiPartProxy implements InvocationHandler{
 
 	@SuppressWarnings("unchecked")
 	private Class<? extends UiPart> uiPartOf(Object host) {
+		if (host == null){
+			return null;
+		}
 		return (Class<? extends UiPart>) Iterables.find(Lists.newArrayList(host.getClass().getInterfaces()),new Predicate<Class>() {
 
 			@Override
