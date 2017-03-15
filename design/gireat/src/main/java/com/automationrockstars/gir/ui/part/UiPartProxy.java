@@ -17,6 +17,8 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ByAll;
+import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,10 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
+import com.automationrockstars.gir.ui.FindAll;
 import com.automationrockstars.gir.ui.FindBy;
+import com.automationrockstars.gir.ui.FindByAugmenter;
+import com.automationrockstars.gir.ui.FindBys;
 import com.automationrockstars.gir.ui.MinimumElements;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.Optional;
@@ -33,6 +38,7 @@ import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.UiParts;
 import com.automationrockstars.gir.ui.WebElementDecorator;
 import com.automationrockstars.gir.ui.WithDecorators;
+import com.automationrockstars.gir.ui.WithFindByAugmenter;
 import com.automationrockstars.gir.ui.context.Image;
 import com.automationrockstars.gir.ui.context.SearchContextService;
 import com.google.common.base.Function;
@@ -47,7 +53,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
-import ru.yandex.qatools.htmlelements.element.Named;
 
 public class UiPartProxy implements InvocationHandler{
 
@@ -222,6 +227,92 @@ public class UiPartProxy implements InvocationHandler{
 		LOG.trace("Required size {} actual {}",minimumSize,result.size());
 		return result;
 	}
+	
+	private FindBy getFindBy(Method method){
+		if (method.getAnnotation(FindBy.class) != null){
+			return method.getAnnotation(FindBy.class);
+		} else if (method.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
+			return FindByAugmenters.translate(method.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else {
+			throw new IllegalArgumentException(String.format("Method %s doesn't have FindBy annotation", method));
+		}
+	}
+	
+	private FindBy getFindBy(Class<? extends UiPart> clazz){
+		if (clazz.getAnnotation(FindBy.class) != null){
+			return clazz.getAnnotation(FindBy.class);
+		} else if (clazz.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
+			return FindByAugmenters.translate(clazz.getAnnotation(org.openqa.selenium.support.FindBy.class));
+		} else {
+			throw new IllegalArgumentException(String.format("Class %s doesn't have FindBy annotation", clazz));
+		}
+	}
+	
+	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
+		List<org.openqa.selenium.By> result = Lists.newArrayList();
+		for (org.openqa.selenium.support.FindBy locator : locators){
+			result.add(augmenter.augment(uiPartOf(host), FindByAugmenters.translate(locator)));
+		}
+		return result.toArray(new By[] {By.id("empty") });
+	}
+	
+	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
+		List<org.openqa.selenium.By> result = Lists.newArrayList();
+		for (FindBy locator : locators){
+			result.add(augmenter.augment(uiPartOf(host), locator));
+		}
+		
+		return result.toArray(new By[] {By.id("empty") });
+	}
+	
+	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
+		return new ByChained(byBuilder(host, augmenter,locator.value()));
+	}
+	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
+		return new ByChained(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
+		return new ByAll(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
+		return new ByAll(byBuilder(host, augmenter,locator.value()));
+	}
+	
+	
+	private org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
+		if (uiPartClass.getAnnotation(WithFindByAugmenter.class) != null){
+			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value());
+			if (uiPartClass.getAnnotation(FindAll.class) != null){
+				return allBuilder(host, augmenter,uiPartClass.getAnnotation(FindAll.class));
+			} else if ((uiPartClass.getAnnotation(org.openqa.selenium.support.FindAll.class) != null)){
+				return allBuilder(host, augmenter,uiPartClass.getAnnotation(org.openqa.selenium.support.FindAll.class));
+			} else if (uiPartClass.getAnnotation(FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartClass.getAnnotation(FindBys.class));
+			} else if (uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartClass.getAnnotation(org.openqa.selenium.support.FindBys.class));
+			}
+			return augmenter.augment(uiPartClass,getFindBy(uiPartClass));
+		} else return UiParts.buildBy(uiPartClass);
+	}
+	
+	private org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
+		if (uiPartChild.getAnnotation(WithFindByAugmenter.class) != null){
+			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value());
+			if (uiPartChild.getAnnotation(FindAll.class) != null){
+				return allBuilder(host, augmenter,uiPartChild.getAnnotation(FindAll.class));
+			} else if ((uiPartChild.getAnnotation(org.openqa.selenium.support.FindAll.class) != null)){
+				return allBuilder(host, augmenter,uiPartChild.getAnnotation(org.openqa.selenium.support.FindAll.class));
+			} else if (uiPartChild.getAnnotation(FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartChild.getAnnotation(FindBys.class));
+			} else if (uiPartChild.getAnnotation(org.openqa.selenium.support.FindBys.class) != null){
+				return chainedBuilder(host, augmenter, uiPartChild.getAnnotation(org.openqa.selenium.support.FindBys.class));
+			}
+			return augmenter.augment(uiPartOf(host),getFindBy(uiPartChild));
+		} else return UiParts.buildBy(uiPartChild);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
@@ -239,13 +330,13 @@ public class UiPartProxy implements InvocationHandler{
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
 					ui.initialPageSetUp();
-					by = UiParts.buildBy((Class<? extends UiPart>)collectionOf);
+					by = byBuilder(host, (Class<? extends UiPart>)collectionOf);
 				}
 			}
 		}
 		List<WebElement> result = Lists.newArrayList();
 		if (by == null){
-			by = UiParts.buildBy(method);
+			by = byBuilder(host, method);
 		}
 		final int timeout = calculateTimeout(method);
 		final int minimumSize = minimumSize(method);
@@ -415,6 +506,9 @@ public class UiPartProxy implements InvocationHandler{
 
 	@SuppressWarnings("unchecked")
 	private Class<? extends UiPart> uiPartOf(Object host) {
+		if (host == null){
+			return null;
+		}
 		return (Class<? extends UiPart>) Iterables.find(Lists.newArrayList(host.getClass().getInterfaces()),new Predicate<Class>() {
 
 			@Override
@@ -422,5 +516,9 @@ public class UiPartProxy implements InvocationHandler{
 				return UiPart.class.isAssignableFrom(input);
 			}
 		});
+	}
+	
+   static By buildBy(Object host, Class<? extends UiPart> uiPart){
+		return new UiPartProxy(uiPart).byBuilder(host, uiPart);
 	}
 }

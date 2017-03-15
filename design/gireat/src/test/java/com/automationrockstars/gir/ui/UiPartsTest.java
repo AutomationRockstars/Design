@@ -22,6 +22,8 @@ import com.google.common.io.Files;
 
 import ru.yandex.qatools.htmlelements.element.Link;
 
+import javax.annotation.Nullable;
+
 
 public class UiPartsTest {
 
@@ -93,7 +95,13 @@ public class UiPartsTest {
 			@Override
 			public boolean apply(SearchResultDiv input) {
 				return input.getText().contains("github");
-			}} ).transform(new Function<SearchResultDiv, Link>() {
+			}} ).filter(new Predicate<SearchResultDiv>() {
+			@Override
+			public boolean apply(@Nullable SearchResultDiv searchResultDiv) {
+				searchResultDiv.description().getText();
+				return true;
+			}
+		}).transform(new Function<SearchResultDiv, Link>() {
 
 				@Override
 				public Link apply(SearchResultDiv input) {
