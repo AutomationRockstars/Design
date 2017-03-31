@@ -256,33 +256,52 @@ public class DriverFactory {
 	public static void setBrowser(String browser){
 		DriverFactory.browser.set(browser);
 	}
+	private static String storyName(){
+		String story = null;
+		try {
+			if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
+				story = GenericAllureStoryReporter.storyName();
+			} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
+				story = AllureStoryReporter.storyName();
+			} 
+		} catch (Throwable t){
+
+		}
+		return story;
+	}
 	
+	private static String scenarioName(){
+		String scenario = null;
+		try {
+			if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
+				scenario = GenericAllureStoryReporter.scenarioName();
+			} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
+				scenario = AllureStoryReporter.scenarioName();
+			} 
+		} catch (Throwable t){
+
+		}
+		return scenario;
+	}
 	private static synchronized void enableGridExtras(RemoteWebDriver driver){
 		if (checkGridExtras(GRID_URL,driver)){
 			String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver),driver.getSessionId().toString());
 			ConfigLoader.config().addProperty("webdriver.video", videoLink);
 			List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String,String>>());
-			String story = null;
-			try {
-				if (! Strings.isNullOrEmpty(GenericAllureStoryReporter.storyName())){
-					story = GenericAllureStoryReporter.storyName();
-				} else if (! Strings.isNullOrEmpty(AllureStoryReporter.storyName())){
-					story = AllureStoryReporter.storyName();
-				} 
-			} catch (Throwable t){
-
-			}
+			String story = String.format("%s->%s::",storyName(),scenarioName());
+			
 			if (Strings.isNullOrEmpty(story)){
 				story = "recording " + driver.getSessionId();
 			}
 
-			String title = "video_" + story;
+			String title = "video_"+story;
 			int videoRepetition = 0;
 			String titlePostfix = "";
+			
 			Optional<Object> titleAlreadyThere = Optional.absent();
 			do {
 				if (videoRepetition > 0){
-					titlePostfix = String.format("_%s", videoRepetition);
+						titlePostfix = String.format("_%s", videoRepetition);
 				}
 				final String titleBase = title + titlePostfix;
 				titleAlreadyThere = FluentIterable.from(videos).firstMatch(new Predicate<Object>() {

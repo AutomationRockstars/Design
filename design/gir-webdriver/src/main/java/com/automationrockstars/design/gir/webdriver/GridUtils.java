@@ -146,9 +146,9 @@ public class GridUtils {
 		try {
 			cl = HttpClients.createDefault();
 			RequestConfig requestConfig = RequestConfig.custom()
-				    .setConnectionRequestTimeout(10000)
-				    .setConnectTimeout(10000)
-				    .setSocketTimeout(10000)
+				    .setConnectionRequestTimeout(100000)
+				    .setConnectTimeout(100000)
+				    .setSocketTimeout(100000)
 				    .build();
 			HttpGet get = new HttpGet(extrasUrl);
 			get.setConfig(requestConfig);

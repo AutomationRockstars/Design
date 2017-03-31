@@ -16,12 +16,15 @@ import com.google.common.io.Files;
 public class ErrorHandlingService {
 
 	public static final String SHOW_SCREENSHOT = "webdriver.onerror.display";
+	public static final String SAVE_FILE = "webdriver.onerror.save";
 	private static Logger LOG = LoggerFactory.getLogger(ErrorHandlingService.class);
 	public static void handle(Throwable t, Object host, Method method, Object[] args) {
 		LOG.error("Error on {} with {}",host, method.getName(),t);
 		String fileName = String.format("%s_%s_%s",method.getName(),t.getMessage(),System.currentTimeMillis()).replaceAll("[^a-zA-Z0-9.-]", "_");
 		try {
-			Files.write(DriverFactory.getDriver().getPageSource().getBytes(), Paths.get(fileName+".html").toFile());
+			if (ConfigLoader.config().getBoolean(SAVE_FILE,false)){
+				Files.write(DriverFactory.getDriver().getPageSource().getBytes(), Paths.get(fileName+".html").toFile());
+			}
 		} catch (IOException ignore) {
 		}
 		boolean display = ConfigLoader.config().getBoolean(SHOW_SCREENSHOT,false);

@@ -33,6 +33,7 @@ public class SimpleTestDataService implements TestDataService{
 			}
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private <T extends TestDataRecord> TestData<T> getShared(Class<T> type){
 		TestData<T> result = (TestData<T>) sharedTestDataCache.get(type);
 		if (result == null){
@@ -56,7 +57,8 @@ public class SimpleTestDataService implements TestDataService{
 		else return null;
 	}
 
-//cache disabled
+	//cache disabled
+	// is sharing data disabled as well? 
 	private final Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> RECORDS_CACHE = Maps.newConcurrentMap();
 
 	public static final String NAME = "DEFAULT";

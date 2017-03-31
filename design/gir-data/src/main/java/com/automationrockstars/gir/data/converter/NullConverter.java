@@ -20,6 +20,7 @@ public class NullConverter extends AbstractConverter {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T nullConvert(Class<T> type){
 
 		if (type.equals(Boolean.class) || type.equals(Boolean.TYPE) ){

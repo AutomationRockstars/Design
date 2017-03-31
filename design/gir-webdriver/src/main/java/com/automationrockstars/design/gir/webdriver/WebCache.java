@@ -15,8 +15,7 @@ import org.openqa.selenium.WebElement;
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPluginService;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class WebCache  {
@@ -24,7 +23,7 @@ public class WebCache  {
 	static {
 		UiDriverPluginService.registerPlugin(cleaner);
 	}
-	
+
 	static class CacheCleaner implements  UiDriverPlugin{ 
 		@Override
 		public void beforeInstantiateDriver() {
@@ -40,7 +39,7 @@ public class WebCache  {
 
 		@Override
 		public void beforeCloseDriver(WebDriver driver) {
-			
+
 		}
 
 		@Override
@@ -52,22 +51,71 @@ public class WebCache  {
 		public void afterInstantiateDriver(WebDriver driver) {		
 		}
 	}
+	private static class WebElementResult {
 
-	private static final ThreadLocal<Map<SearchContext,Map<By,SoftReference<List<WebElement>>>>> webCache = new ThreadLocal<Map<SearchContext,Map<By,SoftReference<List<WebElement>>>>>(){
+		private final List<WebElement> elements = Lists.newArrayList();
+		private final SearchContext ctx;
+		private final By by;
+
+		private boolean single;
+
+		public WebElementResult(SearchContext ctx, By by, boolean single){
+			this.by = by;
+			this.ctx = ctx;
+			this.single = single;
+			if (single){
+				try {
+					elements.add(ctx.findElement(by));
+				} catch (WebDriverException ignore){}
+			} else {
+				try {
+					elements.addAll(ctx.findElements(by));
+				} catch (WebDriverException ignore){}
+			}
+		}
+
+		public SearchContext context(){
+			return ctx;
+		}
+
+		public By by(){
+			return by;
+		}
+
+		public boolean hasElements(){
+			return ! elements.isEmpty();
+		}
+		public List<WebElement> multiple(){
+			if (single){
+				try {
+					elements.addAll(ctx.findElements(by));
+				} catch (WebDriverException ignore){}
+			}
+			return elements;
+		}
+
+		public WebElement single(){
+			return (elements.isEmpty())?null:elements.get(0);
+		}
+
+
+	}
+
+	private static final ThreadLocal<Map<SearchContext,Map<By,SoftReference<WebElementResult>>>> webCache = new ThreadLocal<Map<SearchContext,Map<By,SoftReference<WebElementResult>>>>(){
 
 		@Override
-		protected Map<SearchContext,Map<By,SoftReference<List<WebElement>>>> initialValue(){
+		protected Map<SearchContext,Map<By,SoftReference<WebElementResult>>> initialValue(){
 			return Maps.newConcurrentMap();
 		}
 
 	};
-	
-	
-	private static final ThreadLocal<Entry<SearchContext,By>> lastQuery = new ThreadLocal();
+
+
+	private static final ThreadLocal<Entry<SearchContext,By>> lastQuery = new ThreadLocal<>();
 	private static final ThreadLocal<Integer> lastQueryCount = new ThreadLocal<>();
 	private static final Integer REPEAT_TRESHOLD = ConfigLoader.config().getInteger("webcache.max.repeat", 10); 
 	private boolean isRepeated(SearchContext s, By by){
-	if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
+		if (lastQuery.get() != null && lastQuery.get().getKey().equals(s) && lastQuery.get().getValue().equals(by)){
 			if (lastQueryCount.get() > REPEAT_TRESHOLD){
 				return true;
 			} else {
@@ -80,39 +128,41 @@ public class WebCache  {
 			return false;
 		}
 	}
-	private List<WebElement> find(SearchContext s, By by){
-		Map<By,SoftReference<List<WebElement>>> els = webCache.get().get(s);
+
+	private  void makeValid(WebElementResult result, boolean single){
+		try {
+			if (single){
+				result.single().getTagName();
+			} else {
+				for (WebElement el : result.multiple()){
+					el.getTagName();
+				}
+			}
+		} catch (WebDriverException e){
+			invalidateElement(result.context(), result.by());
+			find(result.context(),result.by(),single);
+		}
+	} 
+
+	private WebElementResult find(SearchContext s, By by, boolean single){
+		Map<By,SoftReference<WebElementResult>> els = webCache.get().get(s);
 		boolean valid = ! ConfigLoader.config().getBoolean("webcache.validate",true);
 		if (els == null){
 			els = Maps.newConcurrentMap();
-			els.put(by,new SoftReference(s.findElements(by)));
+			els.put(by,new SoftReference<WebElementResult>(new WebElementResult(s, by, single)));
 			webCache.get().put(s, els);
 			valid = true;
 		} else {
-			SoftReference<List<WebElement>> targets = els.get(by);			
-			if (targets == null || targets.get() == null || targets.get().isEmpty()
+			SoftReference<WebElementResult> targets = els.get(by);			
+			if (targets == null || targets.get() == null || ! targets.get().hasElements()
 					|| isRepeated(s, by)){
-				targets = new SoftReference(s.findElements(by));
+				targets = new SoftReference<WebElementResult>(new WebElementResult(s, by, single));
 				els.put(by, targets);
 				valid = true;
 			} 
 		} 
 		if (! valid){
-			FluentIterable<WebElement> result = FluentIterable.from(webCache.get().get(s).get(by).get());
-			result = result.filter(new Predicate<WebElement>() {
-				@Override
-				public boolean apply(WebElement input) {
-					try {
-						return input.getTagName() != null;
-					} catch (WebDriverException e){
-						return false;
-					}
-				}				
-			});
-			if (result.isEmpty()){
-				els.put(by,new SoftReference( s.findElements(by)));
-				valid = true;
-			} 
+			makeValid(webCache.get().get(s).get(by).get(), single);
 		}
 		return webCache.get().get(s).get(by).get();
 	}
@@ -127,7 +177,23 @@ public class WebCache  {
 		}
 	};
 	public static List<WebElement> fromCache(SearchContext s,By by){
-		return cacheFinders.get().find(s, by);
+		return cacheFinders.get().find(s, by,false).multiple();
+	}
+
+	public static List<WebElement> findElements(SearchContext ctx, By by) {
+		return cacheFinders.get().find(ctx, by,false).multiple();
+	}
+
+	public static WebElement findElement(SearchContext ctx, By by) {
+		return cacheFinders.get().find(ctx, by,true).single();
+	}
+
+	public static synchronized void invalidateElements(SearchContext ctx, By by){
+		webCache.get().get(ctx).remove(by);
+	}
+
+	public static void invalidateElement(SearchContext ctx,By by){
+		webCache.get().get(ctx).remove(by);
 	}
 
 }

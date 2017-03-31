@@ -28,6 +28,7 @@ import org.apache.commons.configuration.event.EventSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automationrockstars.base.internal.RuntimeSetterDecorator;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;

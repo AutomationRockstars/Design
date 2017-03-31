@@ -98,7 +98,7 @@ public class EmptyUiObject extends UiObject{
 
 		@Override
 		public List<WebElement> findElements(By by) {
-			return Lists.newArrayList();
+			return Lists.newArrayList((WebElement)new EmptyUiObject());
 		}
 
 		@Override

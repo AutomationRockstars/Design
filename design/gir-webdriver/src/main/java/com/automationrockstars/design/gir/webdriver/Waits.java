@@ -236,7 +236,7 @@ public class Waits {
 				Optional<WebElement> visibleElement = Iterables.tryFind(FilterableSearchContext.unwrap(input).findElements(by), new Predicate<WebElement>() {
 					@Override
 					public boolean apply(WebElement input) {
-						return input.isDisplayed();
+						return input != null && input.isDisplayed();
 					}
 				});
 				return ! visibleElement.isPresent();
