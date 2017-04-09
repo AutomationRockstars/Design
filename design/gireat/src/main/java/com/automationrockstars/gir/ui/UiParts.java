@@ -172,7 +172,7 @@ public class UiParts {
 	}
 
 	public static org.openqa.selenium.By buildBy(Class<? extends UiPart> view) {
-		org.openqa.selenium.By result = null;
+		org.openqa.selenium.By result = org.openqa.selenium.By.tagName("body");
 		if (view.getAnnotation(Find.class) != null){
 			result = transform(view.getAnnotation(Find.class).any(),view.getAnnotation(Find.class).value());
 		} else if (view.getAnnotation(FindBy.class) != null){
@@ -183,11 +183,7 @@ public class UiParts {
 			result = transform(view.getAnnotation(org.openqa.selenium.support.FindAll.class));
 		} else if (view.getAnnotation(FindAll.class) != null){
 			result = transform(view.getAnnotation(FindAll.class));
-		} else if (view.getAnnotation(InitialPage.class) != null){
-			result =  new ByTagName("body");
-		} else {
-			throw new RuntimeException("Cannot initialize UiPart " + view);
-		}
+		} 
 		if(view.getAnnotation(Filter.class)!= null){
 			result = new FilteredBy(result, view.getAnnotation(Filter.class).value());
 		}
