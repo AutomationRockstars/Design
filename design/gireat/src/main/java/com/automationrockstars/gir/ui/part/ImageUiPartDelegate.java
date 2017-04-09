@@ -1,5 +1,7 @@
 package com.automationrockstars.gir.ui.part;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -7,6 +9,7 @@ import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.UiPart;
 import com.automationrockstars.gir.ui.context.SearchContextService;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 import ru.yandex.qatools.htmlelements.element.Link;
 
@@ -24,14 +27,17 @@ public class ImageUiPartDelegate extends AbstractUiPartDelegate{
 
 	@Override
 	public FluentIterable<UiObject> children() {
-		
-		return null;
+		List<UiObject> empty = Lists.newArrayList();
+		return FluentIterable.from(empty);
 	}
 
 	@Override
 	public boolean has(By element) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			return getWrappedElement().findElement(element) != null;
+		} catch (Exception e){
+			return false;
+		}
 	}
 
 	@Override
@@ -52,8 +58,7 @@ public class ImageUiPartDelegate extends AbstractUiPartDelegate{
 
 	@Override
 	public boolean isVisible() {
-		// TODO Auto-generated method stub
-		return false;
+		return getWrappedElement() != null;
 	}
 
 	@Override
