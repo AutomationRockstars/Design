@@ -10,11 +10,13 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ByAll;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.automationrockstars.gir.ui.ByOrder;
 import com.automationrockstars.gir.ui.Covered;
 import com.automationrockstars.gir.ui.FindAll;
 import com.automationrockstars.gir.ui.FindBy;
@@ -58,13 +61,21 @@ public class UiPartProxy implements InvocationHandler{
 
 	private static final Logger LOG = LoggerFactory.getLogger(UiPart.class);
 
-	private final WebUiPartDelegate ui;
+	private final UiPart ui;
 	public UiPartProxy(Class<? extends UiPart> generic) {
-		ui = new WebUiPartDelegate(generic);
+		if (generic.getAnnotation(Image.class) != null){
+			ui = new ImageUiPartDelegate(generic);
+		} else {
+			ui = new WebUiPartDelegate(generic);
+		}
 	}
 
 	public UiPartProxy(Class<? extends UiPart> generic, UiObject toWrap) {
-		ui = new WebUiPartDelegate(generic,toWrap);
+		if (generic.getAnnotation(Image.class) != null){
+			ui = new ImageUiPartDelegate(generic,toWrap);
+		} else {
+			ui = new WebUiPartDelegate(generic,toWrap);
+		}
 	}
 	private static boolean isCustom(Method method){
 		Class<?> declaringClass = method.getDeclaringClass();
@@ -72,6 +83,8 @@ public class UiPartProxy implements InvocationHandler{
 		nativeMethodOwners.add(UiPart.class);
 		nativeMethodOwners.add(Object.class);
 		nativeMethodOwners.add(WebUiPartDelegate.class);
+		nativeMethodOwners.add(WebElement.class);
+		nativeMethodOwners.add(TakesScreenshot.class);
 		return ! nativeMethodOwners.contains(declaringClass);
 	}
 
@@ -228,7 +241,7 @@ public class UiPartProxy implements InvocationHandler{
 		return result;
 	}
 	
-	private FindBy getFindBy(Method method){
+	private static FindBy getFindBy(Method method){
 		if (method.getAnnotation(FindBy.class) != null){
 			return method.getAnnotation(FindBy.class);
 		} else if (method.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
@@ -238,7 +251,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 	
-	private FindBy getFindBy(Class<? extends UiPart> clazz){
+	private static FindBy getFindBy(Class<? extends UiPart> clazz){
 		if (clazz.getAnnotation(FindBy.class) != null){
 			return clazz.getAnnotation(FindBy.class);
 		} else if (clazz.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
@@ -248,7 +261,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 	
-	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
+	private static org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
 		List<org.openqa.selenium.By> result = Lists.newArrayList();
 		for (org.openqa.selenium.support.FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), FindByAugmenters.translate(locator)));
@@ -256,7 +269,7 @@ public class UiPartProxy implements InvocationHandler{
 		return result.toArray(new By[] {By.id("empty") });
 	}
 	
-	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
+	private static org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
 		List<org.openqa.selenium.By> result = Lists.newArrayList();
 		for (FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), locator));
@@ -265,23 +278,23 @@ public class UiPartProxy implements InvocationHandler{
 		return result.toArray(new By[] {By.id("empty") });
 	}
 	
-	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
+	private static org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
 		return new ByChained(byBuilder(host, augmenter,locator.value()));
 	}
-	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
+	private static org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
 		return new ByChained(byBuilder(host, augmenter,locator.value()));
 	}
 	
-	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
+	private static org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
 		return new ByAll(byBuilder(host, augmenter,locator.value()));
 	}
 	
-	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
+	private static org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
 		return new ByAll(byBuilder(host, augmenter,locator.value()));
 	}
 	
 	
-	private org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
+	private static org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
 		if (uiPartClass.getAnnotation(WithFindByAugmenter.class) != null){
 			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value());
 			if (uiPartClass.getAnnotation(FindAll.class) != null){
@@ -297,7 +310,7 @@ public class UiPartProxy implements InvocationHandler{
 		} else return UiParts.buildBy(uiPartClass);
 	}
 	
-	private org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
+	private static org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
 		if (uiPartChild.getAnnotation(WithFindByAugmenter.class) != null){
 			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value());
 			if (uiPartChild.getAnnotation(FindAll.class) != null){
@@ -321,7 +334,9 @@ public class UiPartProxy implements InvocationHandler{
 		org.openqa.selenium.By by = null;
 
 		if (UiPart.class.isAssignableFrom(method.getReturnType())){
-			ui.initialPageSetUp();
+			if (ui instanceof WebUiPartDelegate){
+				((WebUiPartDelegate)ui).initialPageSetUp();
+			}
 			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
 			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
@@ -329,7 +344,9 @@ public class UiPartProxy implements InvocationHandler{
 			if (method.getGenericReturnType() instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
-					ui.initialPageSetUp();
+					if (ui instanceof WebUiPartDelegate){
+						((WebUiPartDelegate)ui).initialPageSetUp();
+					}
 					by = byBuilder(host, (Class<? extends UiPart>)collectionOf);
 				}
 			}
@@ -415,6 +432,7 @@ public class UiPartProxy implements InvocationHandler{
 			preName = method.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Name.class).value();
 		}
 		final String name = preName;
+		final AtomicInteger order = new AtomicInteger();
 		return Lists.newArrayList(Iterables.transform(elements, new Function<WebElement,WebElement>(){
 			@Override
 			public WebElement apply(WebElement input) {
@@ -433,7 +451,7 @@ public class UiPartProxy implements InvocationHandler{
 					}
 				}
 				if (! nameSet){
-					result = UiObject.wrap(input, UiParts.buildBy(method),name);
+					result = UiObject.wrap(input, new ByOrder(UiParts.buildBy(method),order.getAndIncrement()),name);
 				}
 				return result;
 			}}));
@@ -505,7 +523,7 @@ public class UiPartProxy implements InvocationHandler{
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends UiPart> uiPartOf(Object host) {
+	private static Class<? extends UiPart> uiPartOf(Object host) {
 		if (host == null){
 			return null;
 		}
@@ -519,6 +537,6 @@ public class UiPartProxy implements InvocationHandler{
 	}
 	
    static By buildBy(Object host, Class<? extends UiPart> uiPart){
-		return new UiPartProxy(uiPart).byBuilder(host, uiPart);
+		return byBuilder(host, uiPart);
 	}
 }

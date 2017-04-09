@@ -187,6 +187,10 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 			this.wrapped = null;
 			getWrappedElement().sendKeys(keysToSend);
 			Waits.waitUntilClickable(this).sendKeys(keysToSend);
+		} catch ( WebDriverException e) {
+			Page.scrollTo(this);
+			click();
+			getWrappedElement().sendKeys(keysToSend);
 		}
 		actionPlugins().afterSendKeys(this, keysToSend);
 	}
@@ -458,6 +462,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	public void afterInstantiateDriver(WebDriver driver) {
 
 	}
+	
 	public byte[] screenshot(){
 		try {
 			return getWrappedElement().getScreenshotAs(OutputType.BYTES);

@@ -11,6 +11,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.google.common.collect.Lists;
@@ -131,5 +132,15 @@ public class EmptyUiObject extends UiObject{
 			return "";
 		}
 	}
-
+	
+	public static boolean isEmpty(WebElement element){
+		if (element instanceof EmptyUiObject || element instanceof EmptyWebElement){
+			return true;
+		} else if (WrapsElement.class.isAssignableFrom(element.getClass())){
+			return isEmpty(((WrapsElement)element).getWrappedElement());
+		} else {
+			return false;
+		}
+	}
+	
 }

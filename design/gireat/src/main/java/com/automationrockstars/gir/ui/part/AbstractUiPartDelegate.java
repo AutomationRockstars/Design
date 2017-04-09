@@ -2,6 +2,7 @@ package com.automationrockstars.gir.ui.part;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -11,25 +12,25 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import com.automationrockstars.design.gir.webdriver.InitialPage;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.UiPart;
-import com.automationrockstars.gir.ui.UiParts;
 
 public abstract class AbstractUiPartDelegate implements UiPart{
 	protected final Class<? extends UiPart> view;
 	
 	private SearchContext parent;
+	private By locator = null;
 	
 	public AbstractUiPartDelegate(Class<? extends UiPart> view){
 		this.view = view;
-		
+		locator = UiPartProxy.buildBy(this,view);
 	}
 	
 	public AbstractUiPartDelegate(Class<? extends UiPart> view,UiObject toWrap){
 		this.view = view;
 		this.wrapped = toWrap;
+		locator = toWrap.getLocator();
 		loaded.set(true);
 	}
 	public String name() {
@@ -126,7 +127,7 @@ public abstract class AbstractUiPartDelegate implements UiPart{
 		}
 	};
 	public org.openqa.selenium.By getLocator() {
-		return UiPartProxy.buildBy(this,view);
+		return locator;
 	}
 
 

@@ -42,8 +42,12 @@ public class ImageUiPartDelegate extends AbstractUiPartDelegate{
 
 	@Override
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			this.wrapped = null;
+			return this.getWrappedElement() != null;
+		} catch (Exception e){
+			return false;
+		}
 	}
 
 	@Override

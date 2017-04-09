@@ -25,6 +25,7 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.InitialPage;
 import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.automationrockstars.gir.ui.part.EmptyUiObject;
 import com.automationrockstars.gir.ui.part.UiPartProxy;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -337,6 +338,23 @@ public class UiParts {
 		
 	}
 	
+	/**
+	 * Utility to check if element returned from method annotated with {@link com.automationrockstars.gir.ui.Optional} is operable WebElement 
+	 * @param element
+	 * @return
+	 */
+	public static boolean isEmpty(WebElement element){
+		return EmptyUiObject.isEmpty(element);
+	}
+	
+	/**
+	 * Utility to check if element returned from method annotated with {@link com.automationrockstars.gir.ui.Optional} is operable WebElement 
+	 * @param element
+	 * @return
+	 */
+	public static boolean isEmpty(WrapsElement element){
+		return EmptyUiObject.isEmpty(element.getWrappedElement());
+	}
 	
 	 
 }
