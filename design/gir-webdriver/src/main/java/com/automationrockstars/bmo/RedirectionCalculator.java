@@ -15,4 +15,6 @@ import java.net.URI;
 public interface RedirectionCalculator {
 
 	URI calculate(URI original);
+	
+	URI calculateByNode(URI nodeUri);
 }
