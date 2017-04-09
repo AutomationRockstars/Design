@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NumberUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -115,9 +116,19 @@ public class GridUtils {
 				throw new URISyntaxException("URL: " + nodeUrl,"node url shall not be null");
 			}
 			URI node = new URI(nodeUrl);
-			CloseableHttpResponse resp = cl.execute(new HttpGet(String.format("%s://%s:%s/extras/port", node.getScheme(),node.getHost(),node.getPort()+1)));
+			RequestConfig requestConfig = RequestConfig.custom()
+				    .setConnectionRequestTimeout(10000)
+				    .setConnectTimeout(10000)
+				    .setSocketTimeout(10000)
+				    .build();
+			HttpGet portGet = new HttpGet(String.format("%s://%s:%s/extras/port", node.getScheme(),node.getHost(),node.getPort()+1));
+			portGet.setConfig(requestConfig);
+			CloseableHttpResponse resp = cl.execute(portGet);
 			if (resp.getStatusLine().getStatusCode() == 200){
 				port = IOUtils.toString(resp.getEntity().getContent());
+				if(! NumberUtils.isDigits(port)){
+					port = null;
+				}
 			} else {
 				port = null;
 			}
@@ -136,7 +147,13 @@ public class GridUtils {
 			try {
 				extrasUrl = String.format("%s://%s:%s", new URI(nodeUrl).getScheme(),new URI(nodeUrl).getHost(),extrasPort);
 				if (calculator != null){
-					extrasUrl = calculator.calculate(new URI(extrasUrl)).toString();
+					URI extrasUri = calculator.calculate(new URI(extrasUrl));
+					if (extrasUri == null){
+						extrasUri = calculator.calculateByNode(new URI(nodeUrl));
+					}
+					if (extrasUri != null){
+						extrasUrl = extrasUri.toString();
+					}
 				}
 			} catch (URISyntaxException e) {
 				LOG.debug("Issue with selenium grid extras uri",e);

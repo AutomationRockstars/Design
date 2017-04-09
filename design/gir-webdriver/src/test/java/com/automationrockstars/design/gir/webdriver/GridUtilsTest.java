@@ -34,6 +34,12 @@ public class GridUtilsTest {
 				public URI calculate(URI original) {
 					return URI.create(String.format("http://%s:30303030003", original.getHost()));
 				}
+
+				@Override
+				public URI calculateByNode(URI nodeUri) {
+					// TODO Auto-generated method stub
+					return null;
+				}
 			});
 			System.out.println("UOLABOGA");
 			System.out.println(GridUtils.getNode(gridUrl, DriverFactory.getUnwrappedDriver()));
