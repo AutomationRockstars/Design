@@ -458,7 +458,6 @@ public class DriverFactory {
 			break;
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
-			result.setCapability(InternetExplorerDriver.NATIVE_EVENTS, true);
 			result.setCapability("ignoreProtectedModeSettings", true);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			result.setCapability("ie.validateCookieDocumentType", false);

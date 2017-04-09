@@ -1,5 +1,18 @@
 package com.automationrockstars.gir.ui.part;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.openqa.selenium.support.How.CLASS_NAME;
+import static org.openqa.selenium.support.How.CSS;
+import static org.openqa.selenium.support.How.ID;
+import static org.openqa.selenium.support.How.LINK_TEXT;
+import static org.openqa.selenium.support.How.NAME;
+import static org.openqa.selenium.support.How.TAG_NAME;
+import static org.openqa.selenium.support.How.XPATH;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.By.ByCssSelector;
@@ -17,12 +30,6 @@ import com.automationrockstars.gir.ui.FindByAugmenter;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import static org.openqa.selenium.support.How.*;
-import static com.google.common.base.Strings.*;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * 

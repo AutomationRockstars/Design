@@ -2,8 +2,6 @@ package com.automationrockstars.gir.ui.part;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriverException;
@@ -21,7 +19,6 @@ import com.automationrockstars.design.gir.webdriver.Waits;
 import com.automationrockstars.gir.ui.FilteredBy;
 import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
-import com.automationrockstars.gir.ui.WithFindByAugmenter;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
