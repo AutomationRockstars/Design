@@ -8,7 +8,7 @@
  * Contributors:
  *     Automation RockStars - initial API and implementation
  *******************************************************************************/
-package com.automationrockstars.base;
+package com.automationrockstars.base.internal;
 
 import java.util.Collection;
 import java.util.List;

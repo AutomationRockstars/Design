@@ -1,28 +1,25 @@
 package com.automationrockstars.gir.data.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automationrockstars.base.JarUtils;
 import com.automationrockstars.gir.data.TestDataRecord;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
@@ -63,30 +60,39 @@ public class DataLoader {
 
 	
 	public static Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> loadFrom(String fileName) throws IOException{
-		Collection<File> dataFiles = FileUtils.listFiles(Paths.get("").toFile().getAbsoluteFile(), new NameFileFilter(fileName), TrueFileFilter.INSTANCE);
-		if (dataFiles.isEmpty()){
-			try (InputStream jarContent = ClassLoader.getSystemResourceAsStream(fileName)){
-				Preconditions.checkState(! dataFiles.isEmpty() || jarContent != null,"Data file %s cannot be found",fileName);	
-				return loadFrom(jarContent);
-			}
-		} else {
-			
-			LOG.info("Getting data from {}",dataFiles.iterator().next());
-			return loadFromStringJson(FileUtils.readFileToString(dataFiles.iterator().next()));
-		}
+		return loadDataResource(fileName);
+	}
+	private static Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> loadDataResource(String  resourceName){
+		try (InputStream content = JarUtils.findResources(resourceName).first().get().url().openStream()){
+			return loadFrom(content);
+		} catch (NoSuchElementException | IOException e) {
+			LOG.error("Resource {} cannot be used as data",resourceName,e);
+		};
+		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> loadFrom(InputStream content) throws IOException{		
-			return loadFromStringJson(IOUtils.toString(content));
+		Map<String,Object> result = Collections.emptyMap();
+		try ( Reader data = new InputStreamReader(content)){
+			result = new Gson().fromJson(data, HashMap.class);	
+		} catch (NoSuchElementException | IOException e) {
+			LOG.error("Resource cannot be used as data",e);
+		}
+	return loadFromData(result);
 	}
-	@SuppressWarnings({"unchecked","rawtypes"})
-	private static Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> loadFromStringJson(String jsonContent){
-		Map<String,Object> data = new Gson().fromJson(jsonContent, HashMap.class);
+	@SuppressWarnings({"unchecked"})
+	private static Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> loadFromData(final Map<String,Object>data){
 		Map<Class<? extends TestDataRecord>,List<Map<String,Object>>> result = Maps.newHashMap();
 		for (String dataType : data.keySet()){
 			LOG.debug("Looking for TestDataRecord spec for data marked with {}",dataType);
 			Class<? extends TestDataRecord> testDataType = null;
-			if ((testDataType = findTestDataRecordClass(dataType))!= null){
+			if (dataType.endsWith(" list")){
+				testDataType = findTestDataRecordClass(dataType.replace(" list", ""));
+			} else {
+				testDataType = findTestDataRecordClass(dataType);
+			}
+			if (testDataType!= null){
 				LOG.info("Data tagged with {} will be mapped to {}",dataType,testDataType.getName());
 				List<Map<String,Object>> bag = result.get(testDataType);
 				if (bag == null){
@@ -109,6 +115,7 @@ public class DataLoader {
 		return result;
 
 	}
+	@SuppressWarnings("unchecked")
 	private static String callMappings(Class<?> type, Object o ){
 		StringBuilder result = new StringBuilder();
 		for (Method m :type.getMethods()){
@@ -118,7 +125,7 @@ public class DataLoader {
 						&& ! Lists.newArrayList(m.getReturnType().getInterfaces()).contains(TestDataRecord.class)){
 					Object tdr = TestDataProxyFactory.createProxy(new MapTestDataRecord((Map<String, Object>) o),(Class<? extends TestDataRecord>) type);					
 					result.append("\n").append(m.getName()).append(": ").append(
-							m.invoke(tdr, null)
+							m.invoke(tdr, (Object[]) null)
 							);
 				}
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

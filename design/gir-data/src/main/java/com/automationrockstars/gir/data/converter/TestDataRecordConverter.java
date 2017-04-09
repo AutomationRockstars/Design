@@ -1,12 +1,12 @@
-package com.automationrockstars.gir.data.impl;
+package com.automationrockstars.gir.data.converter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.converters.AbstractConverter;
-import org.apache.commons.collections.map.UnmodifiableMap;
 
 import com.automationrockstars.gir.data.TestDataRecord;
+import com.automationrockstars.gir.data.impl.MapTestDataRecord;
+import com.automationrockstars.gir.data.impl.TestDataProxyFactory;
 import com.google.common.collect.Maps;
 
 public class TestDataRecordConverter extends AbstractConverter {

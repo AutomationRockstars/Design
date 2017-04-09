@@ -24,6 +24,7 @@ public class SimpleTestData<T extends TestDataRecord> implements TestData<T> {
 	private final boolean shared; 
 	private final List<T> exclusiveRecords;
 	private Class<T> classOf;
+	@SuppressWarnings({ "unchecked", "hiding" })
 	private <T extends TestDataRecord> List<T> get(Class<T> type){
 		if (recordBag.get(type) == null){
 			recordBag.putIfAbsent(type, new CopyOnWriteArrayList<T>());
@@ -71,7 +72,7 @@ public class SimpleTestData<T extends TestDataRecord> implements TestData<T> {
 	}
 	@Override
 	public T record(int cycle) {
-		Preconditions.checkState(cycle < data().size(),"%s does not contain %s records",this,cycle);
+		Preconditions.checkState(cycle < data().size(),"%s does not contain at least %s records",this,cycle);
 		return records().get(cycle);
 	}
 	

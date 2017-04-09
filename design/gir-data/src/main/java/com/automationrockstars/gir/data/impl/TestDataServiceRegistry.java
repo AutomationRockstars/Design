@@ -1,5 +1,6 @@
 package com.automationrockstars.gir.data.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,48 +43,56 @@ public class TestDataServiceRegistry {
 	public static String[] packagesToScan(){
 		if (packagesToScan == null){
 			String[] result = ConfigLoader.config().getStringArray("data.packages");
-			final AtomicInteger lastValidClass = new AtomicInteger(0);
+		
 			if (result == null || result.length == 0){
-				FluentIterable<String> classes = FluentIterable.from(Lists.reverse(Lists.newArrayList(Thread.currentThread().getStackTrace()))).transform(new Function<StackTraceElement, String>() {
-
-					@Override
-					public String apply(StackTraceElement input) {
-						return input.getClassName();
-					}
-				});
-				classes.firstMatch(new Predicate<String>(){
-
-					@Override
-					public boolean apply(String input) {
-						lastValidClass.incrementAndGet();
-						return input.startsWith(TestDataServices.class.getName());
-					}});
-				result = classes.limit(lastValidClass.get()).transform(new Function<String, String>() {
-
-					@Override
-					public String apply(String input) {
-						return String.format("%s.%s",input.split("\\.")[0],input.split("\\.")[1]);
-					}
-				}).filter(new Predicate<String>() {
-
-					@Override
-					public boolean apply(String input) {
-						return ! input.startsWith("java.") && ! input.startsWith("sun.");
-					}
-				}).toSet().toArray(new String[0]);
-
-
-			}
-
+				result = stackTracePackages();
+			} 
 			packagesToScan = result;
+			LOG.info("Using {} to scan for data record classes",Arrays.toString(packagesToScan));
+			
 		}
 		return packagesToScan;
 	}
 	static {
 		loadFromClasspath();
 	}
+	
+	public static String[] stackTracePackages(){
+		String[] result = null;
+		final AtomicInteger lastValidClass = new AtomicInteger(0);
+		FluentIterable<String> classes = FluentIterable.from(Lists.reverse(Lists.newArrayList(Thread.currentThread().getStackTrace()))).transform(new Function<StackTraceElement, String>() {
+
+			@Override
+			public String apply(StackTraceElement input) {
+				return input.getClassName();
+			}
+		});
+		classes.firstMatch(new Predicate<String>(){
+
+			@Override
+			public boolean apply(String input) {
+				lastValidClass.incrementAndGet();
+				return input.startsWith(TestDataServices.class.getName());
+			}});
+		result = classes.limit(lastValidClass.get()).transform(new Function<String, String>() {
+
+			@Override
+			public String apply(String input) {
+				return String.format("%s.%s",input.split("\\.")[0],input.split("\\.")[1]);
+			}
+		}).filter(new Predicate<String>() {
+
+			@Override
+			public boolean apply(String input) {
+				return ! input.startsWith("java.") && ! input.startsWith("sun.");
+			}
+		}).toSet().toArray(new String[0]);
+
+		return result;
+	}
+	
 	private static void loadFromClasspath(){
-		for (Class<? extends TestDataService> serviceClass : new Reflections(new ConfigurationBuilder().forPackages(packagesToScan())).getSubTypesOf(TestDataService.class)){			
+		for (Class<? extends TestDataService> serviceClass : new Reflections((Object[])stackTracePackages()).getSubTypesOf(TestDataService.class)){			
 			register(serviceClass);
 		};
 	}

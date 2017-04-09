@@ -14,26 +14,19 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
@@ -50,14 +43,11 @@ import org.slf4j.LoggerFactory;
 import com.automationrockstars.asserts.Asserts;
 import com.automationrockstars.base.ConfigLoader;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -138,9 +128,15 @@ public class AllureStoryReporter implements StoryReporter {
 
 	private static final ThreadLocal<String> currentSuite = new ThreadLocal<>();
 	private static final ThreadLocal<String> currentSuiteName = new ThreadLocal<>();
+	
 	public static String storyName(){
 		return currentSuiteName.get();
 	}
+	
+	public static String scenarioName(){
+		return currentScenario.get();
+	}
+	
 	@Override
 	public void beforeStory(Story story, boolean givenStory) {
 		String uuid = UUID.randomUUID().toString();
@@ -251,6 +247,8 @@ public class AllureStoryReporter implements StoryReporter {
 
 	}
 
+	private static final ThreadLocal<String> currentStep = new InheritableThreadLocal<>();
+	
 	@Override
 	public void beforeStep(String step) {
 		
@@ -267,9 +265,14 @@ public class AllureStoryReporter implements StoryReporter {
 		if (! AllureLogbackAppender.isEmpty()){
 			AllureLogbackAppender.fire("before_"+step);
 		}
+		currentStep.set(step);
 		LOG.info("before step {}",step);
 	}
 
+	public static String stepName(){
+		return currentStep.get();
+	}
+	
 	@Override
 	public void successful(String step) {
 		AllureLogbackAppender.fire(step);
@@ -280,7 +283,7 @@ public class AllureStoryReporter implements StoryReporter {
 	@Override
 	public void ignorable(String step) {		
 		if (ConfigLoader.config().getBoolean("bdd.ignorable.enabled",false)){
-			Allure.LIFECYCLE.fire(new StepStartedEvent("IGNORED " + step));
+//			Allure.LIFECYCLE.fire(new StepStartedEvent("IGNORED " + step));
 			Allure.LIFECYCLE.fire(new StepCanceledEvent());
 			Allure.LIFECYCLE.fire(new StepFinishedEvent());
 		}
@@ -291,7 +294,7 @@ public class AllureStoryReporter implements StoryReporter {
 	public void pending(String step) {
 		LOG.info("Pending {}",step);
 		if (ConfigLoader.config().getBoolean("bdd.pending.enabled",false)){
-			Allure.LIFECYCLE.fire(new StepStartedEvent("PENDING " + step));
+//			Allure.LIFECYCLE.fire(new StepStartedEvent("PENDING " + step));
 			Allure.LIFECYCLE.fire(new StepCanceledEvent());
 			Allure.LIFECYCLE.fire(new StepFinishedEvent());
 		}
@@ -385,78 +388,14 @@ public class AllureStoryReporter implements StoryReporter {
 			LOG.error("Cannot close session {} due to ",session,e);
 		}
 	}
-	private static boolean canGetVideo(final String link){
-		CloseableHttpResponse resp = null;
-		try {
-			resp = cl.execute(new HttpGet(link));
-			if ( resp.getStatusLine().getStatusCode() != 200){
-				throw new IllegalArgumentException("Negative response from server " + resp.getStatusLine());
-			}
-			return true;
-		} catch (Throwable t){
-			LOG.debug("Video {} cannot be fetched due to {}",link,t.getMessage());
-			return false;
-		} finally {
-			if (resp!=null){
-				try {
-					resp.close();
-				} catch (IOException ignore) {
-				}
-			}
-		}
-	}
-	@VisibleForTesting
-	protected static void populateVideo(Properties initial, String link, String title){
-		try {
-			if (canGetVideo(link)){
-				Paths.get("target/allure-report/data/").toFile().mkdirs();
-
-				Path ying = Paths.get("target/allure-report/data/"+title+".mp4.1");
-				Path yang = Paths.get("target/allure-report/data/"+title+".mp4.2");
-				Path dest = Paths.get("target/allure-report/data/"+title+".mp4");
-				do {
-					CloseableHttpResponse videoResponse = cl.execute(new HttpGet(link));
-					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), ying, StandardCopyOption.REPLACE_EXISTING);
-					videoResponse.close();
-					videoResponse = cl.execute(new HttpGet(link));
-					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), yang, StandardCopyOption.REPLACE_EXISTING);
-					videoResponse.close();
-				} while (java.nio.file.Files.size(yang) != java.nio.file.Files.size(yang));
-				FileUtils.moveFile(ying.toFile(), dest.toFile());
-				FileUtils.forceDelete(yang.toFile());
-				initial.setProperty(title, "<a href=\"data/"+title+".mp4\"><video id=\""+title+"\" width=\"160\" height=\"88\" autoplay=\"true\" controls=\"true\">"+
-						"<source src=\"data/"+title+".mp4\" type=\"video/mp4\">"+
-						"Your browser does not support HTML5 video.</video></a>");
-			}
-		} catch (UnsupportedOperationException | IOException e) {
-			LOG.error("Video cannot be added {}",e.getMessage());
-		}
-	}
-	private static void populateVideos(Properties initial){	
-
-		Set<?> videos = ImmutableSet.copyOf(ConfigLoader.config().getList("webdriver.videos",Lists.newArrayList()));
-		if (videos.isEmpty()){
-			initial = populateProperty("webdriver.video",initial);
-		} else {
-			cl = HttpClients.createDefault();
-			for (Object video : videos){
-				Map.Entry<String, String> videoData = ((Map<String, String>) video).entrySet().iterator().next();
-				closeSession(videoData.getValue().replaceAll("/download_video/", "").replaceAll(".mp4", ""));
-				populateVideo(initial, videoData.getValue(), videoData.getKey());
-			}
-			try {
-				cl.close();
-			} catch (IOException e) {
-			}
-		}
-	}
+	
 	private static void generateProperties(String directory){
 		LOG.info("Generating properties for report");
 		Properties environmentToShow = new Properties();
 		environmentToShow = populateProperty("url", environmentToShow);
 		environmentToShow = populateProperty("grid.url", environmentToShow);
 		environmentToShow = populateProperty("webdriver.session", environmentToShow);
-		populateVideos(environmentToShow);
+		GenericAllureStoryReporter.populateVideos(environmentToShow);
 		LOG.info("Properties ready");
 		try {
 			environmentToShow.store(Files.newWriter(Paths.get(directory,"environment.properties").toFile(), Charset.defaultCharset()), "execution properties");

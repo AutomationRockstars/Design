@@ -80,6 +80,7 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 			download.waitFor();
 			FileUtils.forceDelete(Paths.get("Downloader.java").toFile());
 			FileUtils.forceDelete(Paths.get("Downloader.class").toFile());
+			FileUtils.forceDelete(Paths.get("Downloader$1.class").toFile());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

@@ -42,6 +42,7 @@ public class MapTestDataRecord implements TestDataRecord{
 		return Joiner.on("\n").withKeyValueSeparator(": ").join(data);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <C extends TestDataRecord> C modify(String name, Object value) {
 		data.put(name, value);

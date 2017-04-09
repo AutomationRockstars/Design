@@ -4,8 +4,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
@@ -40,11 +40,27 @@ public class JarUtils {
 			unzipResource(outsideDirectory, resource);
 		}
 	}
-
-	public static FluentIterable<ResourceInfo> findResources(final String... filterParts){
+	
+	private static ClassPath cp;
+	private static FluentIterable<ResourceInfo> resources = null;
+	
+	static {
 		try {
-			ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
-			return FluentIterable.from(cp.getResources()).filter(new Predicate<ResourceInfo>() {
+			cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
+		} catch (IOException e) {
+		}
+	}
+
+	private static FluentIterable<ResourceInfo> resources(){
+		if (resources == null){
+			Preconditions.checkNotNull(cp, "ClassPath scanner cannot be initialized");
+			resources = FluentIterable.from(cp.getResources());
+		} 
+		return resources;
+	}
+	
+	public static FluentIterable<ResourceInfo> findResources(final String... filterParts){
+			return resources().filter(new Predicate<ResourceInfo>() {
 				@Override
 				public boolean apply(ResourceInfo input) {
 					boolean matches = true;
@@ -55,10 +71,6 @@ public class JarUtils {
 					return matches;
 				}
 			});
-		} catch (IOException e) {
-			Throwables.propagate(e);
-		}
-		return FluentIterable.from(new ArrayList<ResourceInfo>());
 	}
 
 }

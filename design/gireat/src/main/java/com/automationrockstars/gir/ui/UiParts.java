@@ -321,6 +321,7 @@ public class UiParts {
 		.withTimeout(DEFAULT_DELAY, TimeUnit.SECONDS)
 		.withMessage(String.format("None of UiParts %s found",Arrays.toString(parts)))
 		.until( new Function<SearchContext,T>() {
+			@SuppressWarnings("unchecked")
 			public T apply(SearchContext driver){
 				T result = null;
 				Iterator<org.openqa.selenium.By> bys = byToPart.keySet().iterator();
@@ -335,5 +336,7 @@ public class UiParts {
 		});
 		
 	}
+	
+	
 	 
 }

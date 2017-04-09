@@ -20,6 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +44,15 @@ import com.automationrockstars.asserts.Asserts;
 import com.automationrockstars.base.ConfigLoader;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -320,46 +324,62 @@ public class GenericAllureStoryReporter implements StoryReporter {
 			}
 		}
 	}
+	
 	@VisibleForTesting
-	protected static void populateVideo(Properties initial, String link, String title){
-		try {
-			if (canGetVideo(link)){
-				Paths.get("target/allure-report/data/").toFile().mkdirs();
+	protected static Set<Map<String,String>> minimize(){
+		Set<?> videos = Sets.newHashSet(ConfigLoader.config().getList("webdriver.videos",Lists.newArrayList()));
+		List<Map<String,String>> videosData = Lists.newArrayList();
+		Set<Map<String,String>> result = Sets.newTreeSet(new Comparator<Map<String,String>>(){
 
-				Path ying = Paths.get("target/allure-report/data/"+title+".mp4.1");
-				Path yang = Paths.get("target/allure-report/data/"+title+".mp4.2");
-				Path dest = Paths.get("target/allure-report/data/"+title+".mp4");
-				do {
-					CloseableHttpResponse videoResponse = cl.execute(new HttpGet(link));
-					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), ying, StandardCopyOption.REPLACE_EXISTING);
-					videoResponse.close();
-					videoResponse = cl.execute(new HttpGet(link));
-					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), yang, StandardCopyOption.REPLACE_EXISTING);
-					videoResponse.close();
-				} while (java.nio.file.Files.size(yang) != java.nio.file.Files.size(yang));
-				if (dest.toFile().exists()){
-					FileUtils.forceDelete(dest.toFile());
-				}
-				FileUtils.moveFile(ying.toFile(), dest.toFile());
-				FileUtils.forceDelete(yang.toFile());
-				initial.setProperty(title, "<a href=\"data/"+title+".mp4\"><video id=\""+title+"\" width=\"160\" height=\"88\" autoplay=\"true\" controls=\"true\">"+
-						"<source src=\"data/"+title+".mp4\" type=\"video/mp4\">"+
-						"Your browser does not support HTML5 video.</video></a>");
+			@Override
+			public int compare(Map<String, String> o1, Map<String, String> o2) {
+				String key1 = o1.keySet().iterator().next();
+				String key2 = o2.keySet().iterator().next();
+				return key1.compareTo(key2);
+			}});
+		Set<String> titles = Sets.newTreeSet(new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
 			}
-		} catch (UnsupportedOperationException | IOException e) {
-			LOG.error("Video cannot be added {}",e.getMessage());
+		});
+		for (Object video : videos){
+			@SuppressWarnings("unchecked")
+			Map.Entry<String, String> videoData = ((Map<String, String>) video).entrySet().iterator().next();
+			closeSession(videoData.getValue().replaceAll(".*/download_video/", "").replaceAll(".mp4", ""));
+			titles.add(videoData.getKey().split("->")[0]);
+			videosData.add(Collections.singletonMap(videoData.getKey(), videoData.getValue()));
 		}
-	}
-	private static void populateVideos(Properties initial){	
+		
+		if (titles.size() != videos.size()){
+			for (final String title : titles){
+				FluentIterable<Map<String,String>> videosForScenario = FluentIterable.from(videosData).filter(new Predicate<Map<String,String>>() {
 
-		Set<?> videos = ImmutableSet.copyOf(ConfigLoader.config().getList("webdriver.videos",Lists.newArrayList()));
+					@Override
+					public boolean apply(Map<String, String> input) {
+						return input.keySet().iterator().next().contains(title+"->");
+					}
+				});
+				if (videosForScenario.size() == 1){
+					result.add(Collections.singletonMap(title+"::",videosForScenario.first().get().values().iterator().next()));
+				} else {
+					result.addAll(videosForScenario.toList());
+				}
+			}
+		}
+		LOG.info("Preparing to download videos for:\n{}",Joiner.on("\n").join(result));
+		return result;
+	}
+	public static void populateVideos(Properties initial){	
+		Set<Map<String,String>> videos = minimize();
 		if (videos.isEmpty()){
 			initial = populateProperty("webdriver.video",initial);
 		} else {
 			cl = HttpClients.createDefault();
-			for (Object video : videos){
-				Map.Entry<String, String> videoData = ((Map<String, String>) video).entrySet().iterator().next();
-				closeSession(videoData.getValue().replaceAll(".*/download_video/", "").replaceAll(".mp4", ""));
+			
+			for (Map<String,String> video : videos){
+				Map.Entry<String, String> videoData =  video.entrySet().iterator().next();
 				populateVideo(initial, videoData.getValue(), videoData.getKey());
 			}
 			try {
@@ -368,6 +388,36 @@ public class GenericAllureStoryReporter implements StoryReporter {
 			}
 		}
 	}
+	@VisibleForTesting
+	public static void populateVideo(Properties initial, String link, String title){
+		try {
+			LOG.debug("Trying to download {}",link);
+			if (canGetVideo(link)){
+				Paths.get("target/allure-report/data/").toFile().mkdirs();
+				String videoTitle = link.split("/")[link.split("/").length-1].replace(".mp4", "");
+				Path ying = Paths.get("target/allure-report/data/"+videoTitle+".mp4.1");
+				Path yang = Paths.get("target/allure-report/data/"+videoTitle+".mp4.2");
+				Path dest = Paths.get("target/allure-report/data/"+videoTitle+".mp4");
+				do {
+					CloseableHttpResponse videoResponse = cl.execute(new HttpGet(link));
+					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), ying, StandardCopyOption.REPLACE_EXISTING);
+					videoResponse.close();
+					videoResponse = cl.execute(new HttpGet(link));
+					java.nio.file.Files.copy(videoResponse.getEntity().getContent(), yang, StandardCopyOption.REPLACE_EXISTING);
+					videoResponse.close();
+				} while (java.nio.file.Files.size(yang) != java.nio.file.Files.size(yang));
+				FileUtils.moveFile(ying.toFile(), dest.toFile());
+				FileUtils.forceDelete(yang.toFile());
+				initial.setProperty(title, "<a href=\"data/"+videoTitle+".mp4\"><video id=\""+title+"\" width=\"160\" height=\"88\" autoplay=\"true\" controls=\"true\">"+
+						"<source src=\"data/"+videoTitle+".mp4\" type=\"video/mp4\">"+
+						"Your browser does not support HTML5 video.</video></a>");
+				LOG.info("Video downloaded to {}",dest);
+			}
+		} catch (UnsupportedOperationException | IOException e) {
+			LOG.error("Video cannot be added {}",e.getMessage());
+		}
+	}
+	
 	private static void generateProperties(String directory){
 		LOG.info("Generating properties for report");
 		Properties environmentToShow = new Properties();
@@ -509,6 +559,10 @@ public class GenericAllureStoryReporter implements StoryReporter {
 	
 	public int order() {
 		return 1000;
+	}
+
+	public static String scenarioName() {
+		return currentScenario.get();
 	}
 
 

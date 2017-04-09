@@ -2,6 +2,7 @@ package com.automationrockstars.gir.ui;
 
 import java.util.List;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
@@ -21,6 +22,17 @@ public class FilteredBy extends org.openqa.selenium.By{
 	public List<WebElement> findElements(SearchContext context) {
 		return FluentIterable.from(locator.findElements(context))
 				.filter( predicate).toList();
+	}
+	
+	public WebElement findElement(SearchContext context){
+		com.google.common.base.Optional<WebElement> result = FluentIterable.from(locator.findElements(context))
+				.firstMatch(predicate);
+		if (result.isPresent()){
+			return result.get();
+		} else {
+			throw new NoSuchElementException("Element identified by " + locator + " and " + predicate + " not found in " + context);
+		}
+		
 	}
 	
 	public String toString(){
