@@ -88,7 +88,7 @@ public class FilterableSearchContext implements SearchContext {
 		if (ConfigLoader.config().getBoolean("webdriver.cache",true)){
 			result = WebCache.fromCache(search, by);
 		} else { 
-			unwrap(search).findElements(by);
+			result = unwrap(search).findElements(by);
 		}
 		log.trace("Found {} un-filtered elements using {} in {}",result.size(),by,search);
 		return result;
