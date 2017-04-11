@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -81,7 +81,6 @@ public class FilterableSearchContext implements SearchContext {
 			}
 			return isVisible(input);
 		}
-
 	};
 	}
 	private List<WebElement> findAll(SearchContext search, By by){
@@ -133,8 +132,7 @@ public class FilterableSearchContext implements SearchContext {
 	}
 
 	private int stubbornTime() {
-
-		return Objects.firstNonNull(wait.get(), ConfigLoader.config().getInt(STUBBORN_WAIT_PARAM,5));
+		return MoreObjects.firstNonNull(wait.get(), ConfigLoader.config().getInt(STUBBORN_WAIT_PARAM,5));
 	}
 	private List<WebElement> stubbornWait(final By by){
 		List<WebElement> result = Lists.newArrayList();

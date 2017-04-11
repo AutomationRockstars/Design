@@ -172,10 +172,14 @@ public class UiPartProxy implements InvocationHandler{
 		if (UiPart.class.isAssignableFrom(wanted)){
 			Class<? extends UiPart> resulting = (Class<? extends UiPart>) wanted;
 			UiObject toWrap = null;
+			By locator = UiParts.buildBy(resulting);
+			if (HasLocator.class.isAssignableFrom(initial.getClass())){
+				locator = ((HasLocator)initial).getLocator();
+			}
 			if (initial instanceof UiObject){
 				toWrap = (UiObject) initial;
 			} else {
-				toWrap = new UiObject(initial, UiParts.buildBy(resulting));
+				toWrap = new UiObject(initial, locator);
 			}
 			return (T) Proxy.newProxyInstance(wanted.getClassLoader(), 
 					new Class[] {resulting}, new UiPartProxy(resulting,toWrap));
