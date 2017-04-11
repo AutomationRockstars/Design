@@ -22,7 +22,7 @@ public class EmptyUiObject extends UiObject{
 		findPlugins().beforeFindElements(this, by);
 		List<WebElement> found = getWrappedElement().findElements(by);
 		findPlugins().afterFindElements(this, by, found);
-		return wrapAll(found, by);
+		return wrapAll(found, getLocator(),by);
 	}
 
 	public WebElement findElement(By by) {

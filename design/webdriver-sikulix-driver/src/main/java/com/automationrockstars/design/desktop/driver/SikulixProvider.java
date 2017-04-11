@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.server.DriverProvider;
 import org.openqa.selenium.sikulix.SikulixDriver;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.desktop.driver.internal.ImageCache;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.GridUtils;
 import com.google.common.base.Strings;
@@ -67,6 +68,7 @@ public class SikulixProvider implements DriverProvider{
 						sikulix.quit();
 					}
 				}));
+				ImageCache.syncRemote(sikulix);
 				return sikulix;
 			} catch (MalformedURLException e) {
 				Throwables.propagate(e);

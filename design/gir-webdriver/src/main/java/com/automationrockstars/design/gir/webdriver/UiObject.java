@@ -10,14 +10,13 @@
  *******************************************************************************/
 package com.automationrockstars.design.gir.webdriver;
 
-import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
-import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService.actionPlugins;
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.InvalidElementStateException;
@@ -34,14 +33,17 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+
+import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
+import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService.actionPlugins;
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
 
 public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, Locatable, UiDriverPlugin {
 
@@ -89,6 +91,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		this.wrapped = element;
 	}
 
+	
 	public By getLocator() {
 		return by;
 	}
@@ -269,10 +272,11 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		}
 	}
 
-	public static List<WebElement> wrapAll(List<WebElement> toBeWrapped, By by) {
+	public static List<WebElement> wrapAll(List<WebElement> toBeWrapped,By parent, By by) {
 		List<WebElement> result = Lists.newArrayList();
+		int order = 0;
 		for (WebElement element : toBeWrapped) {
-			result.add(wrap(element, by));
+			result.add(wrap(element, new ByChained(parent,new ByOrder(by,order++))));
 		}
 		return result;
 	}
@@ -287,7 +291,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 			found = DriverFactory.getDriver().findElements(new ByChained(getLocator(), by));
 		}
 		findPlugins().afterFindElements(this, by, found);
-		return wrapAll(found, by);
+		return wrapAll(found, getLocator(), by);
 	}
 
 	public WebElement findElement(By by) {
@@ -299,7 +303,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 			result = DriverFactory.getDriver().findElement(new ByChained(getLocator(), by));
 		}
 		findPlugins().afterFindElement(this, by, result);
-		return wrap(result, by);
+		return wrap(result, new ByChained(getLocator(), by));
 	}
 
 	public boolean isDisplayed() {
@@ -367,8 +371,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		}
 	}
 
-	private void untilPredicate(final String predicate, final Function<WebElement, Void> action) {
-		final WebElementPredicate validator = new WebElementPredicate(predicate);
+	private void untilPredicate(final Predicate<WebElement> predicate, final Function<WebElement,Void> action){
 		new FluentWait<WebElement>(this)
 		.withTimeout(ConfigLoader.config().getLong("webdriver.click.check.timeout", 10000),
 				TimeUnit.MILLISECONDS)
@@ -380,7 +383,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				try {
 					el = input;
 					action.apply(input);
-					return validator.apply(input);
+					return predicate.apply(input);
 				} catch (Throwable e) {
 					return false;
 				}
@@ -390,10 +393,14 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				return String.format("Waiting for predicate %s on %s", predicate,el);
 			}
 		});
-
 	}
 
 	public void clickUntil(final String predicate) {
+		final WebElementPredicate validator = new WebElementPredicate(predicate);
+		clickUntil(validator);
+	}
+
+	public void clickUntil(final Predicate<WebElement> predicate){
 		untilPredicate(predicate, new Function<WebElement, Void>() {
 
 			@Override
@@ -402,8 +409,8 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 				return null;
 			}
 		});
-	}
 
+	}
 	public void setTimeout(int timeout){
 		this.timeout = timeout;
 	}
@@ -412,7 +419,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		return timeout;
 	}
 	public void sendKeysUntil(final String predicate, final CharSequence... keys) {
-		untilPredicate(predicate, new Function<WebElement, Void>() {
+		untilPredicate(new WebElementPredicate(predicate), new Function<WebElement, Void>() {
 
 			@Override
 			public Void apply(WebElement input) {
@@ -469,6 +476,12 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		} catch (WebDriverException e){
 			return DriverFactory.getScreenshot();
 		}
+	}
+
+	@Override
+	public void setLocator(By by) {
+		this.by = by;
+		
 	}
 
 	

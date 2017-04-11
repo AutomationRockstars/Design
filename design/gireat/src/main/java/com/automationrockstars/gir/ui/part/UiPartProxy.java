@@ -26,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.ByOrder;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
+import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
-import com.automationrockstars.gir.ui.ByOrder;
 import com.automationrockstars.gir.ui.Covered;
 import com.automationrockstars.gir.ui.FindAll;
 import com.automationrockstars.gir.ui.FindBy;
@@ -327,7 +328,7 @@ public class UiPartProxy implements InvocationHandler{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
+	private Object invokeCustomMethod(final Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
 		final Class<?> wantedResult = method.getReturnType();
@@ -337,8 +338,23 @@ public class UiPartProxy implements InvocationHandler{
 			if (ui instanceof WebUiPartDelegate){
 				((WebUiPartDelegate)ui).initialPageSetUp();
 			}
-			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
-			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
+			final Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
+			final AtomicInteger order = new AtomicInteger(0);
+			By tparentBy = By.tagName("html");
+			if (HasLocator.class.isAssignableFrom(host.getClass())){
+				tparentBy = ((HasLocator)host).getLocator();
+			}
+			final By parentBy = tparentBy;
+			List<WebElement> result = FluentIterable.from(Lists.newArrayList(UiParts.get(resultClass)))
+					.transform(new Function<UiPart, WebElement>() {
+
+						@Override
+						public WebElement apply(UiPart input) {
+							input.setLocator(new ByChained(parentBy,new ByOrder(input.getLocator(),order.getAndIncrement())));							
+							return (WebElement) input;
+						}
+					})
+					.toList();
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
 		} else if (Iterable.class.isAssignableFrom(wantedResult) || wantedResult.isArray()){
 			if (method.getGenericReturnType() instanceof ParameterizedType){
@@ -398,7 +414,7 @@ public class UiPartProxy implements InvocationHandler{
 			throw new NoSuchElementException("WebElement identified " + by+ " not found");
 		}
 
-		return adjustResults(setNames(result,method), method.getGenericReturnType(),decorators(uiPartOf(host)));
+		return adjustResults(setNames(result,method,host), method.getGenericReturnType(),decorators(uiPartOf(host)));
 
 	}
 
@@ -424,7 +440,7 @@ public class UiPartProxy implements InvocationHandler{
 		return method.getAnnotation(Image.class) != null;
 	}
 
-	private List<WebElement> setNames(List<WebElement> elements,final Method method){
+	private List<WebElement> setNames(List<WebElement> elements,final Method method, final Object host){
 		String preName = method.getName();
 		if (method.getAnnotation(Name.class) != null){
 			preName = method.getAnnotation(Name.class).value();
@@ -432,6 +448,10 @@ public class UiPartProxy implements InvocationHandler{
 			preName = method.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Name.class).value();
 		}
 		final String name = preName;
+		SearchContext parent = null; 
+		if (SearchContext.class.isAssignableFrom(host.getClass())){
+			parent = (SearchContext) host;
+		}
 		final AtomicInteger order = new AtomicInteger();
 		return Lists.newArrayList(Iterables.transform(elements, new Function<WebElement,WebElement>(){
 			@Override
@@ -450,8 +470,15 @@ public class UiPartProxy implements InvocationHandler{
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					}
 				}
+				By parentBy = By.tagName("html");
+				if (HasLocator.class.isAssignableFrom(host.getClass())){
+					parentBy = ((HasLocator)host).getLocator();
+				} 
+				if (HasLocator.class.isAssignableFrom(input.getClass())){
+					((HasLocator)input).setLocator(new ByChained(parentBy,new ByOrder(UiParts.buildBy(method),order.getAndIncrement())));
+				}
 				if (! nameSet){
-					result = UiObject.wrap(input, new ByOrder(UiParts.buildBy(method),order.getAndIncrement()),name);
+					result = UiObject.wrap(input, new ByChained(new ByOrder(UiParts.buildBy(method),order.getAndIncrement())),name);
 				}
 				return result;
 			}}));

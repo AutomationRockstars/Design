@@ -14,5 +14,6 @@ import org.openqa.selenium.By;
 
 public interface HasLocator {
 
+	void setLocator(By by);
 	By getLocator();
 }

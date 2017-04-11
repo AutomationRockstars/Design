@@ -73,7 +73,9 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 
 
 	public WebElement getWrappedElement() {
-		initialPageSetUp();
+		if (! loaded.get()){
+			initialPageSetUp();
+		}
 		if (wrapped == null){
 			wrapped = new UiObject(getLocator());
 			wrapped.setName(name());

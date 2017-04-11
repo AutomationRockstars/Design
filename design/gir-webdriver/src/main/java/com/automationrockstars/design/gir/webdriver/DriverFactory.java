@@ -606,7 +606,7 @@ public class DriverFactory {
 		private static final UiObject browser = new UiObject(null,By.tagName("body"),"WebDriver");
 		public List<WebElement> findElements(By by) {
 			findPlugins().beforeFindElement(browser,by);
-			List<WebElement> result = UiObject.wrapAll(searchContext.findElements(by), by);
+			List<WebElement> result = UiObject.wrapAll(searchContext.findElements(by),By.tagName("body"), by);
 			findPlugins().afterFindElements(browser,by,result);
 			return result;
 		}

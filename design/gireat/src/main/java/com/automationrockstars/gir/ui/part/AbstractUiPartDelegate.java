@@ -130,6 +130,9 @@ public abstract class AbstractUiPartDelegate implements UiPart{
 		return locator;
 	}
 
+	public void setLocator(By locator){
+		this.locator = locator;
+	}
 
 
 	public String toString(){
