@@ -86,6 +86,7 @@ public class UiPartProxy implements InvocationHandler{
 		nativeMethodOwners.add(WebUiPartDelegate.class);
 		nativeMethodOwners.add(WebElement.class);
 		nativeMethodOwners.add(TakesScreenshot.class);
+		nativeMethodOwners.add(HasLocator.class);
 		return ! nativeMethodOwners.contains(declaringClass);
 	}
 
