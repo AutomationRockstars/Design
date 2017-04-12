@@ -1,12 +1,13 @@
 package com.automationrockstars.design.gir.webdriver;
 
-import java.lang.ref.SoftReference;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -15,6 +16,7 @@ import org.openqa.selenium.WebElement;
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPlugin;
 import com.automationrockstars.design.gir.webdriver.plugin.UiDriverPluginService;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -101,11 +103,11 @@ public class WebCache  {
 
 	}
 
-	private static final ThreadLocal<Map<SearchContext,Map<By,SoftReference<WebElementResult>>>> webCache = new ThreadLocal<Map<SearchContext,Map<By,SoftReference<WebElementResult>>>>(){
+	private static final ThreadLocal<Map<SearchContext,Map<By,WebElementResult>>> webCache = new ThreadLocal<Map<SearchContext,Map<By,WebElementResult>>>(){
 
 		@Override
-		protected Map<SearchContext,Map<By,SoftReference<WebElementResult>>> initialValue(){
-			return Maps.newConcurrentMap();
+		protected Map<SearchContext,Map<By,WebElementResult>> initialValue(){
+			return Maps.newHashMap();
 		}
 
 	};
@@ -145,26 +147,31 @@ public class WebCache  {
 	} 
 
 	private WebElementResult find(SearchContext s, By by, boolean single){
-		Map<By,SoftReference<WebElementResult>> els = webCache.get().get(s);
+
+		Map<By,WebElementResult> els = webCache.get().get(s);
 		boolean valid = ! ConfigLoader.config().getBoolean("webcache.validate",true);
 		if (els == null){
-			els = Maps.newConcurrentMap();
-			els.put(by,new SoftReference<WebElementResult>(new WebElementResult(s, by, single)));
+			els = Maps.newHashMap();
 			webCache.get().put(s, els);
+			els.put(by,new WebElementResult(s, by, single));
 			valid = true;
 		} else {
-			SoftReference<WebElementResult> targets = els.get(by);			
-			if (targets == null || targets.get() == null || ! targets.get().hasElements()
+			WebElementResult targets = els.get(by);			
+			if (targets == null  || ! targets.hasElements()
 					|| isRepeated(s, by)){
-				targets = new SoftReference<WebElementResult>(new WebElementResult(s, by, single));
+				targets = new WebElementResult(s, by, single);
 				els.put(by, targets);
 				valid = true;
 			} 
 		} 
 		if (! valid){
-			makeValid(webCache.get().get(s).get(by).get(), single);
+			makeValid(webCache.get().get(s).get(by), single);
 		}
-		return webCache.get().get(s).get(by).get();
+		try {
+		return webCache.get().get(s).get(by);
+		} catch (Throwable e){
+			throw new NoSuchElementException(String.format("Element %s cannot be find inside %s", by,s));
+		}
 	}
 
 	private WebCache(){

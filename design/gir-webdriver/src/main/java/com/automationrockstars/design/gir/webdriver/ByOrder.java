@@ -1,4 +1,4 @@
-package com.automationrockstars.gir.ui;
+package com.automationrockstars.design.gir.webdriver;
 
 import java.util.List;
 

@@ -315,6 +315,11 @@ public class MobileUiObjectFactory {
 		public MobileUiObject get(int i){
 			return all().get(i);
 		}
+		@Override
+		public void setLocator(By by) {
+			getWrappedElement().setLocator(by);
+			
+		}
 		
 	}
 	

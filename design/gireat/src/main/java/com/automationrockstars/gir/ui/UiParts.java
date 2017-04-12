@@ -3,14 +3,16 @@ package com.automationrockstars.gir.ui;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By.ByTagName;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
@@ -23,9 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
-import com.automationrockstars.design.gir.webdriver.InitialPage;
+import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.automationrockstars.gir.ui.part.EmptyUiObject;
 import com.automationrockstars.gir.ui.part.UiPartProxy;
+import com.automationrockstars.gir.ui.part.WebUiPartDelegate;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -97,7 +101,11 @@ public class UiParts {
 			public List<WebElement> apply(SearchContext input) {
 				List<WebElement> result = input.findElements(by);
 				if (result.size() >= minimumSize){
-					return UiObject.wrapAll(result,by);
+					org.openqa.selenium.By parentBy = org.openqa.selenium.By.tagName("html");
+					if (HasLocator.class.isAssignableFrom(input.getClass())){
+						parentBy = ((HasLocator)input).getLocator();
+					}
+					return UiObject.wrapAll(result,parentBy,by);
 				}
 				else return null;
 			}
@@ -147,6 +155,21 @@ public class UiParts {
 	}
 
 
+	private static org.openqa.selenium.By byForUiPart(Method method){
+		Class<?> wantedResult = method.getReturnType();
+		Class<? extends UiPart> resultClass = null;
+		if (UiPart.class.isAssignableFrom(method.getReturnType())){
+			resultClass = (Class<? extends UiPart>) method.getReturnType();
+		} else if (Iterable.class.isAssignableFrom(wantedResult) || wantedResult.isArray()){
+			if (method.getGenericReturnType() instanceof ParameterizedType){
+				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
+				if (UiPart.class.isAssignableFrom(collectionOf)){
+					resultClass = (Class<? extends UiPart>) collectionOf;
+				}
+			}
+		} else throw new RuntimeException("Cannot initialize annotation to get locator on " + method);
+		return buildBy(resultClass);
+	}
 	public static org.openqa.selenium.By buildBy(Method method){
 		org.openqa.selenium.By result = null;
 		if (method.getAnnotation(Find.class) != null){
@@ -159,10 +182,8 @@ public class UiParts {
 			result =  transform(method.getAnnotation(org.openqa.selenium.support.FindBy.class));
 		} else if (method.getAnnotation(Filter.class) != null){
 			result = org.openqa.selenium.By.xpath(".//*");
-		} else if (UiPart.class.isAssignableFrom(method.getReturnType())){
-			result = buildBy((Class<? extends UiPart>)method.getReturnType());
-		}else {
-			throw new RuntimeException("Cannot initialize annotation to get location on " + method);
+		} else {
+			result = byForUiPart(method);
 		}
 		if(method.getAnnotation(Filter.class)!= null){
 			result = new FilteredBy(result, method.getAnnotation(Filter.class).value());
@@ -171,7 +192,7 @@ public class UiParts {
 	}
 
 	public static org.openqa.selenium.By buildBy(Class<? extends UiPart> view) {
-		org.openqa.selenium.By result = null;
+		org.openqa.selenium.By result = org.openqa.selenium.By.tagName("body");
 		if (view.getAnnotation(Find.class) != null){
 			result = transform(view.getAnnotation(Find.class).any(),view.getAnnotation(Find.class).value());
 		} else if (view.getAnnotation(FindBy.class) != null){
@@ -182,11 +203,7 @@ public class UiParts {
 			result = transform(view.getAnnotation(org.openqa.selenium.support.FindAll.class));
 		} else if (view.getAnnotation(FindAll.class) != null){
 			result = transform(view.getAnnotation(FindAll.class));
-		} else if (view.getAnnotation(InitialPage.class) != null){
-			result =  new ByTagName("body");
-		} else {
-			throw new RuntimeException("Cannot initialize UiPart " + view);
-		}
+		} 
 		if(view.getAnnotation(Filter.class)!= null){
 			result = new FilteredBy(result, view.getAnnotation(Filter.class).value());
 		}
@@ -337,6 +354,23 @@ public class UiParts {
 		
 	}
 	
+	/**
+	 * Utility to check if element returned from method annotated with {@link com.automationrockstars.gir.ui.Optional} is operable WebElement 
+	 * @param element
+	 * @return
+	 */
+	public static boolean isEmpty(WebElement element){
+		return EmptyUiObject.isEmpty(element);
+	}
+	
+	/**
+	 * Utility to check if element returned from method annotated with {@link com.automationrockstars.gir.ui.Optional} is operable WebElement 
+	 * @param element
+	 * @return
+	 */
+	public static boolean isEmpty(WrapsElement element){
+		return EmptyUiObject.isEmpty(element.getWrappedElement());
+	}
 	
 	 
 }

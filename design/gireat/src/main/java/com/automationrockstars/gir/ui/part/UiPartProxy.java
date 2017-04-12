@@ -10,11 +10,13 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ByAll;
@@ -24,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.ByOrder;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
+import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Covered;
 import com.automationrockstars.gir.ui.FindAll;
@@ -58,13 +62,21 @@ public class UiPartProxy implements InvocationHandler{
 
 	private static final Logger LOG = LoggerFactory.getLogger(UiPart.class);
 
-	private final WebUiPartDelegate ui;
+	private final UiPart ui;
 	public UiPartProxy(Class<? extends UiPart> generic) {
-		ui = new WebUiPartDelegate(generic);
+		if (generic.getAnnotation(Image.class) != null){
+			ui = new ImageUiPartDelegate(generic);
+		} else {
+			ui = new WebUiPartDelegate(generic);
+		}
 	}
 
 	public UiPartProxy(Class<? extends UiPart> generic, UiObject toWrap) {
-		ui = new WebUiPartDelegate(generic,toWrap);
+		if (generic.getAnnotation(Image.class) != null){
+			ui = new ImageUiPartDelegate(generic,toWrap);
+		} else {
+			ui = new WebUiPartDelegate(generic,toWrap);
+		}
 	}
 	private static boolean isCustom(Method method){
 		Class<?> declaringClass = method.getDeclaringClass();
@@ -72,6 +84,9 @@ public class UiPartProxy implements InvocationHandler{
 		nativeMethodOwners.add(UiPart.class);
 		nativeMethodOwners.add(Object.class);
 		nativeMethodOwners.add(WebUiPartDelegate.class);
+		nativeMethodOwners.add(WebElement.class);
+		nativeMethodOwners.add(TakesScreenshot.class);
+		nativeMethodOwners.add(HasLocator.class);
 		return ! nativeMethodOwners.contains(declaringClass);
 	}
 
@@ -158,10 +173,14 @@ public class UiPartProxy implements InvocationHandler{
 		if (UiPart.class.isAssignableFrom(wanted)){
 			Class<? extends UiPart> resulting = (Class<? extends UiPart>) wanted;
 			UiObject toWrap = null;
+			By locator = UiParts.buildBy(resulting);
+			if (HasLocator.class.isAssignableFrom(initial.getClass())){
+				locator = ((HasLocator)initial).getLocator();
+			}
 			if (initial instanceof UiObject){
 				toWrap = (UiObject) initial;
 			} else {
-				toWrap = new UiObject(initial, UiParts.buildBy(resulting));
+				toWrap = new UiObject(initial, locator);
 			}
 			return (T) Proxy.newProxyInstance(wanted.getClassLoader(), 
 					new Class[] {resulting}, new UiPartProxy(resulting,toWrap));
@@ -228,7 +247,7 @@ public class UiPartProxy implements InvocationHandler{
 		return result;
 	}
 	
-	private FindBy getFindBy(Method method){
+	private static FindBy getFindBy(Method method){
 		if (method.getAnnotation(FindBy.class) != null){
 			return method.getAnnotation(FindBy.class);
 		} else if (method.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
@@ -238,7 +257,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 	
-	private FindBy getFindBy(Class<? extends UiPart> clazz){
+	private static FindBy getFindBy(Class<? extends UiPart> clazz){
 		if (clazz.getAnnotation(FindBy.class) != null){
 			return clazz.getAnnotation(FindBy.class);
 		} else if (clazz.getAnnotation(org.openqa.selenium.support.FindBy.class) != null){
@@ -248,7 +267,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 	
-	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
+	private static org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, org.openqa.selenium.support.FindBy[] locators){
 		List<org.openqa.selenium.By> result = Lists.newArrayList();
 		for (org.openqa.selenium.support.FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), FindByAugmenters.translate(locator)));
@@ -256,7 +275,7 @@ public class UiPartProxy implements InvocationHandler{
 		return result.toArray(new By[] {By.id("empty") });
 	}
 	
-	private org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
+	private static org.openqa.selenium.By[] byBuilder(Object host,FindByAugmenter augmenter, FindBy[] locators){
 		List<org.openqa.selenium.By> result = Lists.newArrayList();
 		for (FindBy locator : locators){
 			result.add(augmenter.augment(uiPartOf(host), locator));
@@ -265,23 +284,23 @@ public class UiPartProxy implements InvocationHandler{
 		return result.toArray(new By[] {By.id("empty") });
 	}
 	
-	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
+	private static org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, FindBys locator){
 		return new ByChained(byBuilder(host, augmenter,locator.value()));
 	}
-	private org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
+	private static org.openqa.selenium.By chainedBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindBys locator){
 		return new ByChained(byBuilder(host, augmenter,locator.value()));
 	}
 	
-	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
+	private static org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, FindAll locator){
 		return new ByAll(byBuilder(host, augmenter,locator.value()));
 	}
 	
-	private org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
+	private static org.openqa.selenium.By allBuilder(Object host, FindByAugmenter augmenter, org.openqa.selenium.support.FindAll locator){
 		return new ByAll(byBuilder(host, augmenter,locator.value()));
 	}
 	
 	
-	private org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
+	private static org.openqa.selenium.By byBuilder(Object host, Class<? extends UiPart> uiPartClass){
 		if (uiPartClass.getAnnotation(WithFindByAugmenter.class) != null){
 			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartClass.getAnnotation(WithFindByAugmenter.class).value());
 			if (uiPartClass.getAnnotation(FindAll.class) != null){
@@ -297,7 +316,7 @@ public class UiPartProxy implements InvocationHandler{
 		} else return UiParts.buildBy(uiPartClass);
 	}
 	
-	private org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
+	private static org.openqa.selenium.By byBuilder(Object host, Method uiPartChild){
 		if (uiPartChild.getAnnotation(WithFindByAugmenter.class) != null){
 			FindByAugmenter augmenter = FindByAugmenters.instance(uiPartChild.getAnnotation(WithFindByAugmenter.class).value());
 			if (uiPartChild.getAnnotation(FindAll.class) != null){
@@ -314,22 +333,41 @@ public class UiPartProxy implements InvocationHandler{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Object invokeCustomMethod(Object host, Method method, Object[] args) throws Throwable {
+	private Object invokeCustomMethod(final Object host, Method method, Object[] args) throws Throwable {
 		LOG.info("Working on {} inside {}",MoreObjects.firstNonNull((method.getAnnotation(Name.class)==null)?null:method.getAnnotation(Name.class).value(), method.getName()),host);
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
 		final Class<?> wantedResult = method.getReturnType();
 		org.openqa.selenium.By by = null;
 
 		if (UiPart.class.isAssignableFrom(method.getReturnType())){
-			ui.initialPageSetUp();
-			Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
-			List<WebElement> result = Lists.newArrayList((WebElement)UiParts.get(resultClass));
+			if (ui instanceof WebUiPartDelegate){
+				((WebUiPartDelegate)ui).initialPageSetUp();
+			}
+			final Class<? extends UiPart> resultClass = (Class<? extends UiPart>) method.getReturnType();
+			final AtomicInteger order = new AtomicInteger(0);
+			By tparentBy = By.tagName("html");
+			if (HasLocator.class.isAssignableFrom(host.getClass())){
+				tparentBy = ((HasLocator)host).getLocator();
+			}
+			final By parentBy = tparentBy;
+			List<WebElement> result = FluentIterable.from(Lists.newArrayList(UiParts.get(resultClass)))
+					.transform(new Function<UiPart, WebElement>() {
+
+						@Override
+						public WebElement apply(UiPart input) {
+							input.setLocator(new ByChained(parentBy,new ByOrder(input.getLocator(),order.getAndIncrement())));							
+							return (WebElement) input;
+						}
+					})
+					.toList();
 			return adjustResults(result, method.getReturnType(), decorators(uiPartOf(host)));
 		} else if (Iterable.class.isAssignableFrom(wantedResult) || wantedResult.isArray()){
 			if (method.getGenericReturnType() instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0];
 				if (UiPart.class.isAssignableFrom(collectionOf)){
-					ui.initialPageSetUp();
+					if (ui instanceof WebUiPartDelegate){
+						((WebUiPartDelegate)ui).initialPageSetUp();
+					}
 					by = byBuilder(host, (Class<? extends UiPart>)collectionOf);
 				}
 			}
@@ -381,7 +419,7 @@ public class UiPartProxy implements InvocationHandler{
 			throw new NoSuchElementException("WebElement identified " + by+ " not found");
 		}
 
-		return adjustResults(setNames(result,method), method.getGenericReturnType(),decorators(uiPartOf(host)));
+		return adjustResults(setNames(result,method,host), method.getGenericReturnType(),decorators(uiPartOf(host)));
 
 	}
 
@@ -407,7 +445,7 @@ public class UiPartProxy implements InvocationHandler{
 		return method.getAnnotation(Image.class) != null;
 	}
 
-	private List<WebElement> setNames(List<WebElement> elements,final Method method){
+	private List<WebElement> setNames(List<WebElement> elements,final Method method, final Object host){
 		String preName = method.getName();
 		if (method.getAnnotation(Name.class) != null){
 			preName = method.getAnnotation(Name.class).value();
@@ -415,6 +453,11 @@ public class UiPartProxy implements InvocationHandler{
 			preName = method.getAnnotation(ru.yandex.qatools.htmlelements.annotations.Name.class).value();
 		}
 		final String name = preName;
+		SearchContext parent = null; 
+		if (SearchContext.class.isAssignableFrom(host.getClass())){
+			parent = (SearchContext) host;
+		}
+		final AtomicInteger order = new AtomicInteger();
 		return Lists.newArrayList(Iterables.transform(elements, new Function<WebElement,WebElement>(){
 			@Override
 			public WebElement apply(WebElement input) {
@@ -432,8 +475,15 @@ public class UiPartProxy implements InvocationHandler{
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					}
 				}
+				By parentBy = By.tagName("html");
+				if (HasLocator.class.isAssignableFrom(host.getClass())){
+					parentBy = ((HasLocator)host).getLocator();
+				} 
+				if (HasLocator.class.isAssignableFrom(input.getClass())){
+					((HasLocator)input).setLocator(new ByChained(parentBy,new ByOrder(UiParts.buildBy(method),order.getAndIncrement())));
+				}
 				if (! nameSet){
-					result = UiObject.wrap(input, UiParts.buildBy(method),name);
+					result = UiObject.wrap(input, new ByChained(new ByOrder(UiParts.buildBy(method),order.getAndIncrement())),name);
 				}
 				return result;
 			}}));
@@ -505,7 +555,7 @@ public class UiPartProxy implements InvocationHandler{
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends UiPart> uiPartOf(Object host) {
+	private static Class<? extends UiPart> uiPartOf(Object host) {
 		if (host == null){
 			return null;
 		}
@@ -519,6 +569,6 @@ public class UiPartProxy implements InvocationHandler{
 	}
 	
    static By buildBy(Object host, Class<? extends UiPart> uiPart){
-		return new UiPartProxy(uiPart).byBuilder(host, uiPart);
+		return byBuilder(host, uiPart);
 	}
 }
