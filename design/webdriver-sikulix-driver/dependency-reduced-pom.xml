@@ -3,8 +3,7 @@
   <parent>
     <artifactId>design</artifactId>
     <groupId>com.automationrockstars</groupId>
-    <version>1.0.4-SNAPSHOT</version>
-    <relativePath>../../../Design/design/pom.xml</relativePath>
+    <version>1.0.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webdriver-sikulix-driver</artifactId>
@@ -30,6 +29,26 @@
       </build>
     </profile>
   </profiles>
+  <repositories>
+    <repository>
+      <releases />
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>consol-labs-release</id>
+      <url>https://labs.consol.de/maven/repository/</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <updatePolicy>interval:10080</updatePolicy>
+      </snapshots>
+      <id>consol-labs-snapshots</id>
+      <url>https://labs.consol.de/maven/snapshots-repository/</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>

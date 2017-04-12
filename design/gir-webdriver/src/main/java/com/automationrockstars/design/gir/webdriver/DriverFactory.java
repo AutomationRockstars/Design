@@ -458,7 +458,7 @@ public class DriverFactory {
 			break;
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
-			result.setCapability("ignoreProtectedModeSettings", true);
+			result.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			result.setCapability("ie.validateCookieDocumentType", false);
 			break;

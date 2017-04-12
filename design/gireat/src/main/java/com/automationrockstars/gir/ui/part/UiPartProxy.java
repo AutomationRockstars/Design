@@ -430,11 +430,14 @@ public class UiPartProxy implements InvocationHandler{
 				.until(new Function<SearchContext,List<WebElement>>() {
 					@Override
 					public List<WebElement> apply(SearchContext input) {
-						List<WebElement> result = input.findElements(by);
-						if (result.size() < minimumSize){
-							result = null;
+						try {
+							WebElement result = input.findElement(by);
+						return Lists.newArrayList(result);
+						} catch (NoSuchElementException yach){
+							Throwables.propagate(yach);
+							return Lists.newArrayList();
 						}
-						return result;
+						
 					}
 				});
 				
