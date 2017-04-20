@@ -81,6 +81,7 @@ public class ImageUiPartDelegate extends AbstractUiPartDelegate{
 
 	@Override
 	public WebElement getWrappedElement() {
+		System.out.println("IMAGE LOC " + getLocator());
 		wrapped = (UiObject) SearchContextService.provideForImage().findElement(getLocator());
 		return wrapped;
 	}

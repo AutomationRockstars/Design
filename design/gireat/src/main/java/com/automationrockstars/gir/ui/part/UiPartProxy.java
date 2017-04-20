@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.By.ById;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+
 import com.automationrockstars.design.gir.webdriver.ByOrder;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.HasLocator;
@@ -338,7 +339,7 @@ public class UiPartProxy implements InvocationHandler{
 		Preconditions.checkArgument(args == null || args.length == 0,"UiPart method cannot accept arguments");
 		final Class<?> wantedResult = method.getReturnType();
 		org.openqa.selenium.By by = null;
-
+		
 		if (UiPart.class.isAssignableFrom(method.getReturnType())){
 			if (ui instanceof WebUiPartDelegate){
 				((WebUiPartDelegate)ui).initialPageSetUp();
@@ -391,7 +392,7 @@ public class UiPartProxy implements InvocationHandler{
 				FilterableSearchContext.setWait(method.getAnnotation(Optional.class).timeout());
 			}
 			if (isImage(method)){
-				result = searchByImage(host,by,timeout,minimumSize);
+				result = searchByImage((UiPart)host,by,timeout,minimumSize);
 			} else {
 				result = search((UiPart)host,by, timeout, minimumSize);
 			}
@@ -423,9 +424,16 @@ public class UiPartProxy implements InvocationHandler{
 
 	}
 
-	private List<WebElement> searchByImage(Object host, final By by, int timeout, final int minimumSize) {
-		return new FluentWait<SearchContext>(SearchContextService.provideForImage())
-				.withTimeout(timeout,TimeUnit.SECONDS)
+	private List<WebElement> searchByImage(UiPart host, final By by, int timeout, final int minimumSize) {
+		SearchContext context = SearchContextService.provideForImage();
+		FluentWait<SearchContext> delay = host.delay();
+		
+		if (! (host.getLocator() instanceof ById && host.getLocator().toString().startsWith("By.id: image:"))){
+			delay = new FluentWait<SearchContext>(context);
+		}
+		
+		return delay.withTimeout(timeout, TimeUnit.SECONDS)
+
 				.withMessage(String.format("Element identified %s not found", by))
 				.until(new Function<SearchContext,List<WebElement>>() {
 					@Override
@@ -491,31 +499,38 @@ public class UiPartProxy implements InvocationHandler{
 				return result;
 			}}));
 	}
+	
+	private static FluentIterable<WebElement> visible(FluentIterable<WebElement> toFilter){
+		return toFilter.filter(new Predicate<WebElement>(){
+
+			@Override
+			public boolean apply(WebElement input) {
+				if (input.getTagName().equalsIgnoreCase("body")){
+					throw new NoSuchElementException(String.format("Usable element covering %s cannot be found", input));
+				}
+				return FilterableSearchContext.isVisible(input);
+			}});
+
+	}
 	private List<WebElement> findVisibleParent(final List<WebElement> initial,final boolean visibleOnly){
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
 		List<WebElement> previous = initial;
 		FluentIterable<WebElement> hidden = FluentIterable.from(previous);
-
-		while (hidden.firstMatch(new Predicate<WebElement>(){
-			public boolean apply(WebElement input) {
-				//						boolean vis = input.isDisplayed();
-				boolean click = input.isEnabled();
-				Point loc  = input.getLocation();
-				if (input.getTagName().equalsIgnoreCase("body")){
-					throw new NoSuchElementException(String.format("Usable element covering %s cannot be found", input));
-				}
-				return !((click && loc.getX() >=0 && loc.getY()>=0));
-			}}).isPresent()){
+		List<WebElement> result = visible(hidden).toList();
+		
+		while (result.isEmpty()){
+			previous = Lists.newArrayList(hidden.toList());
 			hidden = FluentIterable.from(previous).transform(new Function<WebElement, WebElement>() {
 
 				public WebElement apply(WebElement input) {
 					return input.findElement(org.openqa.selenium.By.xpath(".."));
 				}
 			});
-			previous = Lists.newArrayList(hidden.toList());
+			result = visible(hidden).toList();
+			
 		}
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",visibleOnly);
-		return hidden.toList();
+		return result;
 	}
 
 	public Object invoke(Object host, Method method, Object[] args) throws Throwable {
