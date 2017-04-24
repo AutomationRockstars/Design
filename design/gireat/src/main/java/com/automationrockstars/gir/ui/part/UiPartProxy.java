@@ -410,7 +410,7 @@ public class UiPartProxy implements InvocationHandler{
 			ConfigLoader.config().setProperty("webdriver.visibleOnly",visibleOnly);
 			FilterableSearchContext.unsetWait();
 		}
-		if (method.getAnnotation(Covered.class) != null && method.getAnnotation(Covered.class).lookForVisibleParent()){
+		if (method.getAnnotation(Covered.class) != null && method.getAnnotation(Covered.class).lookForVisibleParent() && ! result.isEmpty() && ! UiParts.isEmpty(result.get(0))){
 			result = findVisibleParent(result,visibleOnly);
 		} else if (method.getAnnotation(Covered.class) == null)	{
 			result = Lists.newArrayList(Iterables.filter(result,UiParts.visible()));
@@ -514,6 +514,7 @@ public class UiPartProxy implements InvocationHandler{
 	}
 	private List<WebElement> findVisibleParent(final List<WebElement> initial,final boolean visibleOnly){
 		ConfigLoader.config().setProperty("webdriver.visibleOnly",false);
+		
 		List<WebElement> previous = initial;
 		FluentIterable<WebElement> hidden = FluentIterable.from(previous);
 		List<WebElement> result = visible(hidden).toList();
