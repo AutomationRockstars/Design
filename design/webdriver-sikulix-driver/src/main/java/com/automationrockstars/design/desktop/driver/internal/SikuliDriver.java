@@ -7,13 +7,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.sikuli.basics.Debug;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
@@ -27,8 +25,6 @@ import com.automationrockstars.design.desktop.driver.ImageSearchContext;
 import com.automationrockstars.design.desktop.driver.ImageUiObject;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
@@ -77,6 +73,7 @@ public class SikuliDriver implements ImageSearchContext {
 
 	private static final AtomicInteger found = new AtomicInteger(-1);
 
+	private static final AtomicInteger finishedTasks = new AtomicInteger(-1);
 	private static final AtomicInteger existResult = new AtomicInteger(-1);
 
 	private static Callable<Match> searchTask(final int screenNo, final String psi, final double timeout) {
@@ -92,6 +89,8 @@ public class SikuliDriver implements ImageSearchContext {
 					return result;
 				} catch (FindFailed ignore) {
 					return null;
+				} finally {
+					finishedTasks.incrementAndGet();
 				}
 
 			}
@@ -108,6 +107,7 @@ public class SikuliDriver implements ImageSearchContext {
 				if (result != null) {
 					existResult.set(screenNo);
 				}
+				found.incrementAndGet();
 				return result;
 			}
 		};
@@ -142,17 +142,17 @@ public class SikuliDriver implements ImageSearchContext {
 			futures.add(searchService.submit(searchTask(i, image, timeout)));
 		}
 				
-		new FluentWait<AtomicInteger>(found)
-		.withTimeout(Double.valueOf(timeout).longValue(), TimeUnit.SECONDS)
-		.pollingEvery(100, TimeUnit.MILLISECONDS)
-		.withMessage("Element " + image + " not visible on screen")
-		.until(new Predicate<AtomicInteger>() {
-
-			@Override
-			public boolean apply(AtomicInteger input) {
-				return found.get() > -1;
-			}
-		});
+//		new FluentWait<AtomicInteger>(found)
+//		.withTimeout(Double.valueOf(timeout).longValue(), TimeUnit.SECONDS)
+//		.pollingEvery(100, TimeUnit.MILLISECONDS)
+//		.withMessage("Element " + image + " not visible on screen")
+//		.until(new Predicate<AtomicInteger>() {
+//
+//			@Override
+//			public boolean apply(AtomicInteger input) {
+//				return found.get() > -1;
+//			}
+//		});
 		
 
 		if (found.get() < 0) {
@@ -187,33 +187,49 @@ public class SikuliDriver implements ImageSearchContext {
 	
 		private final void doSearch(){
 			LOG.trace("Staring search for multiple objects identified by image {}",psi);
-			new FluentWait<Object>(new Object())
-			.ignoring(Throwable.class)
-			.withTimeout(new Double(timeout).longValue(), TimeUnit.SECONDS)
-			.withMessage("Element " + psi + " not visible on screen")
-			.pollingEvery(500, TimeUnit.MILLISECONDS)
-			.until(new Predicate<Object>() {
-
-				@Override
-				public boolean apply(Object input) {
-					
-					for (int i=0;i<screens.size();i++){
-						futures.add(searchService.submit(searchAllTask(i, psi)));
-					}
-					for (Future<Iterator<Match>> future : futures){
-						Iterator<Match> result = null;
-						try {
-							result = future.get();
-						} catch (Exception e) {
-						}
-						if (result != null){
-							allResults.add(result);
-							screenNo = 0;
-						}
-					}
-					return screenNo > -1;
+//			new FluentWait<Object>(new Object())
+//			.ignoring(Throwable.class)
+//			.withTimeout(new Double(timeout).longValue(), TimeUnit.SECONDS)
+//			.withMessage("Element " + psi + " not visible on screen")
+//			.pollingEvery(500, TimeUnit.MILLISECONDS)
+//			.until(new Predicate<Object>() {
+//
+//				@Override
+//				public boolean apply(Object input) {
+//					
+//					for (int i=0;i<screens.size();i++){
+//						futures.add(searchService.submit(searchAllTask(i, psi)));
+//					}
+//					for (Future<Iterator<Match>> future : futures){
+//						Iterator<Match> result = null;
+//						try {
+//							result = future.get();
+//						} catch (Exception e) {
+//						}
+//						if (result != null){
+//							allResults.add(result);
+//							screenNo = 0;
+//						}
+//					}
+//					return screenNo > -1;
+//				}
+//			});
+			
+				for (int i=0;i<screens.size();i++){
+					futures.add(searchService.submit(searchAllTask(i, psi)));
 				}
-			});
+				for (Future<Iterator<Match>> future : futures){
+					Iterator<Match> result = null;
+					try {
+						result = future.get();
+					} catch (Exception e) {
+					}
+					if (result != null){
+						allResults.add(result);
+						screenNo = 0;
+					}
+				}
+			
 			LOG.trace("Search for all elements identified by image {} finished",psi);
 			
 		}
@@ -256,28 +272,15 @@ public class SikuliDriver implements ImageSearchContext {
 	public static synchronized Match isVisible(String image) {
 		image = ImageCache.path(image);
 		existResult.set(-1);
+		found.set(0);
 		final List<Future<Match>> futures = Lists.newArrayList();
 		for (int i = 0; i < screens.size(); i++) {
 			futures.add(searchService.submit(existTask(i, image)));
 		}
-		new FluentWait<AtomicInteger>(existResult)
-		.withTimeout(20, TimeUnit.SECONDS)
-		.pollingEvery(100, TimeUnit.MILLISECONDS)
-		.withMessage("Searching the screen for " + image)
-		.until(new Predicate<AtomicInteger>() {
-
-			@Override
-			public boolean apply(AtomicInteger input) {
-				return input.get() > -1 || FluentIterable.from(futures).allMatch(new Predicate<Future<Match>>() {
-
-					@Override
-					public boolean apply(Future<Match> input) {
-						return input.isDone();
-					}
-				});
-			}
-		}); 
 		
+		while (found.get() < screens.size()){
+		}
+				
 		if (existResult.get() >= 0) {
 			try {
 				return futures.get(existResult.get()).get();
@@ -290,17 +293,14 @@ public class SikuliDriver implements ImageSearchContext {
 	}
 	
 	public static void waitUntilInvisible(String imagePath, double timeout) {
-		
-		new FluentWait<String>(imagePath)
-		.withTimeout(new Double(timeout).longValue(), TimeUnit.SECONDS)
-		.pollingEvery(500, TimeUnit.MILLISECONDS)
-		.withMessage("Element " + imagePath + " still visible on screen")
-		.until(new Predicate<String>() {
-			@Override
-			public boolean apply(String input) {
-				return isVisible(input) == null;
+		while((isVisible(imagePath) != null) || timeout < 0){
+			try {
+				
+				Thread.sleep(500);
+				timeout -= 500;
+			} catch (InterruptedException ignore) {
 			}
-		});
+		}
 		
 	}
 

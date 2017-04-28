@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.ConvertUtils;
 
@@ -144,5 +145,9 @@ public class TestDataProxyFactory {
 			return type.cast(data);
 		}
 		return type.cast(Proxy.newProxyInstance(TestDataRecord.class.getClassLoader(), new Class[]{type}, new TestDataBridge(data)));
+	}
+	
+	public static <T extends TestDataRecord> T create(Map<String,Object> data,Class<T> clazz){
+		return createProxy(new MapTestDataRecord(data),clazz);
 	}
 }
