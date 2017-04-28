@@ -109,7 +109,7 @@ public class AllureStoryReporter implements StoryReporter {
 
 	public  AllureStoryReporter() {
 		LOG.info("instantiating");
-		cleanPreviousReport();
+		GenericAllureStoryReporter.cleanPreviousReport();
 		setLogger();
 		ConfigLoader.config().setProperty("assert.screenshot", false);
 	}
@@ -407,41 +407,7 @@ public class AllureStoryReporter implements StoryReporter {
 
 	private static Optional<File> resultsDir = null;
 
-	private static Optional<File> getResultsDir(){
-
-		Optional<File> dire = Optional.absent();
-		if (resultsDir == null || ! dire.isPresent()){
-			Collection<File> dirs = FileUtils.listFiles(new File(new File("").getAbsolutePath()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE); 
-			dire = Iterables.tryFind(dirs, new Predicate<File>() {
-
-				@Override
-				public boolean apply(File input) {
-					return input.isDirectory() && input.getName().endsWith("allure-results");
-				}
-			});
-			resultsDir = dire;
-		}
-		return resultsDir;
-	}
-	private static File reportDir = null;
-	private static File getReportDir(){
-		if (reportDir == null){
-			if (getResultsDir().isPresent())
-				reportDir = Paths.get(getResultsDir().get().getParent(),"allure-report").toFile();
-		}
-		return reportDir;
-	}
-	public static void cleanPreviousReport(){
-		if (getResultsDir().isPresent()){
-			try {
-				FileUtils.forceDelete(getReportDir());
-				FileUtils.forceDelete(getResultsDir().get());
-			} catch (IOException e) {
-				LOG.warn("Deleting previous results failed");
-			}
-		}
-	}
-	public static void generateReport(){
+		public static void generateReport(){
 		String userSettings = String.format("%s/.m2/settings.xml", System.getProperty("user.home"));
 		if (! Paths.get(userSettings).toFile().canRead()){
 			String globalSettings = String.format("%s/conf/settings.xml", ConfigLoader.config().getString("M2_HOME"));
@@ -458,14 +424,14 @@ public class AllureStoryReporter implements StoryReporter {
 			}
 		}
 
-		if (getResultsDir().isPresent()){
-			generateProperties(getResultsDir().get().getAbsolutePath());
+		if (GenericAllureStoryReporter.getResultsDir().isPresent()){
+			generateProperties(GenericAllureStoryReporter.getResultsDir().get().getAbsolutePath());
 			AllureReportBuilder bl;
 			try {
-				bl = new AllureReportBuilder("1.4.19", getReportDir());
-				bl.processResults(getResultsDir().get());
+				bl = new AllureReportBuilder("1.4.19", GenericAllureStoryReporter.getReportDir());
+				bl.processResults(GenericAllureStoryReporter.getResultsDir().get());
 				bl.unpackFace();
-				URI report = Paths.get(getReportDir().getAbsolutePath(),"index.html").toUri();
+				URI report = Paths.get(GenericAllureStoryReporter.getReportDir().getAbsolutePath(),"index.html").toUri();
 				LOG.info("Report generated to {}",report);
 				if (ConfigLoader.config().containsKey("bdd.open.report")){
 					if(Desktop.isDesktopSupported())

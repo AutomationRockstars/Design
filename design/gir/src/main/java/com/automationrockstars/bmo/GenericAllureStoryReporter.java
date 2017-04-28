@@ -60,6 +60,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.config.AllureConfig;
 import ru.yandex.qatools.allure.config.AllureModelUtils;
 import ru.yandex.qatools.allure.events.MakeAttachmentEvent;
 import ru.yandex.qatools.allure.events.StepCanceledEvent;
@@ -436,7 +437,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 	private static Optional<File> resultsDir = null;
 
-	private static Optional<File> getResultsDir(){
+	public static Optional<File> getResultsDir(){
 		Optional<File> dire = Optional.absent();
 		if (resultsDir == null || ! resultsDir.isPresent()){
 			Collection<File> dirs = FileUtils.listFilesAndDirs(new File(new File("").getAbsolutePath()), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE); 
@@ -444,7 +445,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 				@Override
 				public boolean apply(File input) {
-					return input.getName().endsWith("allure-results");
+					return input.getAbsoluteFile().toPath().endsWith(Paths.get(ConfigLoader.config().getString("allure.results.directory",AllureConfig.getDefaultResultsDirectory().getName())));
 				}
 			});
 			resultsDir = dire;
@@ -452,7 +453,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 		return resultsDir;
 	}
 	private static File reportDir = null;
-	private static File getReportDir(){
+	public static File getReportDir(){
 		if (reportDir == null){
 			if (getResultsDir().isPresent())
 				reportDir = Paths.get(getResultsDir().get().getParent(),"allure-report").toFile();

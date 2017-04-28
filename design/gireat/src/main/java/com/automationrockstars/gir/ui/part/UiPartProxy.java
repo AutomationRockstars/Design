@@ -445,7 +445,6 @@ public class UiPartProxy implements InvocationHandler{
 							Throwables.propagate(yach);
 							return Lists.newArrayList();
 						}
-						
 					}
 				});
 				
