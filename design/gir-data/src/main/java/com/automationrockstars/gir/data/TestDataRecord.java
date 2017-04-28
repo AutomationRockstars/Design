@@ -10,5 +10,5 @@ public interface TestDataRecord  {
 	
 	<C extends TestDataRecord> C modify(String name, Object value);
 	
-	
+	<C extends TestDataRecord> C modify(C original);
 }

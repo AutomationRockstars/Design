@@ -332,6 +332,8 @@ public class DriverFactory {
 			String name = browser.get().toLowerCase();
 			if(name.equalsIgnoreCase("ie") || name.equals("internet_explorer") || name.equals("internet explorer")){
 				name= BrowserType.IE;
+			} else if (name.equals("edge") || name.toLowerCase().equals("microsoftedge")){
+				name = BrowserType.EDGE;
 			}
 			if (Strings.isNullOrEmpty(GRID_URL) || ! isGridAvailable(GRID_URL)){			
 				log.info("Grid not detected");
@@ -458,7 +460,7 @@ public class DriverFactory {
 			break;
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
-			result.setCapability("ignoreProtectedModeSettings", true);
+			result.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			result.setCapability("ie.validateCookieDocumentType", false);
 			break;

@@ -48,5 +48,14 @@ public class MapTestDataRecord implements TestDataRecord{
 		data.put(name, value);
 		return (C) this;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <C extends TestDataRecord> C modify(C original) {
+		for (String key : original.toMap().keySet()){
+			data.put(key, original.get(key));
+		}
+		return (C) this;
+	}
 	
 }
