@@ -10,6 +10,7 @@ pipeline {
 		}
 
 		stage('Deploy'){
+		when { branch == 'master' }
 		steps {	sh 'mvn source:jar deploy -DskipTests' }
 		}
 	}
