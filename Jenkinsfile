@@ -2,15 +2,15 @@ pipeline {
 	agent any
 	stages {
 		stage ('Checkout') {
-			scm checkout
+		steps {	scm checkout }
 		}
 		
 		stage ('Build and Test'){
-			sh 'mvn clean install -Dnoui'
+		steps {	sh 'mvn clean install -Dnoui' }
 		}
 
 		stage('Deploy'){
-			sh 'mvn source:jar deploy -DskipTests'
+		steps {	sh 'mvn source:jar deploy -DskipTests' }
 		}
 	}
 	
