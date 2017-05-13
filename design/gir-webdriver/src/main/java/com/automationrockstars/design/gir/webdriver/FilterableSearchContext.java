@@ -96,7 +96,7 @@ public class FilterableSearchContext implements SearchContext {
 	public List<WebElement> findElements(By by) {
 		List<WebElement> result = getVisible(by);
 		if (result.isEmpty()){
-			log.debug("Waiting for {} to appear",by);
+			log.debug("Waiting for {} to appear in {}",by,unwrap());
 			result = stubbornWait(by);
 		}
 		log.debug("Returning {} filtered", result);

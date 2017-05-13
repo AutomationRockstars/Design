@@ -33,6 +33,8 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.el.WebElementPredicate;
@@ -51,6 +53,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	protected WebElement wrapped;
 	protected int timeout = -1;
 
+	private static final Logger LOG = LoggerFactory.getLogger(UiObject.class);
 	public UiObject() {
 
 	}
@@ -93,6 +96,9 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 
 	
 	public By getLocator() {
+		if (by == null && HasLocator.class.isAssignableFrom(getWrappedElement().getClass())){
+			return ((HasLocator)getWrappedElement()).getLocator();
+		} 
 		return by;
 	}
 
@@ -288,6 +294,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 			found = new FilterableSearchContext(getWrappedElement()).findElements(by);
 			Preconditions.checkState(! found.isEmpty());
 		} catch (Throwable cachingIsNotWorking){
+			LOG.debug("Falling back to driver for finding multiple with {}",new ByChained(getLocator(), by));
 			found = DriverFactory.getDriver().findElements(new ByChained(getLocator(), by));
 		}
 		findPlugins().afterFindElements(this, by, found);
@@ -300,6 +307,7 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		try {
 			result = new FilterableSearchContext(getWrappedElement()).findElement(by); 
 		} catch (Throwable cachingIsNotWorking){
+			LOG.debug("Falling back to driver for finding single with {}",new ByChained(getLocator(), by));
 			result = DriverFactory.getDriver().findElement(new ByChained(getLocator(), by));
 		}
 		findPlugins().afterFindElement(this, by, result);

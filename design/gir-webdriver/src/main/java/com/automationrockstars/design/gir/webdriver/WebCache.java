@@ -72,7 +72,12 @@ public class WebCache  {
 			} else {
 				try {
 					elements.addAll(ctx.findElements(by));
-				} catch (WebDriverException ignore){}
+				} catch (Exception ignore){
+					ignore.printStackTrace();
+					System.out.println(ctx);
+					System.out.println(by);
+					
+				}
 			}
 		}
 

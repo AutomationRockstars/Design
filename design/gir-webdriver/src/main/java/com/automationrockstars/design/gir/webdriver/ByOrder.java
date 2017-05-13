@@ -25,6 +25,16 @@ public class ByOrder extends org.openqa.selenium.By {
 		return Lists.newArrayList(all.get(index));
 	}
 	
+	@Override
+	public WebElement findElement(SearchContext context){
+		if (index == 0){
+			return context.findElement(locator);
+		} else {
+			return findElements(context).get(0);
+			
+		}
+	}
+	@Override
 	public String toString(){
 		return String.format("%s of %s ", index,locator);
 	}

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.How;
@@ -52,15 +53,19 @@ public class UiParts {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Predicate visible(){
+	public static Predicate<WebElement> visible(){
 		return new Predicate() {
 			@Override
 			public boolean apply(Object input) {
+				try {
 				if (WebElement.class.isAssignableFrom(input.getClass())){
 					return ((WebElement) input).isDisplayed();
 				} else if (WrapsElement.class.isAssignableFrom(input.getClass())){
 					return ((WrapsElement)input).getWrappedElement().isDisplayed();
 				} else return false;
+				} catch (WebDriverException e){
+					return false;
+				}
 			}			
 		};
 	}
@@ -287,8 +292,7 @@ public class UiParts {
 	}
 	
 	private static final Logger LOG = LoggerFactory.getLogger(UiParts.class);
-	@SuppressWarnings("rawtypes")
-	public static Predicate withText(final String text) {
+	public static Predicate<WebElement> withText(final String text) {
 		return new Predicate() {
 
 			public boolean apply(Object input) {

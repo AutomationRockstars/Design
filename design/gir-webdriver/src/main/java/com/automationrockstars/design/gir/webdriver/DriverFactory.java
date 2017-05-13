@@ -269,7 +269,7 @@ public class DriverFactory {
 		}
 		return story;
 	}
-	
+
 	private static String scenarioName(){
 		String scenario = null;
 		try {
@@ -289,7 +289,7 @@ public class DriverFactory {
 			ConfigLoader.config().addProperty("webdriver.video", videoLink);
 			List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String,String>>());
 			String story = String.format("%s->%s::",storyName(),scenarioName());
-			
+
 			if (Strings.isNullOrEmpty(story)){
 				story = "recording " + driver.getSessionId();
 			}
@@ -297,11 +297,11 @@ public class DriverFactory {
 			String title = "video_"+story;
 			int videoRepetition = 0;
 			String titlePostfix = "";
-			
+
 			Optional<Object> titleAlreadyThere = Optional.absent();
 			do {
 				if (videoRepetition > 0){
-						titlePostfix = String.format("_%s", videoRepetition);
+					titlePostfix = String.format("_%s", videoRepetition);
 				}
 				final String titleBase = title + titlePostfix;
 				titleAlreadyThere = FluentIterable.from(videos).firstMatch(new Predicate<Object>() {
@@ -454,9 +454,11 @@ public class DriverFactory {
 					profile.setPreference("browser.download.manager.showWhenStarting",false);
 					profile.setPreference("browser.helperApps.neverAsk.saveToDisk",autoDownloadFiles());
 				}
-			} 
+			}
 			result.setCapability(FirefoxDriver.PROFILE, profile);
-			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+			result.setCapability("acceptInsecureCerts", true);
+			result.setCapability(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,true);
+			
 			break;
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
@@ -476,7 +478,8 @@ public class DriverFactory {
 			result = new DesiredCapabilities(driverType,"",Platform.ANY);
 			break;
 		} 
-		String proxy= ConfigLoader.config().getString("webdriver.proxy"); 
+		String proxy= ConfigLoader.config().getString("webdriver.proxy");
+		result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		if (! Strings.isNullOrEmpty(proxy)){
 			Proxy p = new Proxy();
 			p.setHttpProxy(proxy)
@@ -484,7 +487,9 @@ public class DriverFactory {
 			result.setCapability(CapabilityType.PROXY, p);
 			log.info("Using proxy {}",proxy);
 		}
-		return concatenate(result,capabilities);
+		result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		result.setCapability("acceptInsecureCerts", true);
+		return  concatenate(result,capabilities);
 	}
 
 	private static Capabilities concatenate(Capabilities... toJoin){
@@ -492,13 +497,23 @@ public class DriverFactory {
 	}
 
 	private static Thread createDriverCloser(final WebDriver driver){
-		return new Thread(new Runnable() {
+		if (ConfigLoader.config().getBoolean("webdriver.dontclose",false)){
+			return new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				closeDriver(driver);
-			}
-		});
+				@Override
+				public void run() {
+					log.info("Leaving open");
+				}
+			});
+		} else {
+			return new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					closeDriver(driver);
+				}
+			});
+		}
 	}
 	public static boolean isWrong(WebDriver driver){
 		try {
@@ -554,9 +569,9 @@ public class DriverFactory {
 
 	private static boolean wrap(WebDriver driver) {
 		if (HasCapabilities.class.isAssignableFrom(driver.getClass())){
-		return ! ((HasCapabilities)driver).getCapabilities().is("cannot_wrap");
+			return ! ((HasCapabilities)driver).getCapabilities().is("cannot_wrap");
 		} else return true;
-		
+
 	}
 
 	private static boolean hasCapabilities(WebDriver driver, Capabilities capabilities){
@@ -680,6 +695,10 @@ public class DriverFactory {
 
 	public static boolean isPhantom() {
 		return browserName().equals(BrowserType.PHANTOMJS);
+	}
+
+	public static boolean isEdge() {
+		return browserName().equals(BrowserType.EDGE);
 	}
 
 }
