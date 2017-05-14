@@ -20,8 +20,8 @@ import com.automationrockstars.bmo.RedirectionCalculator;
 
 public class GridUtilsTest {
 
-	@Test
-	@Ignore
+//	@Test
+//	@Ignore
 	public void test() {
 		String gridUrl = "http://10.64.103.231:4444/wd/hub/";
 		System.setProperty("grid.url", gridUrl);
