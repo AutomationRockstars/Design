@@ -6,7 +6,7 @@ pipeline {
 		}
 		
 		stage ('Build and Test'){
-		steps {	sh 'mvn clean install -Dnoui' }
+		steps {	sh 'mvn clean install -Dgrid.url=http://localhost:5555/wd/hub' }
 		}
 
 		stage('Deploy'){
