@@ -35,6 +35,7 @@ public class WebdriverTest {
 			if (res == 0){
 				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
 			} else {
+				LOG.info("Cannot find phantomjs");
 				return ;
 			}
 		}
