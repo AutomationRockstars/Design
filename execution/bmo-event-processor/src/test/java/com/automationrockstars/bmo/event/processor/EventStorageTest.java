@@ -107,6 +107,7 @@ public class EventStorageTest {
 	}
 	@Test
 	public void should_cleanTree(){
+		System.out.println(st.getAll());
 		st.clearTree(tcf2);
 		System.out.println(st.getAll());
 		assertThat(st.getAll().toList(),hasSize(2));
@@ -129,6 +130,7 @@ public class EventStorageTest {
 	
 	@Test
 	public void should_provideFullTree(){
+		System.out.println(st.getAll());
 		st.clearTree(es1);
 		System.out.println(st.getAll());
 		assertThat(st.getTree(tsf2).toList(),containsInAnyOrder(st.getAll().toList().toArray()));
