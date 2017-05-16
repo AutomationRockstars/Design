@@ -6,7 +6,7 @@ pipeline {
 		}
 		
 		stage ('Build and Test'){
-		steps {	sh 'mvn clean install -Dnoui' }
+		steps {	sh 'mvn clean install -Dgrid.url=http://172.17.0.1:4444/wd/hub -Dwebdriver.browser=chrome' }
 		}
 
 		stage('Deploy'){
