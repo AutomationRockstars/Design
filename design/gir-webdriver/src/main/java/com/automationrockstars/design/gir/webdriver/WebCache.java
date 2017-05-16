@@ -73,10 +73,7 @@ public class WebCache  {
 				try {
 					elements.addAll(ctx.findElements(by));
 				} catch (Exception ignore){
-					ignore.printStackTrace();
-					System.out.println(ctx);
-					System.out.println(by);
-					
+									
 				}
 			}
 		}
