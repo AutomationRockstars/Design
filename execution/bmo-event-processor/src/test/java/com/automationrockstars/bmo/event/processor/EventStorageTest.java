@@ -55,7 +55,7 @@ public class EventStorageTest {
 		st.store(tsf2);
 		st.store(ef2);
 		System.out.println("*****************");
-		System.out.println(st);
+		System.out.println(st.getAll());
 		System.out.println("*****************");
 	}
 
@@ -69,6 +69,7 @@ public class EventStorageTest {
 	
 	@Test
 	public void should_provideChildren(){
+		System.out.println(st.getAll());
 		assertThat(st.getChildren(es1),contains((Event)ef1));
 		assertThat(st.getChildren(es2),containsInAnyOrder((Event)tss2,(Event)ef2));
 
@@ -107,6 +108,7 @@ public class EventStorageTest {
 	@Test
 	public void should_cleanTree(){
 		st.clearTree(tcf2);
+		System.out.println(st.getAll());
 		assertThat(st.getAll().toList(),hasSize(2));
 	}
 	
@@ -128,6 +130,7 @@ public class EventStorageTest {
 	@Test
 	public void should_provideFullTree(){
 		st.clearTree(es1);
+		System.out.println(st.getAll());
 		assertThat(st.getTree(tsf2).toList(),containsInAnyOrder(st.getAll().toList().toArray()));
 	}
 
