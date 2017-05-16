@@ -59,7 +59,7 @@ public class EventStorageTest {
 		System.out.println("*****************");
 	}
 
-	@Test
+//	@Test
 	public void should_provideParent() {
 		assertThat(st.getParent(ef1),is(equalTo((Event)es1)));
 		assertThat(st.getParent(ef2),is(equalTo((Event)es2)));
@@ -86,7 +86,7 @@ public class EventStorageTest {
 
 	}
 	
-	@Test
+//	@Test
 	public void should_provideParentOfType(){
 		assertThat(st.getParent(ef2,EventType.EXECUTION_START),is(equalTo((Event)es2)));
 		assertThat(st.getParent(ef2,EventType.EXECUTION_FINISH),is(nullValue()));
@@ -95,7 +95,7 @@ public class EventStorageTest {
 		assertThat(st.getParent(ef1,EventType.EXECUTION_START),is(equalTo((Event)es1)));
 	}
 		
-	@Test
+//	@Test
 	public void should_addUnderCondition(){
 		assertThat(st.storeIfParentStored(ef2), is(true));
 		assertThat(st.storeIfParentStored(es2), is(false));
@@ -110,7 +110,7 @@ public class EventStorageTest {
 		assertThat(st.getAll().toList(),hasSize(2));
 	}
 	
-	@Test
+//	@Test
 	public void should_remove(){
 		Event event = EventFactory.createAction(null, "action", "element");
 		st.store(event);
@@ -119,7 +119,7 @@ public class EventStorageTest {
 		assertThat("Event not removed",! st.has(event));
 	}
 	
-	@Test
+//	@Test
 	public void should_clean(){
 		st.clean();
 		assertThat(st.getAll(), is(emptyIterable()));
@@ -131,17 +131,17 @@ public class EventStorageTest {
 		assertThat(st.getTree(tsf2).toList(),containsInAnyOrder(st.getAll().toList().toArray()));
 	}
 
-	@Test
+//	@Test
 	public void should_provideTestStepFinishFromAllChildren(){
 		assertThat(st.getAllChildren(es2, EventType.TEST_STEP_FINISH),contains((Object)tstf2));
 			}
 	
-	@Test
+//	@Test
 	public void should_provideTestSuiteStartFromDirechChildren(){
 		assertThat(st.getChildren(es2, EventType.TEST_SUITE_START),contains((Object)tss2));
 	}
 	
-	@Test
+//	@Test
 	public void should_checkForEventExistense(){
 		assertThat("Has unexpected commit", ! st.hasEvents(EventType.COMMIT));
 		assertThat("Doesnt have test case finish", st.hasEvents(EventType.TEST_CASE_FINISH));
