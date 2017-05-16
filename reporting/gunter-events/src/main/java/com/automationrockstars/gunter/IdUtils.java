@@ -13,6 +13,8 @@ package com.automationrockstars.gunter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.common.base.Strings;
+
 public class IdUtils {
 
 	public static final String id(EventType type){
@@ -25,7 +27,7 @@ public class IdUtils {
 	}
 	private static SimpleDateFormat formatter = new SimpleDateFormat("dd.HH:mm:ss");
 	private static synchronized final String postfix(){
-		return formatter.format(new Date())  + String.valueOf(System.nanoTime()).substring(12);
+		return formatter.format(new Date())  + Strings.padEnd(String.valueOf(System.nanoTime()), 12, '0').substring(12);
 	}
 	
 }
