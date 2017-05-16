@@ -106,7 +106,11 @@ public class TestDataProxyFactory {
 					return result;
 				}
 			}
-			return Lists.newArrayList(adjustResult(returnType, value));
+			if (value != null){
+				return Lists.newArrayList(adjustResult(returnType, value));
+			} else {
+				return Lists.newArrayList();
+			}
 			
 		}
 		private Object adjustResult(Class<?> returnType, Object value){
