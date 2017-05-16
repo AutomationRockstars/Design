@@ -54,8 +54,9 @@ public class EventStorageTest {
 		st.store(tcf2);
 		st.store(tsf2);
 		st.store(ef2);
-
-		
+		System.out.println("*****************");
+		System.out.println(st);
+		System.out.println("*****************");
 	}
 
 	@Test
