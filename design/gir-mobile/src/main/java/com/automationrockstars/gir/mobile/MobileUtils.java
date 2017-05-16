@@ -18,6 +18,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfEl
 import java.util.Collections;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -124,8 +125,11 @@ public class MobileUtils {
 	}
 
 	public static void scrollToText(String text){
-		MobileFactory.getDriver().scrollTo(text);
+		WebElement elem = MobileUiObjectFactory.onAny(text);
+		Preconditions.checkNotNull(elem,"Element with text %s not found",text);
+		scrollTo(elem);
 	}
+
 	public static void pressAdjusted(WebElement element){
 
 		int[] coordinates = adjustCoordinates(element);
