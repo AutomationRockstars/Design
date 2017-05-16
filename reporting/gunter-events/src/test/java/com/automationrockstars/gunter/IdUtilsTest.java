@@ -11,17 +11,18 @@
 package com.automationrockstars.gunter;
 
 import org.junit.Test;
-
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 public class IdUtilsTest {
 
 	@Test
 	public void testIdEventType() {
-		System.out.println(IdUtils.id(EventType.ACTION));
+		assertThat(IdUtils.id(EventType.ACTION),is(not(nullValue())));
 	}
 
 	@Test
 	public void testIdStringEventType() {
-		System.out.println(IdUtils.id(IdUtils.id(EventType.ACTION),EventType.ACTION));
+		assertThat(IdUtils.id(IdUtils.id(EventType.ACTION),EventType.ACTION),is(not(nullValue())));
 	}
 
 }
