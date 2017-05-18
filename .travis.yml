@@ -11,7 +11,7 @@ env:
 before_install:
  need to re-validate sec      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
-install: mvn clean source:jar -Dnoui -DskipTests --settings settings.xml
+install: mvn clean -B source:jar -Dnoui -DskipTests --settings settings.xml
 
 addons:
    coverity_scan:
@@ -19,7 +19,7 @@ addons:
       name: "AutomationRockstars/Design"
       description: "Build submitted via Travis CI"
     notification_email: admin@automationrockstars.com
-    build_command_prepend: "mvn clean"
+    build_command_prepend: "mvn clean":wq
     build_command:   "mvn -DskipTests=true compile --settings settings.xml"
     branch_pattern: master
 
