@@ -41,17 +41,17 @@ public class UiPartsTest {
 	
 	private void preparePhantom(){
 		if (ConfigLoader.config().containsKey("noui")){
-			int res = -1;
-			try {
-				res = new ProcessBuilder("phantomjs").start().waitFor(); 
-			} catch (Exception e){
-				res = -1;
-			}
-			if (res == 0){
-				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
-			} else {
-				return ;
-			}
+//			int res = -1;
+//			try {
+//				res = new ProcessBuilder("phantomjs").start().waitFor(); 
+//			} catch (Exception e){
+//				res = -1;
+//			}
+//			if (res == 0){
+//				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
+//			} else {
+//				return ;
+//			}
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class UiPartsTest {
 
 			public String apply(WebElement input) {
 				return input.getText().replaceAll("\\n.*", "");
-			}}),hasItem(containsString("AutomationRockstars · GitHub")));
+			}}),hasItem(containsString("AutomationRockstars ï¿½ GitHub")));
 		
 		
 		UiParts.on(SearchResults.class).githubLink().click();

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.DriverFactory;
 
 public class WebdriverTest {
 
@@ -25,21 +26,10 @@ public class WebdriverTest {
 
 	@Test
 	public void test() throws InterruptedException, IOException {
-		if (ConfigLoader.config().containsKey("noui")){
-			int res = -1;
-			try {
-				res = new ProcessBuilder("phantomjs").start().waitFor(); 
-			} catch (Exception e){
-				res = -1;
-			}
-			if (res == 0){
-				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
-			} else {
-				LOG.info("Cannot find phantomjs");
-				return ;
-			}
-		}
+		
 		Ebay.searchFor("aa");
+		
+		System.out.println(DriverFactory.getScreenshotFile().getAbsolutePath());
 	}
 
 }

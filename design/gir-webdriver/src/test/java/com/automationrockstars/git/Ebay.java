@@ -13,6 +13,6 @@ public class Ebay {
 		return EbayPageHeader.waitFor();
 	}
 	public static void searchFor(String whatFor){
-		page();
+		System.out.println(page().getText());
 	}
 }

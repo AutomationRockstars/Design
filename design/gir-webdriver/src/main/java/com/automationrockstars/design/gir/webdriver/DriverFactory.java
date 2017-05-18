@@ -76,6 +76,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.PeekingIterator;
+import com.machinepublishers.jbrowserdriver.JBrowserDriver;
+import com.machinepublishers.jbrowserdriver.Settings;
 
 
 
@@ -325,7 +327,10 @@ public class DriverFactory {
 	}
 	private static WebDriver createRemoteDriver(){
 		if (ConfigLoader.config().containsKey("noui")){
-			return new HtmlUnitDriver(true);
+			return new JBrowserDriver(Settings.builder()
+					.headless(true)
+					.cache(true)
+					.ssl("trustanything").build());
 		}
 		log.info("Creating browser for {}",browser.get());
 		try {
@@ -569,7 +574,8 @@ public class DriverFactory {
 
 	private static boolean wrap(WebDriver driver) {
 		if (HasCapabilities.class.isAssignableFrom(driver.getClass())){
-			return ! ((HasCapabilities)driver).getCapabilities().is("cannot_wrap");
+			Capabilities cp = ((HasCapabilities)driver).getCapabilities();
+			return ! ((cp != null) && cp.is("cannot_wrap"));
 		} else return true;
 
 	}
@@ -686,19 +692,20 @@ public class DriverFactory {
 	}
 
 	public static String browserName(){
-		return ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities().getBrowserName();
+		Capabilities caps = ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities();
+		return  (caps == null)?null:caps.getBrowserName();
 	}
 
 	public static boolean isIe(){
-		return browserName().equals(BrowserType.IE);
+		return BrowserType.IE.equals(browserName());
 	}
 
 	public static boolean isPhantom() {
-		return browserName().equals(BrowserType.PHANTOMJS);
+		return BrowserType.PHANTOMJS.equals(browserName());
 	}
 
 	public static boolean isEdge() {
-		return browserName().equals(BrowserType.EDGE);
+		return BrowserType.EDGE.equals(browserName());
 	}
 
 }

@@ -24,6 +24,12 @@
 			<artifactId>mvel2</artifactId>
 			<version>2.3.1.Final</version>
 		</dependency>
+<!-- https://mvnrepository.com/artifact/com.machinepublishers/jbrowserdriver -->
+<dependency>
+    <groupId>com.machinepublishers</groupId>
+    <artifactId>jbrowserdriver</artifactId>
+    <version>0.17.7</version>
+</dependency>
 
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
