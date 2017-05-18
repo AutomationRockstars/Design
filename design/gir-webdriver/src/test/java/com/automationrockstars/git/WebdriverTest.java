@@ -10,26 +10,23 @@
  *******************************************************************************/
 package com.automationrockstars.git;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import java.io.IOException;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.DriverFactory;
-
 public class WebdriverTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(WebdriverTest.class);
 
 
 	@Test
 	public void test() throws InterruptedException, IOException {
 		
-		Ebay.searchFor("aa");
+		assertThat(Ebay.searchFor("aa"),is(not(nullValue())));
 		
-		System.out.println(DriverFactory.getScreenshotFile().getAbsolutePath());
+		
 	}
 
 }

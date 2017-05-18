@@ -12,7 +12,7 @@ public class Ebay {
 	public static EbayPageHeader page(){
 		return EbayPageHeader.waitFor();
 	}
-	public static void searchFor(String whatFor){
-		System.out.println(page().getText());
+	public static String searchFor(String whatFor){
+		return page().getText();
 	}
 }
