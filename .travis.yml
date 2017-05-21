@@ -19,7 +19,7 @@ addons:
       name: "AutomationRockstars/Design"
       description: "Build submitted via Travis CI"
     notification_email: admin@automationrockstars.com
-    build_command_prepend: "mvn clean":wq
+    build_command_prepend: "mvn clean"
     build_command:   "mvn -DskipTests=true compile --settings settings.xml"
     branch_pattern: master
 
