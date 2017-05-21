@@ -65,7 +65,10 @@ public class GridUtils {
 				response = IOUtils.toString(directNode.getEntity().getContent());
 				directNode.close();
 				if (response.contains("WebDriver Hub"))
-				return String.format("%s://%s:%s", gridUri.getScheme(),gridUri.getHost(),gridUri.getPort());
+					return String.format("%s://%s:%s", gridUri.getScheme(),gridUri.getHost(),gridUri.getPort());
+				else if (response.contains("Whoops! The URL specified routes to this help page.")){
+					return gridUrl;
+				}
 			}
 
 			@SuppressWarnings("unchecked")
