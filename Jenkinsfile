@@ -17,7 +17,7 @@ pipeline {
 		steps {	sh 'mvn source:jar deploy -DskipTests' }
 		}
 		stage('Results'){
-			junit '**/target/surefire-reports/*.xml'
+		steps{	junit '**/target/surefire-reports/*.xml'}
 		}
 	}
 	
