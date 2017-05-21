@@ -16,7 +16,7 @@ public class HeadlessWebDriver {
 	public static String name() {
 		String broser = "";
 		try {
-			LOG.info("Detectong phantomjs version");
+			LOG.info("Detecting phantomjs version");
 
 			String[] findPhantom;
 			if (SystemUtils.IS_OS_WINDOWS) {
@@ -27,7 +27,7 @@ public class HeadlessWebDriver {
 
 			Process pr = new ProcessBuilder(findPhantom).redirectErrorStream(true).start();
 			String output = IOUtils.toString(pr.getInputStream());
-			Preconditions.checkState(StringUtils.contains(output, "pantomjs"));
+			Preconditions.checkState(StringUtils.contains(output, "phantomjs"),"Location of phantomjs not found %s",output);
 			String location = Splitter.on("\n").splitToList(output).get(0);
 			location = location.replaceAll("\r", "");
 			LOG.info("Using phantomjs location {}", location);
