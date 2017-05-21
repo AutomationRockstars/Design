@@ -149,6 +149,7 @@ public class UiPartProxy implements InvocationHandler{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static WebElement decorate(WebElement initial, Class<? extends WebElementDecorator>... decorators){
 		WebElement result = initial;
 		if (decorators != null){
@@ -201,7 +202,7 @@ public class UiPartProxy implements InvocationHandler{
 		return (T) initial;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object adjustResults(final List<WebElement> result,final Type type, final Class... decorators){
 		Preconditions.checkState(result.size() > 0, "WebElement not found");
 		Class<?> wanted = null;
@@ -217,7 +218,6 @@ public class UiPartProxy implements InvocationHandler{
 				wanted.isArray()){
 			if (type instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)type).getActualTypeArguments()[0];
-				@SuppressWarnings("rawtypes")
 				FluentIterable filteredResult =  FluentIterable.from(result).transform(new Function<WebElement,Object>(){
 					public Object apply(WebElement input) {
 						return convert(input,collectionOf,decorators);
@@ -455,6 +455,7 @@ public class UiPartProxy implements InvocationHandler{
 		return method.getAnnotation(Image.class) != null;
 	}
 
+	@SuppressWarnings("unused")
 	private List<WebElement> setNames(List<WebElement> elements,final Method method, final Object host){
 		String preName = method.getName();
 		if (method.getAnnotation(Name.class) != null){
@@ -572,7 +573,7 @@ public class UiPartProxy implements InvocationHandler{
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Class<? extends UiPart> uiPartOf(Object host) {
 		if (host == null){
 			return null;

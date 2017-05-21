@@ -89,6 +89,7 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 		return wrapped;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	void initialPageSetUp() {
 		if (view.getAnnotation(InitialPage.class) != null){
 			if (view.getAnnotation(InitialPage.class).restartBrowser()){

@@ -39,12 +39,13 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+@SuppressWarnings("deprecation")
 public class GridUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GridUtils.class);
 
 	public static String getNode(String gridUrl, WebDriver driver){
-		String nodeUrl = null;
+		String nodeUrl = gridUrl;
 		CloseableHttpClient cl = HttpClients.createDefault();
 		CloseableHttpResponse gridResponse = null;
 		try {
@@ -66,9 +67,6 @@ public class GridUtils {
 				directNode.close();
 				if (response.contains("WebDriver Hub"))
 					return String.format("%s://%s:%s", gridUri.getScheme(),gridUri.getHost(),gridUri.getPort());
-				else if (response.contains("Whoops! The URL specified routes to this help page.")){
-					return gridUrl;
-				}
 			}
 
 			@SuppressWarnings("unchecked")

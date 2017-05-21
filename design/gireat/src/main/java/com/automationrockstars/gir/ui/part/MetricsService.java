@@ -53,6 +53,7 @@ public class MetricsService {
 		return result;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private synchronized static Map<String,String> timings(String har, String... pageFilter){
 		Map content = gson.fromJson(har, HashMap.class);
 

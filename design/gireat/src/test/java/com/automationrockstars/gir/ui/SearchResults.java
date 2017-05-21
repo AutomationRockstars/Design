@@ -20,6 +20,7 @@ public interface SearchResults extends UiPart {
 	@FindBy(how=How.CLASS_NAME,using="g")
 	FluentIterable<WebElement> results();
 
+	@SuppressWarnings("rawtypes")
 	@WithFindByAugmenter(TestFixingAugmenter.class)
 	@FindAll({
 			@FindBy(tagName="removemea"),

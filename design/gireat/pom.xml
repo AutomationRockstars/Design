@@ -24,8 +24,7 @@
 		<dependency>
 			<groupId>com.automationrockstars</groupId>
 			<artifactId>gir-webdriver</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+			</dependency>
  <dependency>
         <groupId>net.sourceforge.htmlunit</groupId>
         <artifactId>htmlunit</artifactId>
