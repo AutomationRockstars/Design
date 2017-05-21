@@ -16,6 +16,9 @@ pipeline {
 		when { branch  'master' }
 		steps {	sh 'mvn source:jar deploy -DskipTests' }
 		}
+		stage('Results'){
+			junit '**/target/surefire-reports/*.xml'
+		}
 	}
 	
 }
