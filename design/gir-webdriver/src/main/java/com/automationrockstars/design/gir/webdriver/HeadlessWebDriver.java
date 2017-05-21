@@ -32,7 +32,8 @@ public class HeadlessWebDriver {
 			location = location.replaceAll("\r", "");
 			LOG.info("Using phantomjs location {}", location);
 			System.setProperty("webdriver.phantomjs.driver", location);
-
+			int result = new ProcessBuilder(location,"--version").inheritIO().start().waitFor();
+			LOG.info("Phantom version test {}",result);
 			broser = "phantomjs";
 		} catch (Throwable t) {
 			LOG.debug("Phantomjs detection failed due to {}", t);
