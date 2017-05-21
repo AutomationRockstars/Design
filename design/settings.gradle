@@ -1,1 +1,0 @@
-include "gir", "gir-cli", "gir-webdriver", "gir-mobile", "gir-rest"

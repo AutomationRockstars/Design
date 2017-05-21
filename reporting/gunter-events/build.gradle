@@ -1,4 +1,0 @@
-dependencies {
-    compile 'ru.yandex.qatools.allure:allure-report-data:1.4.15'
-    compile 'junit:junit:4.12'
-}

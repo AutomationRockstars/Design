@@ -62,11 +62,14 @@ public class FilterableSearchContext implements SearchContext {
 	public static boolean isVisible(WebElement element){
 		try {
 			boolean vis = element.isDisplayed();
+			log.trace("Element {} is displayed {} ",element,vis);
 			if ((! vis ) && ConfigLoader.config().getBoolean("webdriver.deepcheck",true)){
 				Point loc  = ((Locatable)element).getCoordinates().inViewPort();
+				log.trace("Element {} is displayed {} at location {}", element, vis ,loc);
 				return loc.getX() >0 && loc.getY()>0;
 			} else return vis;
 		} catch (StaleElementReferenceException e){
+			log.trace("Element {} is wrong");
 			return false;
 		}
 	}
@@ -96,7 +99,7 @@ public class FilterableSearchContext implements SearchContext {
 	public List<WebElement> findElements(By by) {
 		List<WebElement> result = getVisible(by);
 		if (result.isEmpty()){
-			log.debug("Waiting for {} to appear",by);
+			log.debug("Waiting for {} to appear in {}",by,unwrap());
 			result = stubbornWait(by);
 		}
 		log.debug("Returning {} filtered", result);

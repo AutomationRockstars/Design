@@ -12,6 +12,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.UiPart;
@@ -49,7 +51,13 @@ public abstract class AbstractUiPartDelegate implements UiPart{
 		this.parent = parent;
 	}
 	public FluentWait<SearchContext> delay() {
-		return new FluentWait<SearchContext>(getWrappedElement());
+		int initialValue = ConfigLoader.config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM,5);
+		try {
+			ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, 0);
+			return new FluentWait<SearchContext>(getWrappedElement());
+		} finally {
+			ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, initialValue);
+		}
 	}
 	public void click() {
 		getWrappedElement().click();

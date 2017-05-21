@@ -21,6 +21,7 @@ public class Row extends UiObject{
 		super(toWrap);
 	}
 	
+	
 	public List<WebElement> cells(){
 		return this.findElements(By.tagName("td"));
 	}

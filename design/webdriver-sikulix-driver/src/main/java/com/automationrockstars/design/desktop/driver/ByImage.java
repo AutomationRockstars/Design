@@ -56,7 +56,7 @@ public class ByImage extends By {
 	}
 	
 	public static boolean isImageId(By by){
-		return by instanceof ById && isImageId(by.toString().replaceAll("By.id: ", ""));
+		return by instanceof ById && isImageId(by.toString().replace("By.id: ", ""));
 	}
 	
 	
@@ -71,6 +71,11 @@ public class ByImage extends By {
 	
 	public String toString(){
 		return String.format("element matching image %s", imagePath);
+	}
+	
+	public static ByImage translateFrom(By byId){
+		Preconditions.checkArgument(isImageId(byId),"Only ById specyfying image can be translated");
+		return new ByImage((byId.toString().replace("By.id: ", "")));
 	}
 
 }

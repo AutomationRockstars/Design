@@ -78,7 +78,9 @@ public class SmartDateConverter extends DateTimeConverter{
 					c.add(Calendar.YEAR, -1 * rnd.nextInt(10));	
 				}
 				return (T) c.getTime();
-			} 
+			} else if (value.toString().length() == 0){
+				return null;
+			}
 		}
 		return super.convertToType(targetType, value);
 	}

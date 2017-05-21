@@ -10,35 +10,23 @@
  *******************************************************************************/
 package com.automationrockstars.git;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import java.io.IOException;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.automationrockstars.base.ConfigLoader;
-
 public class WebdriverTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(WebdriverTest.class);
 
 
 	@Test
 	public void test() throws InterruptedException, IOException {
-		if (ConfigLoader.config().containsKey("noui")){
-			int res = -1;
-			try {
-				res = new ProcessBuilder("phantomjs").start().waitFor(); 
-			} catch (Exception e){
-				res = -1;
-			}
-			if (res == 0){
-				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
-			} else {
-				return ;
-			}
-		}
-		Ebay.searchFor("aa");
+		
+		assertThat(Ebay.searchFor("aa"),is(not(nullValue())));
+		
+		
 	}
 
 }

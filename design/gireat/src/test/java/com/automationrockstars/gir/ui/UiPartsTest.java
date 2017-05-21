@@ -24,78 +24,80 @@ import ru.yandex.qatools.htmlelements.element.Link;
 
 import javax.annotation.Nullable;
 
-
 public class UiPartsTest {
 
-
-	@Test
-	public void keepChecking() throws IOException, InterruptedException{
+	// @Test
+	public void keepChecking() throws IOException, InterruptedException {
 		preparePhantom();
-		for (int i=0;i<2;i++){
+		for (int i = 0; i < 2; i++) {
 			Long init = System.currentTimeMillis();
-		should_doTheThing();
-		should_beLogical();
-		Files.append("Loop " + i + ": " +(System.currentTimeMillis() - init)  + " : " + new Date() + "\n", Paths.get("ts").toFile(), Charset.defaultCharset());
+			should_doTheThing();
+			should_beLogical();
+			Files.append("Loop " + i + ": " + (System.currentTimeMillis() - init) + " : " + new Date() + "\n",
+					Paths.get("ts").toFile(), Charset.defaultCharset());
 		}
 	}
-	
-	private void preparePhantom(){
-		if (ConfigLoader.config().containsKey("noui")){
-			int res = -1;
-			try {
-				res = new ProcessBuilder("phantomjs").start().waitFor(); 
-			} catch (Exception e){
-				res = -1;
-			}
-			if (res == 0){
-				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
-			} else {
-				return ;
-			}
+
+	private void preparePhantom() {
+		if (ConfigLoader.config().containsKey("noui")) {
+			// int res = -1;
+			// try {
+			// res = new ProcessBuilder("phantomjs").start().waitFor();
+			// } catch (Exception e){
+			// res = -1;
+			// }
+			// if (res == 0){
+			// ConfigLoader.config().setProperty("webdriver.browser",
+			// "phantomjs");
+			// } else {
+			// return ;
+			// }
 		}
 	}
-	
-	private void doSearch(){
+
+	private void doSearch() {
 		preparePhantom();
 		GoogleHome init = UiParts.get(GoogleHome.class);
 		init.query().clear();
 		init.query().sendKeys("automationrockstars");
 		init.search().click();
 	}
+
 	@Test
 	public void should_doTheThing() {
 		doSearch();
 
 		SearchResults result = UiParts.get(SearchResults.class);
-		assertThat(result.results().size(),is(greaterThan(5)));
-		assertThat(result.links().size(),is(greaterThan(5)));
-		result.results().filter(new Predicate<WebElement>(){
+		assertThat(result.results().size(), is(greaterThan(5)));
+		assertThat(result.links().size(), is(greaterThan(5)));
+		result.results().filter(new Predicate<WebElement>() {
 
 			public boolean apply(WebElement input) {
 				return input.getText().contains("github");
-			}} ).transform(new Function<WebElement, WebElement>() {
+			}
+		}).transform(new Function<WebElement, WebElement>() {
 
-				public WebElement apply(WebElement input) {
-					return input.findElement(org.openqa.selenium.By.tagName("a"));
-				}
-			}).first().get().click();
+			public WebElement apply(WebElement input) {
+				return input.findElement(org.openqa.selenium.By.tagName("a"));
+			}
+		}).first().get().click();
 
 		DriverFactory.closeDriver();
 	}
-	
-	@Test
-	public void should_useUiPartInsideUiPart(){
-		doSearch();
-		
-		SearchResults result = UiParts.get(SearchResults.class);
-		assertThat(result.allResults().size(),is(greaterThan(5)));
-		result.allResults().filter(new Predicate<SearchResultDiv>(){
 
-			
+	@Test
+	public void should_useUiPartInsideUiPart() {
+		doSearch();
+
+		SearchResults result = UiParts.get(SearchResults.class);
+		assertThat(result.allResults().size(), is(greaterThan(5)));
+		result.allResults().filter(new Predicate<SearchResultDiv>() {
+
 			@Override
 			public boolean apply(SearchResultDiv input) {
 				return input.getText().contains("github");
-			}} ).filter(new Predicate<SearchResultDiv>() {
+			}
+		}).filter(new Predicate<SearchResultDiv>() {
 			@Override
 			public boolean apply(@Nullable SearchResultDiv searchResultDiv) {
 				searchResultDiv.description().getText();
@@ -103,37 +105,41 @@ public class UiPartsTest {
 			}
 		}).transform(new Function<SearchResultDiv, Link>() {
 
-				@Override
-				public Link apply(SearchResultDiv input) {
-					
-					return input.link();
-				}
+			@Override
+			public Link apply(SearchResultDiv input) {
 
-				
-			}).first().get().click();
+				return input.link();
+			}
+
+		}).first().get().click();
 		DriverFactory.closeDriver();
 	}
 
 	@Test
-	public void should_beLogical() throws InterruptedException, IOException{
+	public void should_beLogical() throws InterruptedException, IOException {
 		preparePhantom();
-		assertThat(GoogleSearch.performSearch("automationrockstars").results().transform(new Function<WebElement,String>(){
+		assertThat(GoogleSearch.performSearch("automationrockstars").results()
+				.transform(new Function<WebElement, String>() {
 
-			public String apply(WebElement input) {
-				return input.getText().replaceAll("\\n.*", "");
-			}}),hasItem(containsString("AutomationRockstars · GitHub")));
-		
-		
+					public String apply(WebElement input) {
+						return input.getText().replaceAll("\\n.*", "");
+					}
+				}), hasItem(containsString("AutomationRockstars")));
+
 		UiParts.on(SearchResults.class).githubLink().click();
 		DriverFactory.getDriver().navigate().back();
+		if (UiParts.body().getText().length() < 100) {
+			GoogleSearch.performSearch("automationrockstars");
+		}
+
 		UiParts.on(SearchResults.class).arsLink().click();
 		DriverFactory.closeDriver();
 	}
 
-	
 	@Test
-	public void should_doTheMixThing(){
+	public void should_doTheMixThing() {
 		doSearch();
-		UiParts.on(SearchResults.class).googleLogo().getSize();
+		if (!ConfigLoader.config().containsKey("noui"))
+			UiParts.on(SearchResults.class).googleLogo().getSize();
 	}
 }

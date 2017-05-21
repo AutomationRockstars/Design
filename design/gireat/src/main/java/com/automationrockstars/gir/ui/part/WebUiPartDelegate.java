@@ -125,9 +125,17 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 		}
 
 	}
+	public void handleEdgeSpecifics(){
+		if (DriverFactory.getDriver().getTitle().contains("Certificate error")){
+			DriverFactory.getDriver().findElement(By.id("invalidcert_continue")).click();
+		}
+
+	}
 	public void handleBrowserSpecifics(){
 		if (DriverFactory.isIe()){
 			handleIeSpecifics();
+		} else if (DriverFactory.isEdge()){
+			handleEdgeSpecifics();
 		}
 	}
 	
