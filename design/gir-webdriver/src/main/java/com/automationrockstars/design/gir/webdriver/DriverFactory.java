@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.collections.list.UnmodifiableList;
@@ -41,16 +42,17 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.phantomjs.PhantomjsDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -76,8 +78,6 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.PeekingIterator;
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-import com.machinepublishers.jbrowserdriver.Settings;
 
 
 
@@ -159,7 +159,9 @@ public class DriverFactory {
 	}
 
 	public static File getScreenshotFile(){
-		return ((RemoteWebDriver)getUnwrappedDriver()).getScreenshotAs(OutputType.FILE);
+		if(TakesScreenshot.class.isAssignableFrom(getUnwrappedDriver().getClass())){
+			return ((TakesScreenshot)getUnwrappedDriver()).getScreenshotAs(OutputType.FILE);
+		} else return new File(UUID.randomUUID().toString());
 	}
 	public static void setCapabilities(Capabilities capabilities){
 		DriverFactory.capabilities = capabilities;
@@ -326,15 +328,15 @@ public class DriverFactory {
 		}
 	}
 	private static WebDriver createRemoteDriver(){
+		String name = "";
 		if (ConfigLoader.config().containsKey("noui")){
-			return new JBrowserDriver(Settings.builder()
-					.headless(true)
-					.cache(true)
-					.ssl("trustanything").build());
+			name = HeadlessWebDriver.name(); 
+			browser.set(name);
 		}
+		
 		log.info("Creating browser for {}",browser.get());
 		try {
-			String name = browser.get().toLowerCase();
+			name = browser.get().toLowerCase();
 			if(name.equalsIgnoreCase("ie") || name.equals("internet_explorer") || name.equals("internet explorer")){
 				name= BrowserType.IE;
 			} else if (name.equals("edge") || name.toLowerCase().equals("microsoftedge")){
@@ -692,7 +694,7 @@ public class DriverFactory {
 	}
 
 	public static String browserName(){
-		Capabilities caps = ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities();
+		Capabilities caps = ((HasCapabilities)getUnwrappedDriver()).getCapabilities();
 		return  (caps == null)?null:caps.getBrowserName();
 	}
 

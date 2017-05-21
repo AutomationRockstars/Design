@@ -24,18 +24,13 @@
 			<artifactId>mvel2</artifactId>
 			<version>2.3.1.Final</version>
 		</dependency>
-<!-- https://mvnrepository.com/artifact/com.machinepublishers/jbrowserdriver -->
-<dependency>
-    <groupId>com.machinepublishers</groupId>
-    <artifactId>jbrowserdriver</artifactId>
-    <version>0.17.7</version>
-</dependency>
 
 		<dependency>
-			<groupId>net.sourceforge.htmlunit</groupId>
-			<artifactId>htmlunit</artifactId>
-			<version>2.23</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium_version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
 			<artifactId>htmlelements-all</artifactId>
@@ -68,15 +63,26 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${selenium_version}</version>
-		</dependency>
+	
 
+		
 	</dependencies>
 	<dependencyManagement>
+	
 		<dependencies>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+		<dependency>
+		 <groupId>org.apache.commons</groupId>
+  <artifactId>commons-lang3</artifactId>
+  <version>3.5</version>
+		</dependency>
+
+		
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
