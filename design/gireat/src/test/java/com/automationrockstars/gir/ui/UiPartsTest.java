@@ -7,9 +7,8 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
-import java.util.Date;
+
+import javax.annotation.Nullable;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -18,45 +17,15 @@ import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.io.Files;
 
 import ru.yandex.qatools.htmlelements.element.Link;
 
-import javax.annotation.Nullable;
-
 public class UiPartsTest {
 
-	// @Test
-	public void keepChecking() throws IOException, InterruptedException {
-		preparePhantom();
-		for (int i = 0; i < 2; i++) {
-			Long init = System.currentTimeMillis();
-			should_doTheThing();
-			should_beLogical();
-			Files.append("Loop " + i + ": " + (System.currentTimeMillis() - init) + " : " + new Date() + "\n",
-					Paths.get("ts").toFile(), Charset.defaultCharset());
-		}
-	}
 
-	private void preparePhantom() {
-		if (ConfigLoader.config().containsKey("noui")) {
-			// int res = -1;
-			// try {
-			// res = new ProcessBuilder("phantomjs").start().waitFor();
-			// } catch (Exception e){
-			// res = -1;
-			// }
-			// if (res == 0){
-			// ConfigLoader.config().setProperty("webdriver.browser",
-			// "phantomjs");
-			// } else {
-			// return ;
-			// }
-		}
-	}
+	
 
 	private void doSearch() {
-		preparePhantom();
 		GoogleHome init = UiParts.get(GoogleHome.class);
 		init.query().clear();
 		init.query().sendKeys("automationrockstars");
@@ -117,7 +86,6 @@ public class UiPartsTest {
 
 	@Test
 	public void should_beLogical() throws InterruptedException, IOException {
-		preparePhantom();
 		assertThat(GoogleSearch.performSearch("automationrockstars").results()
 				.transform(new Function<WebElement, String>() {
 
