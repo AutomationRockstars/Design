@@ -1,4 +1,4 @@
-sudo: false 
+sudo: required 
 dist: deprecated-2017Q1
 language: java
 
