@@ -1,5 +1,5 @@
 sudo: false 
-group: deprecated-2017Q1
+dist: deprecated-2017Q1
 language: java
 
 env:
