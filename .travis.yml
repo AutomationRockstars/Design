@@ -1,5 +1,5 @@
 sudo: required 
-dist: deprecated-2017Q1
+dist: trusty
 language: java
 
 env:
