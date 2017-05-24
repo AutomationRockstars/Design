@@ -146,7 +146,7 @@ public class GridUtils {
 		String extrasPort = Objects.firstNonNull(port, ConfigLoader.config().getString("grid.extras.port","3000"));
 		if (nodeUrl != null){
 			try {
-				extrasUrl = String.format("%s://%s:%s/api", new URI(nodeUrl).getScheme(),new URI(nodeUrl).getHost(),extrasPort);
+				extrasUrl = String.format("%s://%s:%s/", new URI(nodeUrl).getScheme(),new URI(nodeUrl).getHost(),extrasPort);
 				if (calculator != null){
 					URI extrasUri = calculator.calculate(new URI(extrasUrl));
 					if (extrasUri == null){
@@ -168,7 +168,7 @@ public class GridUtils {
 				    .setConnectTimeout(100000)
 				    .setSocketTimeout(100000)
 				    .build();
-			HttpGet get = new HttpGet(extrasUrl);
+			HttpGet get = new HttpGet(extrasUrl+"/api");
 			get.setConfig(requestConfig);
 			HttpResponse resp = cl.execute(get);
 			if (resp.getStatusLine().getStatusCode() == 200){
