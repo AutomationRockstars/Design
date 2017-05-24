@@ -203,7 +203,13 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 
 	@Override
 	public WebElement findElement(By by) {
-		return wrap(findWrapper(getImageElement(), ((ByImage)by).path(), null),((ByImage)by).path(),null);
+		String path = null;
+		if (by instanceof ByImage){
+			path = ((ByImage)by).path();
+		} else {
+			path = ByImage.translateFrom(by).path();
+		}
+		return wrap(findWrapper(getImageElement(), path, null),path,null);
 	}
 
 	@Override

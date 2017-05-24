@@ -28,7 +28,6 @@ public class FilteredTable extends Table{
 	public FilteredTable(WebElement wrappedElement) {
 		super(wrappedElement);
 	}
-
 	private static final Predicate<List<?>> notEmptyList = new Predicate<List<?>>() {
 
 		@Override

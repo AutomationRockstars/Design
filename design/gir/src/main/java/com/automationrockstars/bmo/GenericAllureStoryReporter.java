@@ -117,7 +117,6 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 	public GenericAllureStoryReporter() {
 		LOG.info("instantiating");
-
 	}
 
 	private static final ThreadLocal<String> currentSuite = new ThreadLocal<>();
@@ -418,10 +417,18 @@ public class GenericAllureStoryReporter implements StoryReporter {
 			LOG.error("Video cannot be added {}",e.getMessage());
 		}
 	}
+	private static final Properties environment = new Properties();
 	
+	/**
+	 * Data to be stored in environment table of Allure report
+	 * @return
+	 */
+	public static Properties environment(){
+		return environment;
+	}
 	private static void generateProperties(String directory){
 		LOG.info("Generating properties for report");
-		Properties environmentToShow = new Properties();
+		Properties environmentToShow = environment();
 		environmentToShow = populateProperty("url", environmentToShow);
 		environmentToShow = populateProperty("grid.url", environmentToShow);
 		environmentToShow = populateProperty("webdriver.session", environmentToShow);

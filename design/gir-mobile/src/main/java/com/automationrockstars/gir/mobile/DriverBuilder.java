@@ -81,8 +81,7 @@ public class DriverBuilder {
 		if (! Strings.isNullOrEmpty(proxyUrl)){
 			Proxy proxy = new Proxy()
 			.setHttpProxy(proxyUrl)
-			.setSslProxy(proxyUrl)
-			.setNoProxy("172.31.33.53");
+			.setSslProxy(proxyUrl);
 			capabilities.setCapability(CapabilityType.PROXY, proxy);
 		}
 		if (acceptAlerts){

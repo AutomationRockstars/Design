@@ -6,14 +6,37 @@
 		<artifactId>design</artifactId>
 		<version>1.0.5-SNAPSHOT</version>
 	</parent>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+				<version>19.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>4.4.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.automationrockstars</groupId>
 			<artifactId>gir-webdriver</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/junitperf/junitperf -->
+			</dependency>
+ <dependency>
+        <groupId>net.sourceforge.htmlunit</groupId>
+        <artifactId>htmlunit</artifactId>
+        <version>2.21</version>
+      </dependency>
+      <dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-htmlunit-driver</artifactId>
+    <version>2.52.0</version>
+</dependency>
+      
+      		<!-- https://mvnrepository.com/artifact/junitperf/junitperf -->
 		<dependency>
 			<groupId>junitperf</groupId>
 			<artifactId>junitperf</artifactId>
@@ -46,13 +69,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpcore</artifactId>
-				<version>4.4.3</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>

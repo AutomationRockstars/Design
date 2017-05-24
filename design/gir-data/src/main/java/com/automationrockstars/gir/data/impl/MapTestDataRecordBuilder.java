@@ -23,13 +23,17 @@ public class MapTestDataRecordBuilder implements TestDataRecordBuilder {
 
 	@Override
 	public TestDataRecordBuilder with(Map<String, ?> values) {
-		data.putAll(values);
+		if (values != null){
+			data.putAll(values);
+		}
 		return this;
 	}
 
 	@Override
 	public TestDataRecordBuilder with(TestDataRecord values) {
-		data.putAll(values.toMap());
+		if (values != null){
+			data.putAll(values.toMap());
+		}
 		return this;
 	}
 

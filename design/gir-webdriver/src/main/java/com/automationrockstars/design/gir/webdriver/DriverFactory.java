@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.collections.list.UnmodifiableList;
@@ -41,16 +42,17 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.phantomjs.PhantomjsDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -157,7 +159,9 @@ public class DriverFactory {
 	}
 
 	public static File getScreenshotFile(){
-		return ((RemoteWebDriver)getUnwrappedDriver()).getScreenshotAs(OutputType.FILE);
+		if(TakesScreenshot.class.isAssignableFrom(getUnwrappedDriver().getClass())){
+			return ((TakesScreenshot)getUnwrappedDriver()).getScreenshotAs(OutputType.FILE);
+		} else return new File(UUID.randomUUID().toString());
 	}
 	public static void setCapabilities(Capabilities capabilities){
 		DriverFactory.capabilities = capabilities;
@@ -269,7 +273,7 @@ public class DriverFactory {
 		}
 		return story;
 	}
-	
+
 	private static String scenarioName(){
 		String scenario = null;
 		try {
@@ -289,7 +293,7 @@ public class DriverFactory {
 			ConfigLoader.config().addProperty("webdriver.video", videoLink);
 			List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String,String>>());
 			String story = String.format("%s->%s::",storyName(),scenarioName());
-			
+
 			if (Strings.isNullOrEmpty(story)){
 				story = "recording " + driver.getSessionId();
 			}
@@ -297,11 +301,11 @@ public class DriverFactory {
 			String title = "video_"+story;
 			int videoRepetition = 0;
 			String titlePostfix = "";
-			
+
 			Optional<Object> titleAlreadyThere = Optional.absent();
 			do {
 				if (videoRepetition > 0){
-						titlePostfix = String.format("_%s", videoRepetition);
+					titlePostfix = String.format("_%s", videoRepetition);
 				}
 				final String titleBase = title + titlePostfix;
 				titleAlreadyThere = FluentIterable.from(videos).firstMatch(new Predicate<Object>() {
@@ -324,12 +328,15 @@ public class DriverFactory {
 		}
 	}
 	private static WebDriver createRemoteDriver(){
+		String name = "";
 		if (ConfigLoader.config().containsKey("noui")){
-			return new HtmlUnitDriver(true);
+			name = HeadlessWebDriver.name(); 
+			browser.set(name);
 		}
+		
 		log.info("Creating browser for {}",browser.get());
 		try {
-			String name = browser.get().toLowerCase();
+			name = browser.get().toLowerCase();
 			if(name.equalsIgnoreCase("ie") || name.equals("internet_explorer") || name.equals("internet explorer")){
 				name= BrowserType.IE;
 			} else if (name.equals("edge") || name.toLowerCase().equals("microsoftedge")){
@@ -454,9 +461,11 @@ public class DriverFactory {
 					profile.setPreference("browser.download.manager.showWhenStarting",false);
 					profile.setPreference("browser.helperApps.neverAsk.saveToDisk",autoDownloadFiles());
 				}
-			} 
+			}
 			result.setCapability(FirefoxDriver.PROFILE, profile);
-			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+			result.setCapability("acceptInsecureCerts", true);
+			result.setCapability(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,true);
+			
 			break;
 		case BrowserType.IE:
 			result = DesiredCapabilities.internetExplorer();
@@ -476,7 +485,8 @@ public class DriverFactory {
 			result = new DesiredCapabilities(driverType,"",Platform.ANY);
 			break;
 		} 
-		String proxy= ConfigLoader.config().getString("webdriver.proxy"); 
+		String proxy= ConfigLoader.config().getString("webdriver.proxy");
+		result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		if (! Strings.isNullOrEmpty(proxy)){
 			Proxy p = new Proxy();
 			p.setHttpProxy(proxy)
@@ -484,7 +494,9 @@ public class DriverFactory {
 			result.setCapability(CapabilityType.PROXY, p);
 			log.info("Using proxy {}",proxy);
 		}
-		return concatenate(result,capabilities);
+		result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		result.setCapability("acceptInsecureCerts", true);
+		return  concatenate(result,capabilities);
 	}
 
 	private static Capabilities concatenate(Capabilities... toJoin){
@@ -492,13 +504,23 @@ public class DriverFactory {
 	}
 
 	private static Thread createDriverCloser(final WebDriver driver){
-		return new Thread(new Runnable() {
+		if (ConfigLoader.config().getBoolean("webdriver.dontclose",false)){
+			return new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				closeDriver(driver);
-			}
-		});
+				@Override
+				public void run() {
+					log.info("Leaving open");
+				}
+			});
+		} else {
+			return new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					closeDriver(driver);
+				}
+			});
+		}
 	}
 	public static boolean isWrong(WebDriver driver){
 		try {
@@ -554,9 +576,10 @@ public class DriverFactory {
 
 	private static boolean wrap(WebDriver driver) {
 		if (HasCapabilities.class.isAssignableFrom(driver.getClass())){
-		return ! ((HasCapabilities)driver).getCapabilities().is("cannot_wrap");
+			Capabilities cp = ((HasCapabilities)driver).getCapabilities();
+			return ! ((cp != null) && cp.is("cannot_wrap"));
 		} else return true;
-		
+
 	}
 
 	private static boolean hasCapabilities(WebDriver driver, Capabilities capabilities){
@@ -671,15 +694,20 @@ public class DriverFactory {
 	}
 
 	public static String browserName(){
-		return ((RemoteWebDriver)getUnwrappedDriver()).getCapabilities().getBrowserName();
+		Capabilities caps = ((HasCapabilities)getUnwrappedDriver()).getCapabilities();
+		return  (caps == null)?null:caps.getBrowserName();
 	}
 
 	public static boolean isIe(){
-		return browserName().equals(BrowserType.IE);
+		return BrowserType.IE.equals(browserName());
 	}
 
 	public static boolean isPhantom() {
-		return browserName().equals(BrowserType.PHANTOMJS);
+		return BrowserType.PHANTOMJS.equals(browserName());
+	}
+
+	public static boolean isEdge() {
+		return BrowserType.EDGE.equals(browserName());
 	}
 
 }

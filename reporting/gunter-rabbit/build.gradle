@@ -1,9 +1,0 @@
-dependencies {
-    compile 'com.rabbitmq:amqp-client'
-    compile 'junit:junit'
-    compile project(':gunter-events')
-    compile 'commons-configuration:commons-configuration'
-    testCompile 'ch.qos.logback:logback-classic'
-    testCompile 'ch.qos.logback:logback-core'
-    compile project(':bmo')
-}

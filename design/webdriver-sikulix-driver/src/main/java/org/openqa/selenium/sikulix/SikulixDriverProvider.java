@@ -32,7 +32,7 @@ public class SikulixDriverProvider implements SearchContextProvider{
 				return new RemoteWebDriver(gridUrl,SikulixDriver.capabilities());
 			} catch (MalformedURLException e) {
 				throw new RuntimeException(String.format("Grid url %s is wrong", ConfigLoader.config().getString("grid.url")));
-			}
+			} 
 			
 		} else {
 			return new SikulixDriver();		

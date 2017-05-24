@@ -1,3 +1,5 @@
+sudo: required 
+dist: trusty
 language: java
 
 env:
@@ -11,7 +13,7 @@ env:
 before_install:
  need to re-validate sec      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
-install: mvn clean source:jar -Dnoui -DskipTests --settings settings.xml
+install: mvn clean -B source:jar -Dnoui -DskipTests --settings settings.xml
 
 addons:
    coverity_scan:

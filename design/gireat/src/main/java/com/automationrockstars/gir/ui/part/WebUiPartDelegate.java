@@ -89,6 +89,7 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 		return wrapped;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	void initialPageSetUp() {
 		if (view.getAnnotation(InitialPage.class) != null){
 			if (view.getAnnotation(InitialPage.class).restartBrowser()){
@@ -125,9 +126,17 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 		}
 
 	}
+	public void handleEdgeSpecifics(){
+		if (DriverFactory.getDriver().getTitle().contains("Certificate error")){
+			DriverFactory.getDriver().findElement(By.id("invalidcert_continue")).click();
+		}
+
+	}
 	public void handleBrowserSpecifics(){
 		if (DriverFactory.isIe()){
 			handleIeSpecifics();
+		} else if (DriverFactory.isEdge()){
+			handleEdgeSpecifics();
 		}
 	}
 	

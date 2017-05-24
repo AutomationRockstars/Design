@@ -18,17 +18,17 @@ public class UiDelegateTest {
 	@Test
 	public void should_transforToWebdriverBy() throws InterruptedException, IOException {
 		if (ConfigLoader.config().containsKey("noui")){
-			int res = -1;
-			try {
-				res = new ProcessBuilder("phantomjs").start().waitFor(); 
-			} catch (Exception e){
-				res = -1;
-			}
-			if (res == 0){
-				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
-			} else {
-				return ;
-			}
+//			int res = -1;
+//			try {
+//				res = new ProcessBuilder("phantomjs").start().waitFor(); 
+//			} catch (Exception e){
+//				res = -1;
+//			}
+//			if (res == 0){
+//				ConfigLoader.config().setProperty("webdriver.browser", "phantomjs");
+//			} else {
+//				return ;
+//			}
 		}
 			Method m = FluentIterable.
 					from(Lists.newArrayList(GoogleHome.class.getMethods()))

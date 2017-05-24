@@ -10,7 +10,7 @@ public class WebdriverSearchContextProvider implements SearchContextProvider{
 
 	@Override
 	public boolean canProvide(Class<? extends Annotation> context) {
-		return true;
+		return Web.class.equals(context);
 	}
 
 	@Override

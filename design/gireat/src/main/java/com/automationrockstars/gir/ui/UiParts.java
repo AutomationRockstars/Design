@@ -6,22 +6,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.pagefactory.AbstractAnnotations;
 import org.openqa.selenium.support.pagefactory.ByAll;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
@@ -29,7 +26,6 @@ import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.part.EmptyUiObject;
 import com.automationrockstars.gir.ui.part.UiPartProxy;
-import com.automationrockstars.gir.ui.part.WebUiPartDelegate;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -51,16 +47,20 @@ public class UiParts {
 		return get(uiPart);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static Predicate visible(){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Predicate<WebElement> visible(){
 		return new Predicate() {
 			@Override
 			public boolean apply(Object input) {
+				try {
 				if (WebElement.class.isAssignableFrom(input.getClass())){
 					return ((WebElement) input).isDisplayed();
 				} else if (WrapsElement.class.isAssignableFrom(input.getClass())){
 					return ((WrapsElement)input).getWrappedElement().isDisplayed();
 				} else return false;
+				} catch (WebDriverException e){
+					return false;
+				}
 			}			
 		};
 	}
@@ -155,6 +155,7 @@ public class UiParts {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	private static org.openqa.selenium.By byForUiPart(Method method){
 		Class<?> wantedResult = method.getReturnType();
 		Class<? extends UiPart> resultClass = null;
@@ -286,9 +287,8 @@ public class UiParts {
 
 	}
 	
-	private static final Logger LOG = LoggerFactory.getLogger(UiParts.class);
-	@SuppressWarnings("rawtypes")
-	public static Predicate withText(final String text) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Predicate<WebElement> withText(final String text) {
 		return new Predicate() {
 
 			public boolean apply(Object input) {
