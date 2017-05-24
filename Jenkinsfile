@@ -1,5 +1,8 @@
 pipeline {
 	agent any
+	tools {
+		mvn 'mvn'
+	}
 	stages {
 		stage ('Clean'){
 		steps { cleanWs cleanWhenFailure: false, deleteDirs: true, notFailBuild: true }
