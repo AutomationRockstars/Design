@@ -100,6 +100,10 @@ public class UiPartsTest {
 		DriverFactory.getDriver().navigate().back();
 		if (UiParts.body().getText().length() < 100) {
 			GoogleSearch.performSearch("automationrockstars");
+			if (UiParts.body().getText().length() < 100){
+				DriverFactory.closeDriver();
+				GoogleSearch.performSearch("automationrockstars");
+			}
 		}
 
 		UiParts.on(SearchResults.class).arsLink().click();
