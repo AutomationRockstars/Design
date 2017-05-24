@@ -98,13 +98,13 @@ public class UiPartsTest {
 
 		UiParts.on(SearchResults.class).githubLink().click();
 		DriverFactory.getDriver().navigate().back();
-		if (UiParts.body().getText().length() < 100) {
-			GoogleSearch.performSearch("automationrockstars");
+		
+			GoogleSearch.performSearch("automationrockstars.com");
 			if (UiParts.body().getText().length() < 100){
 				DriverFactory.closeDriver();
-				GoogleSearch.performSearch("automationrockstars");
+				GoogleSearch.performSearch("automationrockstars.com");
 			}
-		}
+		
 
 		UiParts.on(SearchResults.class).arsLink().click();
 		DriverFactory.closeDriver();
