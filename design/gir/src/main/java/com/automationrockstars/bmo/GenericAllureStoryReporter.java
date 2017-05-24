@@ -117,7 +117,6 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 	public GenericAllureStoryReporter() {
 		LOG.info("instantiating");
-
 	}
 
 	private static final ThreadLocal<String> currentSuite = new ThreadLocal<>();

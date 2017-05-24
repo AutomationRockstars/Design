@@ -1,4 +1,5 @@
-sudo: false group: deprecated-2017Q1
+sudo: required 
+dist: trusty
 language: java
 
 env:
