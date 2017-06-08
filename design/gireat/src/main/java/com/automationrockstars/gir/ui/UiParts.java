@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -371,6 +372,22 @@ public class UiParts {
 	public static boolean isEmpty(WrapsElement element){
 		return EmptyUiObject.isEmpty(element.getWrappedElement());
 	}
+	
+	public static boolean isEmpty(Iterable<?> elements){
+		if (Iterables.isEmpty(elements)){
+			return true;
+		} else {
+			Object element = elements.iterator().next();
+			if (WebElement.class.isAssignableFrom(element.getClass())){
+				return isEmpty((WebElement)element);
+			} else if (WrapsElement.class.isAssignableFrom(element.getClass())){
+				return isEmpty((WrapsElement)element);
+			} else {
+				throw new IllegalAccessError("Iterable does not contain WebElements, but " + element.getClass());
+			}
+		}
+	}
+	
 	
 	 
 }

@@ -37,9 +37,15 @@ public interface StoryReporter {
 	void attach(byte[] attachment, String title, String mimeType);
 	
 	public static class Factory {
+		
+		private static CompositeStoryReporter reporter;
+		
 		public static StoryReporter reporter(){
-			CompositeStoryReporter.load();
-			return CompositeStoryReporter.reporter();
+			if (reporter == null){
+				reporter = CompositeStoryReporter.reporter();
+				CompositeStoryReporter.load();
+			}
+			return reporter;
 		}
 	}
 }

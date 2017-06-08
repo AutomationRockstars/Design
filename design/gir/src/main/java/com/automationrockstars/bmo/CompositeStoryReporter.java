@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -82,8 +83,11 @@ public class CompositeStoryReporter implements StoryReporter {
 
 	}
 
+	private static final AtomicBoolean finished = new AtomicBoolean(false);
+	
 	@Override
 	public void finish() {
+		if (! finished.get()){
 		try {
 			lock.lock();
 			for (StoryReporter reporter : reporters) {
@@ -95,8 +99,9 @@ public class CompositeStoryReporter implements StoryReporter {
 			}
 		} finally {
 			lock.unlock();
+			finished.set(true);
 		}
-
+		}
 	}
 
 	@Override
@@ -310,9 +315,10 @@ public class CompositeStoryReporter implements StoryReporter {
 			if (!Iterables.tryFind(reporters, new Predicate<StoryReporter>() {
 				@Override
 				public boolean apply(StoryReporter input) {
-					return input.getClass().equals(reporter.getClass());
+					return input.getClass().getCanonicalName().equals(reporter.getClass().getCanonicalName());
 				}
 			}).isPresent()) {
+				LOG.info("New reporter {} added ",reporter.name());
 				reporters.add(reporter);
 
 				Collections.sort(reporters, new Comparator<StoryReporter>() {
@@ -332,6 +338,8 @@ public class CompositeStoryReporter implements StoryReporter {
 						return o1Order - o2Order;
 					}
 				});
+			} else {
+				LOG.debug("Re using instance of reporter {}",reporter.name());
 			}
 		} finally {
 			lock.unlock();
@@ -364,7 +372,7 @@ public class CompositeStoryReporter implements StoryReporter {
 	}
 
 	public static void load() {
-		create();
+		reporter();
 		String[] reporterPackages = ConfigLoader.config().getStringArray("story.reporter.package");
 		if (ArrayUtils.isNotEmpty(reporterPackages)) {
 			reporterPackages = ArrayUtils.add(reporterPackages, "com.automationrockstars");
@@ -379,7 +387,6 @@ public class CompositeStoryReporter implements StoryReporter {
 					if (! Modifier.isAbstract(reporter.getModifiers())){
 						StoryReporter rep = reporter.newInstance();
 						add(rep);
-						LOG.info("Reporter {} added", rep.name());
 					}
 				} catch (Exception e) {
 					LOG.error("Reporter {} cannot be loaded", reporter, e);
