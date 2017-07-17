@@ -4,6 +4,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -17,6 +21,12 @@ import com.google.common.reflect.ClassPath.ResourceInfo;
 
 public class JarUtils {
 
+	private static final ClassLoader cl = ClassLoader.getSystemClassLoader();
+	private static ClassLoader classLoader(){
+		return cl;
+	}
+	
+	
 	public static void unzipToFile(Path outsideDirectory, String... fileOnClassPath) {
 		unzipResource(outsideDirectory, findResources(fileOnClassPath).get(0));		
 	}
@@ -24,8 +34,7 @@ public class JarUtils {
 	public static void unzipResource(Path outsideDirectory, ResourceInfo resource){
 		outsideDirectory.toFile().mkdirs();
 		try (InputStream internalFile = resource.url().openStream(); FileOutputStream out = new FileOutputStream(outsideDirectory.toFile()+ "/" + fileNameFromClasspath(resource.getResourceName()))){
-			ByteStreams.copy(internalFile, out );
-			
+			ByteStreams.copy(internalFile, out );			
 		} catch (IOException e) {
 			Throwables.propagate(e);
 		}
@@ -44,33 +53,54 @@ public class JarUtils {
 	private static ClassPath cp;
 	private static FluentIterable<ResourceInfo> resources = null;
 	
-	static {
+	private static ClassPath cp(){
 		try {
-			cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
+			cp = ClassPath.from(classLoader());
 		} catch (IOException e) {
 		}
+		return cp;
 	}
 
 	private static FluentIterable<ResourceInfo> resources(){
-		if (resources == null){
-			Preconditions.checkNotNull(cp, "ClassPath scanner cannot be initialized");
-			resources = FluentIterable.from(cp.getResources());
+		if (resources == null){			
+			Preconditions.checkNotNull(cp(), "ClassPath scanner cannot be initialized");
+			resources = FluentIterable.from(cp().getResources());
 		} 
 		return resources;
 	}
-	
-	public static FluentIterable<ResourceInfo> findResources(final String... filterParts){
+
+	static Predicate<String> matchesName(final String... filterParts){
+		return new Predicate<String>() {
+
+			@Override
+			public boolean apply(String resourceName) {
+				boolean matches = true;
+				for (String filterPart : filterParts){
+					matches = matches && resourceName.matches(".*"+filterPart + ".*");
+				}
+				return matches;
+			}
+		};
+		
+	}
+	private static final Logger LOG = LoggerFactory.getLogger(JarUtils.class);
+		public static FluentIterable<ResourceInfo> findResources(final String... filterParts){
+		String currentPath = Paths.get("").toAbsolutePath().toString();
+		if (currentPath.contains(" ")){
+			LOG.error("Current path contains SPACE characters that usually make loading classpath resources failing. Current path is {}",currentPath );
+		}
 			return resources().filter(new Predicate<ResourceInfo>() {
 				@Override
 				public boolean apply(ResourceInfo input) {
-					boolean matches = true;
-					String resourceName = input.getResourceName();
-					for (String filterPart : filterParts){
-						matches = matches && resourceName.matches(".*"+filterPart + ".*");
-					}
-					return matches;
+					return matchesName(filterParts).apply(input.getResourceName());
 				}
 			});
+	}
+	
+	public static void reload(){
+		resources = null;
+		cp = null;
+		resources();
 	}
 
 }
