@@ -17,8 +17,8 @@ import java.lang.annotation.Target;
  * 
  * E.g. text.contains('automationrockstars') will return sub set of all elements containing text "automationrockstars"
  * 
- * @FindBy(tagName="div")
- * @Filter("text.contains('GitHub')")
+ * {@literal @}FindBy(tagName="div")
+ * {@literal @}Filter("text.contains('GitHub')")
  * WebElement githubDiv();
  * 
  * Calling githubDiv() will return a WebElement with tag div and containing GitHub text inside

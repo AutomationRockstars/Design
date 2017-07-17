@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
  * Annotate UiPart class or method with this annotation specifying the class implementing {@link FindByAugmenter} 
  * e.g.
  *  
- *  @FindBy(id="DYNAMIC_PLACEHOLDER_span")
- *  @WithFindAugmenter(DynamicPlaceholderResolver.class)
+ *  {@literal @}FindBy(id="DYNAMIC_PLACEHOLDER_span")
+ *  {@literal @}WithFindAugmenter(DynamicPlaceholderResolver.class)
  *  public interface DynamicDiv extends UiPart {
  *  ...
  *  }

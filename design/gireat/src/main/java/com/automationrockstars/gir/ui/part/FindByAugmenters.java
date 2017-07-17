@@ -52,8 +52,8 @@ public class FindByAugmenters {
 	}
 
 	/**
-	 * Find out what kind of FindBy is passed to method. It works for long (@FindBy(how = How.ID, using="someId"))
-	 * and short (@FindBy(id="someId)) FindBy annotations returning same result for both
+	 * Find out what kind of FindBy is passed to method. It works for long ({@literal @}FindBy(how = How.ID, using="someId"))
+	 * and short ({@literal @}FindBy(id="someId)) FindBy annotations returning same result for both
 	 * 
 	 * @param toBeAugmented
 	 * @return
@@ -82,8 +82,8 @@ public class FindByAugmenters {
 	
 	
 	/**
-	 * Method to retrieve string value of FindBy annotation. It works for long (@FindBy(how = How.ID, using="someId"))
-	 * and short (@FindBy(id="someId)) FindBy annotations returning same result for both
+	 * Method to retrieve string value of FindBy annotation. It works for long ({@literal @}FindBy(how = How.ID, using="someId"))
+	 * and short ({@literal @}FindBy(id="someId)) FindBy annotations returning same result for both
 	 * @param toBeAugmented
 	 * @return
 	 */
@@ -110,7 +110,7 @@ public class FindByAugmenters {
 	}
 	
 	/**
-	 * Returns Class extending {@see org.openq.selenium.By} for provided FindBy annotation
+	 * Returns Class extending {@link org.openqa.selenium.By} for provided FindBy annotation
 	 * 
 	 * @param toBeAugmented
 	 * @return
@@ -141,7 +141,7 @@ public class FindByAugmenters {
 	}
 	
 	/**
-	 * Method returns constructor of class extending {@see org.openqa.selenium.By} that accepts one String parameter
+	 * Method returns constructor of class extending {@link org.openqa.selenium.By} that accepts one String parameter
 	 * as it would be executed directly from FindBy annotation processor
 	 * 
 	 * @param toBeAugmented
@@ -159,7 +159,7 @@ public class FindByAugmenters {
 	}
 	
 	/**
-	 * Method returns instance of class extending {@see org.openqa.selenium.By} created with constructor accepting String.
+	 * Method returns instance of class extending {@link org.openqa.selenium.By} created with constructor accepting String.
 	 * The String value used for constructing By is second parameter of the method
 	 * @param toBeAugmented
 	 * @param newValue
