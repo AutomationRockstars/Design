@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.automationrockstars</groupId>
 		<artifactId>design</artifactId>
-		<version>1.0.5-SNAPSHOT</version>
+		<version>1.0.5</version>
 	</parent>
 	<dependencyManagement>
 		<dependencies>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.automationrockstars</groupId>
 			<artifactId>webdriver-sikulix-driver</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
+			<version>1.0.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
