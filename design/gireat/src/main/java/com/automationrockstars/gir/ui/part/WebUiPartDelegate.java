@@ -19,7 +19,7 @@ import com.automationrockstars.design.gir.webdriver.Waits;
 import com.automationrockstars.gir.ui.FilteredBy;
 import com.automationrockstars.gir.ui.Timeout;
 import com.automationrockstars.gir.ui.UiPart;
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
@@ -39,7 +39,7 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 	}
 
 	public FluentIterable<UiObject> children() {
-		return FluentIterable.from(this.findElements(org.openqa.selenium.By.xpath(".//*"))).transform(new Function<WebElement,UiObject>(){
+		return FluentIterable.from(this.findElements(org.openqa.selenium.By.xpath(".//*"))).transform(new com.google.common.base.Function<WebElement,UiObject>(){
 			int instance = 0;
 
 			public UiObject apply(WebElement input) {
@@ -151,10 +151,10 @@ public class WebUiPartDelegate extends AbstractUiPartDelegate {
 		new FluentWait<UiPart>(this)
 		.withTimeout(60, TimeUnit.SECONDS)
 		.pollingEvery(200, TimeUnit.MILLISECONDS)
-		.until(new Predicate<UiPart>() {
+		.until(new Function<UiPart,Boolean>() {
 
 			@Override
-			public boolean apply(UiPart input) {
+			public Boolean apply(UiPart input) {
 				if (input.isPresent()){
 					return ! input.isVisible();
 				}

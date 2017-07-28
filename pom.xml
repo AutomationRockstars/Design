@@ -7,8 +7,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.automationrockstars</groupId>
-	<artifactId>toolchain</artifactId>
-	<version>1.0.5</version>
+	<artifactId>armor</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Toolchain for Test Automation</name>
 	<description>Toolchain funneling opensource tools necessary for test automation</description>
@@ -48,7 +48,7 @@
 		<connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
 		<developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
 		<url>https://github.com/automationrockstars/Design</url>
-		<tag>toolchain-1.0.2</tag>
+		<tag>armor-2.0.0</tag>
 	</scm>
 
 	<dependencyManagement>

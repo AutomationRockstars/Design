@@ -46,7 +46,7 @@ import com.automationrockstars.gir.ui.WithDecorators;
 import com.automationrockstars.gir.ui.WithFindByAugmenter;
 import com.automationrockstars.gir.ui.context.Image;
 import com.automationrockstars.gir.ui.context.SearchContextService;
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -218,7 +218,7 @@ public class UiPartProxy implements InvocationHandler{
 				wanted.isArray()){
 			if (type instanceof ParameterizedType){
 				final Class<?> collectionOf = (Class<?>) ((ParameterizedType)type).getActualTypeArguments()[0];
-				FluentIterable filteredResult =  FluentIterable.from(result).transform(new Function<WebElement,Object>(){
+				FluentIterable filteredResult =  FluentIterable.from(result).transform(new com.google.common.base.Function<WebElement,Object>(){
 					public Object apply(WebElement input) {
 						return convert(input,collectionOf,decorators);
 					}});
@@ -352,7 +352,7 @@ public class UiPartProxy implements InvocationHandler{
 			}
 			final By parentBy = tparentBy;
 			List<WebElement> result = FluentIterable.from(Lists.newArrayList(UiParts.get(resultClass)))
-					.transform(new Function<UiPart, WebElement>() {
+					.transform(new com.google.common.base.Function<UiPart, WebElement>() {
 
 						@Override
 						public WebElement apply(UiPart input) {
@@ -469,7 +469,7 @@ public class UiPartProxy implements InvocationHandler{
 			parent = (SearchContext) host;
 		}
 		final AtomicInteger order = new AtomicInteger();
-		return Lists.newArrayList(Iterables.transform(elements, new Function<WebElement,WebElement>(){
+		return Lists.newArrayList(Iterables.transform(elements, new com.google.common.base.Function<WebElement,WebElement>(){
 			@Override
 			public WebElement apply(WebElement input) {
 				WebElement result = input;
@@ -521,7 +521,7 @@ public class UiPartProxy implements InvocationHandler{
 		
 		while (result.isEmpty()){
 			previous = Lists.newArrayList(hidden.toList());
-			hidden = FluentIterable.from(previous).transform(new Function<WebElement, WebElement>() {
+			hidden = FluentIterable.from(previous).transform(new com.google.common.base.Function<WebElement, WebElement>() {
 
 				public WebElement apply(WebElement input) {
 					return input.findElement(org.openqa.selenium.By.xpath(".."));

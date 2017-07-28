@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.automationrockstars</groupId>
 		<artifactId>design</artifactId>
-		<version>1.0.5</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<dependencyManagement>
 		<dependencies>
@@ -24,19 +24,16 @@
 		<dependency>
 			<groupId>com.automationrockstars</groupId>
 			<artifactId>gir-webdriver</artifactId>
-			</dependency>
- <dependency>
-        <groupId>net.sourceforge.htmlunit</groupId>
-        <artifactId>htmlunit</artifactId>
-        <version>2.21</version>
-      </dependency>
-      <dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>selenium-htmlunit-driver</artifactId>
-    <version>2.52.0</version>
-</dependency>
-      
-      		<!-- https://mvnrepository.com/artifact/junitperf/junitperf -->
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.machinepublishers/jbrowserdriver -->
+		<dependency>
+			<groupId>com.machinepublishers</groupId>
+			<artifactId>jbrowserdriver</artifactId>
+			<version>0.17.8</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/junitperf/junitperf -->
 		<dependency>
 			<groupId>junitperf</groupId>
 			<artifactId>junitperf</artifactId>
@@ -47,13 +44,13 @@
 		<dependency>
 			<groupId>com.automationrockstars</groupId>
 			<artifactId>webdriver-sikulix-driver</artifactId>
-			<version>1.0.5</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-server</artifactId>
-			<version>2.53.0</version>
+			<version>3.4.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -63,8 +60,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>

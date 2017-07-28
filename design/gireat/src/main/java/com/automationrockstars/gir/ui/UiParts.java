@@ -26,7 +26,7 @@ import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.part.EmptyUiObject;
 import com.automationrockstars.gir.ui.part.UiPartProxy;
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
