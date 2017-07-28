@@ -628,10 +628,10 @@ public class DriverFactory {
 			return driver.getTitle();
 		}
 
-		private static final UiObject browser = new UiObject(null,By.tagName("body"),"WebDriver");
+		private static final UiObject browser = new UiObject(null,By.tagName("html"),"WebDriver");
 		public List<WebElement> findElements(By by) {
 			findPlugins().beforeFindElement(browser,by);
-			List<WebElement> result = UiObject.wrapAll(searchContext.findElements(by),By.tagName("body"), by);
+			List<WebElement> result = UiObject.wrapAll(searchContext.findElements(by),By.tagName("html"), by);
 			findPlugins().afterFindElements(browser,by,result);
 			return result;
 		}
