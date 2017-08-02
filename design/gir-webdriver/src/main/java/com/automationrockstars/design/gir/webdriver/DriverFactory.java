@@ -52,7 +52,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.phantomjs.PhantomjsDriver;
+
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -350,7 +350,11 @@ public class DriverFactory {
 				String browserName = StringUtils.capitalize(name + "Driver");
 				WebDriver res = null;
 				try {
-					res = (WebDriver) Class.forName("org.openqa.selenium." + name+"."+browserName).getConstructor(Capabilities.class).newInstance(getCapabilities(name));
+					String className = browser.get();
+					if (! browserName.contains(".")){
+						className = "org.openqa.selenium." + name+"."+browserName;
+					}
+					res = (WebDriver) Class.forName(className).getConstructor(Capabilities.class).newInstance(getCapabilities(name));
 				} catch (Exception e) {
 					throw new IllegalStateException(String.format("Browser for name %s failed to start", name),e);
 				}
@@ -481,6 +485,9 @@ public class DriverFactory {
 			result.setCapability(ChromeOptions.CAPABILITY, chromOptions);
 			result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			break;
+		case "com.machinepublishers.jbrowserdriver.jbrowserdriver":
+             result.merge(HeadlessWebDriver.jDriverCapabilities());
+             break;
 		default:
 			result = new DesiredCapabilities(driverType,"",Platform.ANY);
 			break;

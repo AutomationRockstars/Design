@@ -1,13 +1,20 @@
 package com.automationrockstars.design.gir.webdriver;
 
+import com.machinepublishers.jbrowserdriver.Settings;
+import com.machinepublishers.jbrowserdriver.UserAgent;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.maven.settings.io.SettingsParseException;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+
+import java.util.logging.Level;
 
 public class HeadlessWebDriver {
 
@@ -15,6 +22,13 @@ public class HeadlessWebDriver {
 
 	public static String name() {
 		String broser = "";
+		try {
+			WebDriver dr = (WebDriver) Class.forName("com.machinepublishers.jbrowserdriver.JBrowserDriver").newInstance();
+			return "com.machinepublishers.jbrowserdriver.JBrowserDriver";
+		} catch (Throwable t){
+            t.printStackTrace();
+		}
+
 		try {
 			LOG.info("Detecting phantomjs version");
 
@@ -42,4 +56,11 @@ public class HeadlessWebDriver {
 		LOG.info("Found headless browser {}", broser);
 		return broser;
 	}
+
+    public static Capabilities jDriverCapabilities() {
+        return Settings.builder()
+                .userAgent(UserAgent.CHROME)
+                .loggerLevel(Level.ALL)
+                .headless(false).buildCapabilities();
+    }
 }

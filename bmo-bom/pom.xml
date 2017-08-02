@@ -167,7 +167,7 @@
             <dependency>
                 <groupId>com.machinepublishers</groupId>
                 <artifactId>jbrowserdriver</artifactId>
-                <version>0.17.8</version>
+                <version>0.17.9-SNAPSHOT</version>
             </dependency>
 
 

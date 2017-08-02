@@ -17,13 +17,17 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.io.IOException;
 
+import com.machinepublishers.jbrowserdriver.JBrowserDriver;
+import com.machinepublishers.jbrowserdriver.ProxyConfig;
+import com.machinepublishers.jbrowserdriver.Settings;
+import com.machinepublishers.jbrowserdriver.UserAgent;
 import org.junit.Test;
 public class WebdriverTest {
 
 
 	@Test
 	public void test() throws InterruptedException, IOException {
-		
+		System.setProperty("noui","true");
 		assertThat(Ebay.searchFor("aa"),is(not(nullValue())));
 		
 		

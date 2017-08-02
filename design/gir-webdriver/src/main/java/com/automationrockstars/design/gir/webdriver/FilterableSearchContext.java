@@ -13,14 +13,7 @@ package com.automationrockstars.design.gir.webdriver;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -68,7 +61,7 @@ public class FilterableSearchContext implements SearchContext {
 				log.trace("Element {} is displayed {} at location {}", element, vis ,loc);
 				return loc.getX() >0 && loc.getY()>0;
 			} else return vis;
-		} catch (StaleElementReferenceException e){
+		} catch (StaleElementReferenceException | ElementNotVisibleException e){
 			log.trace("Element {} is wrong");
 			return false;
 		}

@@ -14,9 +14,8 @@
 	<artifactId>gir-webdriver</artifactId>
 
 	<properties>
-		<selenium_version>2.53.1</selenium_version>
+		<selenium_version>3.4.0</selenium_version>
 	</properties>
-
 
 	<dependencies>
 		<dependency>
@@ -30,6 +29,27 @@
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium_version}</version>
 		</dependency>
+			<dependency>
+					<artifactId>selenium-server</artifactId>
+					<groupId>org.seleniumhq.selenium</groupId>
+						<version>${selenium_version}</version>
+				</dependency>
+			<dependency>
+					<artifactId>selenium-api</artifactId>
+					<groupId>org.seleniumhq.selenium</groupId>
+						<version>${selenium_version}</version>
+			</dependency>
+			<dependency>				
+					<artifactId>selenium-remote-driver</artifactId>
+					<groupId>org.seleniumhq.selenium</groupId>
+						<version>${selenium_version}</version>
+			</dependency>
+			<dependency>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+						<version>21</version>
+			</dependency>
+		
 
 		<dependency>
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
@@ -61,15 +81,27 @@
 					<artifactId>sisu-guice</artifactId>
 					<groupId>org.sonatype.sisu</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-	
+		<dependency>
+			<groupId>com.machinepublishers</groupId>
+			<artifactId>jbrowserdriver</artifactId>
+		</dependency>
 
-		
-	</dependencies>
+    </dependencies>
+    
 	<dependencyManagement>
 	
 		<dependencies>
+			<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+				<version>21.0</version>
+			</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -77,9 +109,9 @@
 			<version>4.5.2</version>
 		</dependency>
 		<dependency>
-		 <groupId>org.apache.commons</groupId>
-  <artifactId>commons-lang3</artifactId>
-  <version>3.5</version>
+		 	<groupId>org.apache.commons</groupId>
+		 	<artifactId>commons-lang3</artifactId>
+  			<version>3.5</version>
 		</dependency>
 
 		

@@ -7,10 +7,14 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import com.machinepublishers.jbrowserdriver.*;
 import org.junit.Test;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.sikulix.SikulixDriver;
 import org.openqa.selenium.sikulix.SikulixDriverProvider;
@@ -20,6 +24,9 @@ import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import ru.yandex.qatools.htmlelements.element.Link;
 
 public class UiPartsTest {
@@ -30,11 +37,13 @@ public class UiPartsTest {
 	private void doSearch() {
 		GoogleHome init = UiParts.get(GoogleHome.class);
 		init.query().clear();
+		init.query().getWrappedElement().click();
 		init.query().sendKeys("automationrockstars");
 		init.search().click();
 	}
 
-	@Test
+
+	@Test(timeout = 30000)
 	public void should_doTheThing() {
 		doSearch();
 
@@ -85,6 +94,28 @@ public class UiPartsTest {
 		}).first().get().click();
 		DriverFactory.closeDriver();
 	}
+
+	@Test
+    public void lame(){
+        Settings settings = Settings.builder().proxy(new ProxyConfig(ProxyConfig.Type.HTTP,"localhost",3128)).headless(false).timezone(Timezone.AMERICA_NEWYORK).build();
+        JBrowserDriver driver = new JBrowserDriver(settings);
+        driver.get("http://www.google.ie");
+        System.out.println("status code: " + driver.getStatusCode());
+        String html = driver.getPageSource();
+        driver.findElement(org.openqa.selenium.By.name("q")).sendKeys("automationrockstars\n");
+        WebElement d = new FluentWait<SearchContext>(driver)
+                .withTimeout(5, TimeUnit.SECONDS)
+                .until(new Function<SearchContext,WebElement>() {
+            @Nullable
+            @Override
+            public WebElement apply(@Nullable SearchContext searchContext) {
+                return searchContext.findElement(org.openqa.selenium.By.className("g"));
+            }
+        });
+        System.out.println("DD" + d.getText());
+        driver.quit();
+        System.out.println(html);
+    }
 
 	@Test
 	public void should_beLogical() throws InterruptedException, IOException {

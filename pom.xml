@@ -10,7 +10,7 @@
 	<artifactId>armor</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Toolchain for Test Automation</name>
+	<name>Automation Toolchain for Confidence in CI</name>
 	<description>Toolchain funneling opensource tools necessary for test automation</description>
 	<url>https://github.com/AutomationRockstars/Design/wiki</url>
 	<developers>
