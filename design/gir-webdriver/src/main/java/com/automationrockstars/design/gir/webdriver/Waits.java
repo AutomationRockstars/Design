@@ -47,14 +47,14 @@ public class Waits {
 	public static WebElement waitUntilVisible(By by){
 		return DriverFactory.delay().until(findVisible(by));
 	}
-	private static Predicate<SearchContext> isNotMoving(final By by){
-	return new Predicate<SearchContext>(){
+	private static Function<SearchContext,Boolean> isNotMoving(final By by){
+	return new Function<SearchContext,Boolean>(){
 		Point previous = new Point(-7, -77);
 		public String toString(){
 			return String.format("Element identified by %s is not moving", by);
 		}
 		@Override
-		public boolean apply(SearchContext input) {
+		public Boolean apply(SearchContext input) {
 			Point current = webElementWait(input).until(visible(by)).getLocation();
 			if (previous.equals(current)){
 				return true;
@@ -66,10 +66,10 @@ public class Waits {
 	};}
 	
 	public static void waitUntilNotMoving(final WebElement element){
-		withDefaultDelay().until(new Predicate<WebDriver>() {
+		withDefaultDelay().until(new Function<WebDriver,Boolean>() {
 			Point previous = element.getLocation();
 			@Override
-			public boolean apply(WebDriver input) {
+			public Boolean apply(WebDriver input) {
 				if (element.getLocation().equals(previous)){
 					return true;
 				} else {
@@ -180,10 +180,10 @@ public class Waits {
 	}
 
 	public static void waitUntilSourceContains(final String pageSourcePart){
-		DriverFactory.delay().until(new Predicate<WebDriver>() {
+		DriverFactory.delay().until(new Function<WebDriver,Boolean>() {
 
 			@Override
-			public boolean apply(WebDriver input) {
+			public Boolean apply(WebDriver input) {
 				return DriverFactory.getDriver().getPageSource().contains(pageSourcePart);
 			}
 
@@ -228,11 +228,11 @@ public class Waits {
 				} else {
 					return null;
 				}}};}
-	public static Predicate<SearchContext> hidden(final By by){
-		return new Predicate<SearchContext>() {
+	public static Function<SearchContext,Boolean> hidden(final By by){
+		return new Function<SearchContext,Boolean>() {
 
 			@Override
-			public boolean apply(SearchContext input) {
+			public Boolean apply(SearchContext input) {
 				Optional<WebElement> visibleElement = Iterables.tryFind(FilterableSearchContext.unwrap(input).findElements(by), new Predicate<WebElement>() {
 					@Override
 					public boolean apply(WebElement input) {

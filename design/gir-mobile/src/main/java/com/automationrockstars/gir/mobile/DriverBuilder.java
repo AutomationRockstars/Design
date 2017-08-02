@@ -13,6 +13,7 @@ package com.automationrockstars.gir.mobile;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.automationrockstars.design.gir.webdriver.GridUtils;
-import com.google.common.base.Function;
+
 import com.google.common.base.Strings;
 
 import io.appium.java_client.AppiumDriver;

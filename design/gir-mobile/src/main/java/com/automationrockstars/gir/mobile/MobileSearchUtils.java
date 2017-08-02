@@ -10,21 +10,20 @@
  *******************************************************************************/
 package com.automationrockstars.gir.mobile;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
-import com.google.common.base.Function;
+import com.automationrockstars.design.gir.webdriver.Waits;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 public class MobileSearchUtils {
@@ -44,7 +43,7 @@ public class MobileSearchUtils {
 		if (by instanceof ByVisibleTextIos){
 			((ByVisibleTextIos) by).addVisible();
 		}
-		return Lists.newArrayList(Iterables.transform(MobileFactory.getDriver().findElements(by), new Function<WebElement, MobileUiObject>() {
+		return Lists.newArrayList(Iterables.transform(MobileFactory.getDriver().findElements(by), new com.google.common.base.Function<WebElement, MobileUiObject>() {
 			@Override
 			public MobileUiObject apply(WebElement input) {
 				return MobileUiObjectFactory.from(input,by);
@@ -60,7 +59,7 @@ public class MobileSearchUtils {
 	}
 	public static UiObject waitForVisible(final By by){
 		try {
-			WebElement plain = MobileFactory.delay().until(new ExpectedCondition<WebElement>() {
+			WebElement plain = MobileFactory.delay().until(new Function<WebDriver,WebElement>() {
 				@Override
 				public WebElement apply(WebDriver input) {
 					try{
@@ -82,9 +81,15 @@ public class MobileSearchUtils {
 		}
 	}
 
-	public static UiObject waitForPresent(By by){
+	public static UiObject waitForPresent(final By by){
 		try {
-			WebElement plain = MobileFactory.delay().until(presenceOfElementLocated(by));
+			WebElement plain = MobileFactory.delay().until(new Function<WebDriver, WebElement>() {
+
+				@Override
+				public WebElement apply(WebDriver input) {
+					return input.findElement(by);
+				}
+			});
 			return new UiObject(plain, by);
 		} catch (Exception e){
 			LOG.error("Element {} not found",by,e);
@@ -113,8 +118,8 @@ public class MobileSearchUtils {
 		}
 	}
 
-	public static ExpectedCondition<UiObject> anyPresent(final By... bys){
-		return new ExpectedCondition<UiObject>() {
+	public static Function<WebDriver,UiObject> anyPresent(final By... bys){
+		return new Function<WebDriver,UiObject>() {
 			@Override
 			public UiObject apply(WebDriver input) {
 				UiObject result = null;
@@ -134,8 +139,8 @@ public class MobileSearchUtils {
 		return MobileFactory.delay().until(anyPresent(bys));
 	}
 
-	public static ExpectedCondition<UiObject> anyVisible(final By... bys){
-		return new ExpectedCondition<UiObject>() {
+	public static Function<WebDriver,UiObject> anyVisible(final By... bys){
+		return new Function<WebDriver,UiObject>() {
 			@Override
 			public UiObject apply(WebDriver input) {
 				UiObject result = null;

@@ -11,12 +11,12 @@
 package com.automationrockstars.design.gir.webdriver;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -46,7 +46,7 @@ public class FilteredTable extends Table{
 	}
 
 	public List<Row> rows(){
-		return Lists.newArrayList(Iterables.transform(this.getWrappedElement().findElements(By.tagName("tr")),new Function<WebElement, Row>() {
+		return Lists.newArrayList(Iterables.transform(this.getWrappedElement().findElements(By.tagName("tr")),new com.google.common.base.Function<WebElement, Row>() {
 			@Override
 			public Row apply(WebElement input) {
 				return new Row(input);
@@ -75,10 +75,10 @@ public class FilteredTable extends Table{
 		}
 	}
 	public void waitForSize(final int minimumSize){
-		Waits.withDelay(20).until(new Predicate<WebDriver>(){
+		Waits.withDelay(20).until(new Function<WebDriver,Boolean>(){
 
 			@Override
-			public boolean apply(WebDriver input) {
+			public Boolean apply(WebDriver input) {
 				return 	rows().size() > minimumSize && 
 						canClickRow(minimumSize);
 

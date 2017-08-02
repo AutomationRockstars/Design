@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.bmo.RedirectionCalculator;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -144,7 +144,7 @@ public class GridUtils {
 				
 			}
 		}
-		String extrasPort = Objects.firstNonNull(port, ConfigLoader.config().getString("grid.extras.port","3000"));
+		String extrasPort = MoreObjects.firstNonNull(port, ConfigLoader.config().getString("grid.extras.port","3000"));
 		if (nodeUrl != null){
 			try {
 				extrasUrl = String.format("%s://%s:%s/", new URI(nodeUrl).getScheme(),new URI(nodeUrl).getHost(),extrasPort);

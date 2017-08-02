@@ -17,6 +17,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfEl
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 import org.openqa.selenium.By;
@@ -34,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.base.ConfigLoader;
+import com.automationrockstars.design.gir.webdriver.Waits;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -221,9 +223,10 @@ public class MobileUtils {
 	};
 
 	public static void waitForElementToHide(final int seconds, final By by){
-		delay(seconds).until(new ExpectedCondition<Boolean>() {
+		delay(seconds).until(new Function<WebDriver,Boolean>() {
+			
 			@Override
-			public Boolean apply(WebDriver input) {
+			public Boolean apply(WebDriver arg0) {
 				try {
 					MobileSearchUtils.findVisible(by);
 					return false;
@@ -290,7 +293,7 @@ public class MobileUtils {
 			if (! MobileSearchUtils.isPresent(by) ){
 				MobileSearchUtils.waitForPresent(by);
 			}
-			delay().until(invisibilityOfElementLocated(by));
+			Waits.waitUntilHidden(by);
 		} catch (Throwable tooLate){
 			LOG.debug("It wasnt there but whatever");
 		}

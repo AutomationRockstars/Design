@@ -13,7 +13,6 @@ package com.automationrockstars.gir.mobile;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectActionPluginService.actionPlugins;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectInfoPluginService.infoPlugins;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -26,10 +25,9 @@ import com.automationrockstars.design.gir.webdriver.CanVerify;
 import com.automationrockstars.design.gir.webdriver.HasLocator;
 import com.automationrockstars.design.gir.webdriver.HasWaits;
 import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.automationrockstars.design.gir.webdriver.Waits;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-
-import io.appium.java_client.remote.HideKeyboardStrategy;
 public class MobileUiObject extends UiObject implements HasWaits, CanSwipe, CanVerify, HasLocator {
 
 	private Map<String,By> byLocators;
@@ -204,7 +202,7 @@ public class MobileUiObject extends UiObject implements HasWaits, CanSwipe, CanV
 		actionPlugins().beforeClick(this);
 		boolean result = false;
 		try {
-			MobileFactory.delay(5).until(elementToBeClickable(getWrappedElement()));
+			Waits.waitUntilClickable(getWrappedElement());
 			click();
 			result = true;
 			actionPlugins().afterClick(this);	

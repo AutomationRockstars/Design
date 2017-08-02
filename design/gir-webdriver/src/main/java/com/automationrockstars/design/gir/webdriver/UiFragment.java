@@ -11,12 +11,11 @@
 package com.automationrockstars.design.gir.webdriver;
 
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
-import org.jboss.netty.util.internal.ThreadLocalBoolean;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -24,8 +23,7 @@ import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
 import com.automationrockstars.base.ConfigLoader;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+
 import com.google.common.collect.FluentIterable;
 
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -45,7 +43,13 @@ public abstract class UiFragment extends HtmlElement implements HasLocator{
 	}
 
 
-	private static ThreadLocal<Boolean> loaded = new ThreadLocalBoolean(false);
+	private static ThreadLocal<Boolean> loaded = new ThreadLocal<Boolean>(){
+		
+		@Override
+		protected Boolean initialValue(){
+			return false;
+		}
+	};
 
 	public UiFragment(SearchContext searchContext){
 		super();
@@ -132,9 +136,10 @@ public abstract class UiFragment extends HtmlElement implements HasLocator{
 	public static void waitForHidden(final Class<? extends UiFragment> uiFragment, int timeout){
 		Waits
 		.withDelay(timeout)
-		.until(new Predicate<WebDriver>() {
+		.until(new Function<SearchContext,Boolean>() {
+
 			@Override
-			public boolean apply(WebDriver input) {
+			public Boolean apply(SearchContext input) {
 				return ! isVisible(uiFragment);
 			}
 		});
@@ -146,7 +151,7 @@ public abstract class UiFragment extends HtmlElement implements HasLocator{
 	
 	public FluentIterable<UiObject> children(){
 
-		return FluentIterable.from(this.findElements(By.xpath(".//*"))).transform(new Function<WebElement,UiObject>(){
+		return FluentIterable.from(this.findElements(By.xpath(".//*"))).transform(new com.google.common.base.Function<WebElement,UiObject>(){
 			int instance = 0;
 			@Override
 			public UiObject apply(WebElement input) {

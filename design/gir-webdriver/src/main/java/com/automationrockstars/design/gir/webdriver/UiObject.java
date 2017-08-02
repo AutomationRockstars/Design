@@ -103,9 +103,9 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	}
 
 	public void lowLevelClick() {
-		Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until(new Predicate<WebDriver>() {
+		Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until(new Function<WebDriver,Boolean>() {
 			@Override
-			public boolean apply(WebDriver input) {
+			public Boolean apply(WebDriver input) {
 				try {
 					DriverFactory.actions().moveToElement(getWrappedElement()).click().perform();
 					return true;
@@ -143,9 +143,9 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		} catch (WebDriverException e) {
 			if (e.getMessage().contains("click")) {
 				try {
-					Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until(new Predicate<WebDriver>() {
+					Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until(new Function<WebDriver,Boolean>() {
 						@Override
-						public boolean apply(WebDriver input) {
+						public Boolean apply(WebDriver input) {
 							try {
 								DriverFactory.actions().moveToElement(getWrappedElement()).click().perform();
 								return true;
@@ -383,11 +383,11 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		new FluentWait<WebElement>(this)
 		.withTimeout(ConfigLoader.config().getLong("webdriver.click.check.timeout", 10000),
 				TimeUnit.MILLISECONDS)
-		.pollingEvery(1000, TimeUnit.MILLISECONDS).until(new Predicate<WebElement>() {
+		.pollingEvery(1000, TimeUnit.MILLISECONDS).until(new Function<WebElement,Boolean>() {
 
 			private WebElement el;
 			@Override
-			public boolean apply(WebElement input) {
+			public Boolean apply(WebElement input) {
 				try {
 					el = input;
 					action.apply(input);
