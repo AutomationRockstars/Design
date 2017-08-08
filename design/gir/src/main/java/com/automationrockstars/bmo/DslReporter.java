@@ -19,14 +19,14 @@ import static com.automationrockstars.gunter.events.EventStore.putEvent;
 import com.automationrockstars.gunter.events.EventBus;
 import com.automationrockstars.gunter.events.TestCaseStart;
 import com.automationrockstars.gunter.events.TestStepStart;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 public class DslReporter {
 
 	public static final void reportExecutionStart(String executionName){
 		
 	}
 	public static final void reportStepStart(Object name){
-		TestStepStart event = createTestStepStart(getEvent(TestCaseStart.class), Objects.firstNonNull(name, "UNKNOWN").toString());
+		TestStepStart event = createTestStepStart(getEvent(TestCaseStart.class), MoreObjects.firstNonNull(name, "UNKNOWN").toString());
 		putEvent(event);
 		EventBus.fireEvent(toJson(event));
 	}

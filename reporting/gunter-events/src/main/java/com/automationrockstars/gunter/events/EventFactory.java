@@ -192,7 +192,8 @@ public class EventFactory {
 	}
 	
 	private static Class<? extends Event> getClass(String jsonString) {
-		Iterator<String> result = Iterators.filter(Splitter.on(",").split(jsonString).iterator(), new Predicate<String>() {
+		Iterator<String> result = Iterators.filter(Splitter.on(",").split(jsonString).iterator(), new com.google.common.base.Predicate<String>() {
+			
 			@Override
 			public boolean apply(String part) {
 				return part.contains("type");

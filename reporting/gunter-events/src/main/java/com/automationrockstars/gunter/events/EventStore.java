@@ -39,7 +39,7 @@ public class EventStore {
 
 	public static final void putEvent(Event event){
 
-		Class<? extends Event> key = (Class<? extends Event>) Iterables.find(Arrays.asList(event.getClass().getInterfaces()), new Predicate<Class<?>>() {
+		Class<? extends Event> key = (Class<? extends Event>) Iterables.find(Arrays.asList(event.getClass().getInterfaces()), new com.google.common.base.Predicate<Class<?>>() {
 			@Override
 			public boolean apply(Class<?> input) {
 				return input.getName().startsWith("com.automationrockstars.gunter.events.");
