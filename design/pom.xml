@@ -26,6 +26,7 @@
 		<module>gir-rest</module>
 		<module>gir-mobile</module>
 		<module>webdriver-sikulix-driver</module>
+		<module>gir-screenplay</module>
 	</modules>
 	
 	<build>
