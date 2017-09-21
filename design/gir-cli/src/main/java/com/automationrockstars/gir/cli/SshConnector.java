@@ -25,6 +25,15 @@ public class SshConnector {
 
 	private static SSHClient openConnection(String host) throws IOException{
 		final SSHClient ssh = new SSHClient();
+	public static void main(String[] args) throws IOException {
+		SSHClient ssh = new SSHClient();
+		ssh.addHostKeyVerifier(
+				new HostKeyVerifier() {
+					@Override
+					public boolean verify(String s, int i, PublicKey publicKey) {
+						return true;
+					}
+				});
 		clients.add(ssh);
 		ssh.connect(host);
 		return ssh;
