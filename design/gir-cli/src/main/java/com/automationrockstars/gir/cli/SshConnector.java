@@ -7,33 +7,32 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.schmizz.sshj.SSHClient;
-
+import net.schmizz.sshj.transport.verification.HostKeyVerifier;
+import java.security.PublicKey;
 public class SshConnector {
 
 
 	private static List<SSHClient> clients = Lists.newCopyOnWriteArrayList();
-	
+
 	public static void close(){
 		for (SSHClient client : clients){
 			try {
 				client.close();
 			} catch (IOException e) {
-			
+
 			}
 		}
 	}
 
 	private static SSHClient openConnection(String host) throws IOException{
 		final SSHClient ssh = new SSHClient();
-	public static void main(String[] args) throws IOException {
-		SSHClient ssh = new SSHClient();
-		ssh.addHostKeyVerifier(
-				new HostKeyVerifier() {
-					@Override
-					public boolean verify(String s, int i, PublicKey publicKey) {
-						return true;
-					}
-				});
+        ssh.addHostKeyVerifier(
+                new HostKeyVerifier() {
+                    @Override
+                    public boolean verify(String s, int i, PublicKey publicKey) {
+                        return true;
+                    }
+                });
 		clients.add(ssh);
 		ssh.connect(host);
 		return ssh;
@@ -44,13 +43,13 @@ public class SshConnector {
 		ssh.authPassword(username, password);
 		return ssh;
 	}
-	
+
 	static SSHClient simpleConnect(String host, String username, Path authFile) throws IOException{
 		SSHClient ssh = openConnection(host);
 		ssh.authPublickey(username, new String[]{authFile.toFile().getAbsolutePath()});
 		return ssh;
 	}
-	
+
 	public static Terminal connect(String host, String username, String password) throws IOException{
 		return new Terminal(simpleConnect(host, username, password).startSession());
 	}
