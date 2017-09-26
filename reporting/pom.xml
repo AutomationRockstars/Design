@@ -17,6 +17,7 @@
 		<module>gunter-events</module>
 		<module>gunter-rabbit</module>
 		<module>gunter-allure</module>
+		<module>gunter-elasticsearch</module>
 	<!--	<module>agent-gunter</module>-->
 	</modules>
 

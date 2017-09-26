@@ -14,7 +14,7 @@
 	<artifactId>gir-webdriver</artifactId>
 
 	<properties>
-		<selenium_version>3.4.0</selenium_version>
+		<selenium_version>3.5.3</selenium_version>
 	</properties>
 
 	<dependencies>
@@ -34,11 +34,17 @@
 					<groupId>org.seleniumhq.selenium</groupId>
 						<version>${selenium_version}</version>
 				</dependency>
+
 			<dependency>
 					<artifactId>selenium-api</artifactId>
 					<groupId>org.seleniumhq.selenium</groupId>
 						<version>${selenium_version}</version>
 			</dependency>
+		<dependency>
+			<artifactId>selenium-support</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<version>${selenium_version}</version>
+		</dependency>
 			<dependency>				
 					<artifactId>selenium-remote-driver</artifactId>
 					<groupId>org.seleniumhq.selenium</groupId>

@@ -1,10 +1,6 @@
 package com.automationrockstars.gir.ui;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +12,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.pagefactory.AbstractAnnotations;
+import org.openqa.selenium.support.AbstractFindByBuilder;
 import org.openqa.selenium.support.pagefactory.ByAll;
 import org.openqa.selenium.support.ui.FluentWait;
 
@@ -234,7 +230,11 @@ public class UiParts {
 
 
 	private static final BackAnnotation backward = new BackAnnotation();
-	private static class BackAnnotation extends AbstractAnnotations {
+	private static class BackAnnotation extends AbstractFindByBuilder {
+
+		public org.openqa.selenium.By buildIt(Object o,Field f){
+			return null;
+		}
 
 		private static org.openqa.selenium.support.FindBy convert (final FindBy locator){
 			return (org.openqa.selenium.support.FindBy) Proxy.newProxyInstance(BackAnnotation.class.getClassLoader(),
@@ -276,12 +276,12 @@ public class UiParts {
 			}
 		}
 
-		@Override
+
 		public org.openqa.selenium.By buildBy() {
 			return null;
 		}
 
-		@Override
+
 		public boolean isLookupCached() {
 			return false;
 		}
