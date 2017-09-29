@@ -11,6 +11,7 @@
 package com.automationrockstars.bmo;
 
 import java.awt.Desktop;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automationrockstars.asserts.Asserts;
-import com.automationrockstars.base.ConfigLoader;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
@@ -54,6 +54,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+import static com.automationrockstars.base.ConfigLoader.config;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
@@ -82,13 +83,13 @@ public class GenericAllureStoryReporter implements StoryReporter {
 	
 	private static final AtomicBoolean finished = new AtomicBoolean(false);
 	private void setLogger(){
-		if ( ! LoggerFactory.getILoggerFactory().getClass().getName().contains("logback")){
+		if ( ! LoggerFactory.getILoggerFactory().getClass().getName().contains("logback") || config().getBoolean("allure.skip.logs")){
 			return;
 		}
 		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		final PatternLayoutEncoder ple = new PatternLayoutEncoder();
-		String pattern = ConfigLoader.config().getString("allure.log.pattern","%date|%logger{8}|%level|  %msg%n");
-		if (ConfigLoader.config().containsKey("allure.log.detailed")){
+		String pattern = config().getString("allure.log.pattern","%date|%logger{8}|%level|  %msg%n");
+		if (config().containsKey("allure.log.detailed")){
 			pattern = "%date %level [%thread] %logger{10} [%file:%line] %msg%n";
 		}
 		ple.setPattern(pattern);
@@ -117,6 +118,9 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 	public GenericAllureStoryReporter() {
 		LOG.info("instantiating");
+		if (config().getString("allure.results.directory") != null){
+				System.setProperty("allure.results.directory",config().getString("allure.results.directory"));
+		}
 	}
 
 	private static final ThreadLocal<String> currentSuite = new ThreadLocal<>();
@@ -284,8 +288,8 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 
 	private static Properties populateProperty(String name, Properties initial){
-		if (ConfigLoader.config().containsKey(name)){
-			initial.setProperty(name, ConfigLoader.config().getString(name));
+		if (config().containsKey(name)){
+			initial.setProperty(name, config().getString(name));
 		}
 		return initial;
 	}
@@ -327,7 +331,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 	
 	@VisibleForTesting
 	protected static Set<Map<String,String>> minimize(){
-		Set<?> videos = Sets.newHashSet(ConfigLoader.config().getList("webdriver.videos",Lists.newArrayList()));
+		Set<?> videos = Sets.newHashSet(config().getList("webdriver.videos",Lists.newArrayList()));
 		List<Map<String,String>> videosData = Lists.newArrayList();
 		Set<Map<String,String>> result = Sets.newTreeSet(new Comparator<Map<String,String>>(){
 
@@ -452,7 +456,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 				@Override
 				public boolean apply(File input) {
-					return input.getAbsoluteFile().toPath().endsWith(Paths.get(ConfigLoader.config().getString("allure.results.directory",AllureConfig.getDefaultResultsDirectory().getName())));
+					return input.getAbsoluteFile().toPath().endsWith(Paths.get(config().getString("allure.results.directory",AllureConfig.getDefaultResultsDirectory().getName())));
 				}
 			});
 			resultsDir = dire;
@@ -468,7 +472,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 		return reportDir;
 	}
 	public static void cleanPreviousReport(){
-		if (getResultsDir().isPresent() && ! ConfigLoader.config().getBoolean("allure.merge",false)){
+		if (getResultsDir().isPresent() && ! config().getBoolean("allure.merge",false)){
 			try {
 				FileUtils.forceDelete(getReportDir());
 			} catch (IOException e){
@@ -491,7 +495,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 				return input.getName().equals("settings.xml");
 			}
 		}); 
-		if (specialPom.isPresent() && ConfigLoader.config().getBoolean("update.m2.settings",false)){
+		if (specialPom.isPresent() && config().getBoolean("update.m2.settings",false)){
 			try {
 				FileUtils.copyFile(specialPom.get(), new File(userSettings));
 			} catch (IOException e) {
@@ -501,7 +505,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
 
 		if (! Paths.get(userSettings).toFile().canRead()){
-			String globalSettings = String.format("%s/conf/settings.xml", ConfigLoader.config().getString("M2_HOME"));
+			String globalSettings = String.format("%s/conf/settings.xml", config().getString("M2_HOME"));
 			if (! Paths.get(globalSettings).toFile().canRead()){
 				LOG.error("Maven settings are not configured. Report cannot be generated");
 			} else {
@@ -524,7 +528,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 				bl.unpackFace();
 				URI report = Paths.get(getReportDir().getAbsolutePath(),"index.html").toUri();
 				LOG.info("Report generated to {}",report);
-				if (ConfigLoader.config().containsKey("bdd.open.report")){
+				if (config().containsKey("bdd.open.report")){
 					if(Desktop.isDesktopSupported())
 					{
 						try {
@@ -545,7 +549,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 	public void start() {
 		cleanPreviousReport();
 		setLogger();
-		ConfigLoader.config().setProperty("assert.screenshot", false);
+		config().setProperty("assert.screenshot", false);
 	}
 
 	@Override
