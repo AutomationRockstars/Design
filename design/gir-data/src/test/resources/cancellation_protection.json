@@ -1,0 +1,10 @@
+{
+  "cancellation protection" : [
+    {
+      "purchased" : true
+    },
+    {
+      "purchased" : false
+    }
+  ]
+}
