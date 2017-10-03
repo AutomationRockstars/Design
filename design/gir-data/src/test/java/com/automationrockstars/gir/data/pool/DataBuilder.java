@@ -4,40 +4,44 @@ import com.automationrockstars.gir.data.TestData;
 import com.automationrockstars.gir.data.TestDataPool;
 import com.automationrockstars.gir.data.TestDataServices;
 import com.automationrockstars.gir.data.impl.TestDataPermutatorImpl;
+import com.google.common.base.Predicate;
+import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+
 public class DataBuilder {
 
-    public static void main(String[] args) throws IOException {
-        TestData<Booking> booking = buildBooking();
+    @Test
+    public void dataPermutations() throws IOException {
+        TestData<Booking> bookings = buildBooking();
 
-        System.out.println();
+        assertThat(bookings.records().size(), not(54));
+        assertThat(bookings.records().size(), is(46));
+        assertThat("Records matching exclusion returned", !bookings.records().anyMatch(booking -> exclusions(booking)));
     }
 
     public static TestData<Booking> buildBooking() throws IOException {
-        loadData();
-        TestData<Currency> currencies = TestDataServices.pool("currency").testData(Currency.class);
-        TestData<Credit> credits = TestDataServices.pool("credit").testData(Credit.class);
-        TestData<CancellationProtection> cancellationProtection = TestDataServices.pool("cancellation_protection").testData(CancellationProtection.class);
-        TestData<AffiliatePayback> affiliatePayback = TestDataServices.pool("affiliate_payback").testData(AffiliatePayback.class);
-
         TestDataPool bookingPool = TestDataServices.pool("booking");
         bookingPool.loadFrom("currency.json");
         bookingPool.loadFrom("credit.json");
         bookingPool.loadFrom("cancellation_protection.json");
         bookingPool.loadFrom("affiliate_payback.json");
 
-        TestDataPool.TestDataPermutator bookings = new TestDataPermutatorImpl(bookingPool).combine(Currency.class, Credit.class, CancellationProtection.class, AffiliatePayback.class);
+        TestDataPool.TestDataPermutator bookings = new TestDataPermutatorImpl(bookingPool)
+            .combine(Currency.class, Credit.class, CancellationProtection.class, AffiliatePayback.class)
+            .exclude((Predicate<Booking>) booking -> exclusions(booking));
 
         TestData build = bookings.build(Booking.class);
         return build;
     }
 
-    private static void loadData() {
-        TestDataServices.pool("currency").loadFrom("currency.json");
-        TestDataServices.pool("credit").loadFrom("credit.json");
-        TestDataServices.pool("cancellation_protection").loadFrom("cancellation_protection.json");
-        TestDataServices.pool("affiliate_payback").loadFrom("affiliate_payback.json");
+    private static boolean exclusions(Booking booking) {
+        return (booking.affiliatePayback().percentage() && !booking.affiliatePayback().flat())
+            && !booking.credit().deposit()
+            && (booking.credit().promo() || booking.credit().cancellationProtection() || booking.credit().bookingGuarantee());
     }
 }

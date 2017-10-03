@@ -3,12 +3,17 @@ package com.automationrockstars.gir.data.impl;
 import com.automationrockstars.gir.data.TestData;
 import com.automationrockstars.gir.data.TestDataPool;
 import com.automationrockstars.gir.data.TestDataRecord;
-import com.google.common.base.*;
-import com.google.common.collect.*;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -24,18 +29,17 @@ public class TestDataPermutatorImpl<T extends TestDataRecord> implements TestDat
     private List<Predicate<T>> predicates = newArrayList();
 
     private TestData<T> populate(TestData<T> initial,Class<T> outputType){
-        FluentIterable<Field> subRecords = FluentIterable.from(outputType.getFields());
+        FluentIterable<Method> subRecords = FluentIterable.from(outputType.getMethods());
         Map<Class<? extends TestDataRecord>,String> fieldMapping = Maps.newHashMap();
         for (Class<? extends TestDataRecord> recordType : recordTypes) {
-            fieldMapping.put(recordType, subRecords.firstMatch(new Predicate<Field>() {
+            fieldMapping.put(recordType, subRecords.firstMatch(new Predicate<Method>() {
                 @Override
-                public boolean apply(@Nullable Field field) {
-                    return field.getType().equals(recordType);
+                public boolean apply(@Nullable Method field) {
+                    return field.getReturnType().equals(recordType);
                 }
             }).get().getName());
         }
 
-        
         List<T> outputRecords = newArrayList();
         List<Set<? extends TestDataRecord>> prePermuter = newArrayList();
         for (Class<? extends TestDataRecord> recordType : recordTypes){
@@ -54,7 +58,7 @@ public class TestDataPermutatorImpl<T extends TestDataRecord> implements TestDat
 
         FluentIterable<T> filtered = FluentIterable.from(outputRecords);
         for (Predicate<T> predicate : predicates){
-          filtered = filtered.filter(predicate);
+          filtered = filtered.filter(Predicates.not(predicate));
         }
         filtered.stream().forEach(t -> initial.addNew().with(t));
         return initial;
