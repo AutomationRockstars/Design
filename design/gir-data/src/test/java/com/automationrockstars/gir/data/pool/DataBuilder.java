@@ -26,10 +26,7 @@ public class DataBuilder {
 
     public static TestData<Booking> buildBooking() throws IOException {
         TestDataPool bookingPool = TestDataServices.pool("booking");
-        bookingPool.loadFrom("currency.json");
-        bookingPool.loadFrom("credit.json");
-        bookingPool.loadFrom("cancellation_protection.json");
-        bookingPool.loadFrom("affiliate_payback.json");
+        bookingPool.loadFrom("currency.json", "credit.json", "cancellation_protection.json", "affiliate_payback.json");
 
         TestDataPool.TestDataPermutator bookings = new TestDataPermutatorImpl(bookingPool)
             .combine(Currency.class, Credit.class, CancellationProtection.class, AffiliatePayback.class)

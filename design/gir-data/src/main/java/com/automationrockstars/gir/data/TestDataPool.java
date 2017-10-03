@@ -1,12 +1,12 @@
 package com.automationrockstars.gir.data;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
 public interface TestDataPool {
 
 	String poolName();
 	void loadFrom(String location);
+	void loadFrom(String... locations);
 	void close();
 	<T extends TestDataRecord> TestData<T> testData(Class<T> clazz);
 	<T extends TestDataRecord> TestData<T> exclusiveTestData(Class<T> clazz);

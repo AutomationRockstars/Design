@@ -1,14 +1,14 @@
 package com.automationrockstars.gir.data.impl;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import com.automationrockstars.gir.data.TestData;
 import com.automationrockstars.gir.data.TestDataPool;
 import com.automationrockstars.gir.data.TestDataRecord;
 import com.automationrockstars.gir.data.TestDataService;
 import com.google.common.collect.Lists;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 public class SimpleTestDataPool implements TestDataPool {
 
@@ -28,6 +28,13 @@ public class SimpleTestDataPool implements TestDataPool {
 	public void loadFrom(String location) {
 		for (TestDataService service : services){
 			service.loadFrom(location);
+		}
+	}
+
+	@Override
+	public void loadFrom(String... locations) {
+		for (String location: locations) {
+			loadFrom(location);
 		}
 	}
 
