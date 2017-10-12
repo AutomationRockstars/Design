@@ -76,7 +76,9 @@ public class SimpleTestData<T extends TestDataRecord> implements TestData<T> {
 
 	@Override
 	public String serialize() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson(data().stream().map(record -> unMap(record)).collect(Collectors.toList()));
+		Map<String, List> records = Maps.newHashMap();
+		records.put(TestDataProxyFactory.separatedWords(classOf.getSimpleName()), data().stream().map(record -> unMap(record)).collect(Collectors.toList()));
+		return new GsonBuilder().setPrettyPrinting().create().toJson(records);
 	}
 
 	public static Map<String,Object> unMap(TestDataRecord inner) {
