@@ -69,19 +69,25 @@ public class WebElementVariableResolver  implements VariableResolver{
 		case "find":
 			return new Finder();
 		default:
+			Object result = null;
 			try {
-			return  element.getAttribute(name);
+			  result = element.getAttribute(name);
+			  if (result ==null){
+			  	result = element.getCssValue(name);
+			  }
 			} catch (Throwable e) {
 				try {
 				return element.getCssValue(name);
-				} catch (Throwable ee){
-					return null;
+				} catch (Throwable ignore){
+
 				}
-			}			
+			}
+			return  result;
 		}
 		} catch (Throwable someIssue){
 			return null;
 		}
+
 	}
 
 	public void setValue(Object value) {
