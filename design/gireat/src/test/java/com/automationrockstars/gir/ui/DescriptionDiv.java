@@ -6,5 +6,6 @@ import org.openqa.selenium.WebElement;
 public interface DescriptionDiv extends UiPart{
 
 	@FindBy(tagName="span")
+	@Filter("display != 'none'")
 	WebElement span();
 }
