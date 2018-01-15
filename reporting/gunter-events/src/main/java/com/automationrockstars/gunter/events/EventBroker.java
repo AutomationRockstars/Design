@@ -16,5 +16,5 @@ public interface EventBroker extends Closeable{
 	
 	void fireEvent(String event);
 	
-
+	void fireEvent(Event event);
 }

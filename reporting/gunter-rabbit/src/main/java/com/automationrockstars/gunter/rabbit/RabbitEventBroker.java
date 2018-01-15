@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
+import com.automationrockstars.gunter.events.Event;
+import com.automationrockstars.gunter.events.EventFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +130,11 @@ public class RabbitEventBroker implements EventBroker{
 
 	public void fireEvent(String event){
 		defaultPublisher().fireEvent(event);
+	}
+
+	@Override
+	public void fireEvent(Event event) {
+		fireEvent(EventFactory.toJson(event));
 	}
 
 
