@@ -58,7 +58,7 @@ public class UiParts {
 				} catch (WebDriverException e){
 					return false;
 				}
-			}			
+			}
 		};
 	}
 
@@ -190,7 +190,7 @@ public class UiParts {
 	}
 
 	public static org.openqa.selenium.By buildBy(Class<? extends UiPart> view) {
-		org.openqa.selenium.By result = org.openqa.selenium.By.tagName("body");
+		org.openqa.selenium.By result = org.openqa.selenium.By.tagName("html");
 		if (view.getAnnotation(Find.class) != null){
 			result = transform(view.getAnnotation(Find.class).any(),view.getAnnotation(Find.class).value());
 		} else if (view.getAnnotation(FindBy.class) != null){
