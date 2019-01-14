@@ -16,7 +16,7 @@
 
     <artifactId>bmo-bom</artifactId>
     <groupId>com.automationrockstars</groupId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
     <name>BOM for AutomationRockstars Toolchain</name>
     <description>BOM for AutomationRockstars Toolchain</description>
@@ -48,7 +48,7 @@
 		<connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
 		<developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
 		<url>https://github.com/automationrockstars/Design</url>
-		<tag>toolchain-1.0.4</tag>
+		<tag>armor-2.0.0</tag>
 	</scm>
 	
     <properties>
