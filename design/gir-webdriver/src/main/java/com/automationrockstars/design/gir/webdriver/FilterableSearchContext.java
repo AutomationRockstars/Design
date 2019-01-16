@@ -10,13 +10,12 @@
  *******************************************************************************/
 package com.automationrockstars.design.gir.webdriver;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,7 @@ public class FilterableSearchContext implements SearchContext {
 			boolean vis = element.isDisplayed();
 			log.trace("Element {} is displayed {} ",element,vis);
 			if ((! vis ) && ConfigLoader.config().getBoolean("webdriver.deepcheck",true)){
-				Point loc  = ((Locatable)element).getCoordinates().inViewPort();
+				Point loc  = element.getLocation();
 				log.trace("Element {} is displayed {} at location {}", element, vis ,loc);
 				return loc.getX() >0 && loc.getY()>0;
 			} else return vis;
@@ -133,8 +132,8 @@ public class FilterableSearchContext implements SearchContext {
 	private List<WebElement> stubbornWait(final By by){
 		List<WebElement> result = Lists.newArrayList();
 		try { result = Waits.webElementWait(unwrap())
-				.withTimeout(stubbornTime(), TimeUnit.SECONDS)
-				.pollingEvery(WebDriverWait.DEFAULT_SLEEP_TIMEOUT,TimeUnit.MILLISECONDS)
+				.withTimeout(Duration.ofSeconds(stubbornTime()))
+				.pollingEvery(Duration.ofMillis(500L))
 				.until(new Function<SearchContext, List<WebElement>>() {
 					@Override
 					public List<WebElement> apply(SearchContext input) {

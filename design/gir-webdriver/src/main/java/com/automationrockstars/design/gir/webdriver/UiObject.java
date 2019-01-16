@@ -28,7 +28,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -47,7 +46,7 @@ import com.google.common.collect.Lists;
 
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
-public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, Locatable, UiDriverPlugin {
+public class UiObject extends HtmlElement implements HasLocator, WebElement, WrapsElement, UiDriverPlugin {
 
 	private By by;
 	protected WebElement wrapped;
@@ -350,13 +349,13 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		return screenshot;
 	}
 
-	@Override
-	public Coordinates getCoordinates() {
-		infoPlugins().beforeGetCoordinates(this);
-		Coordinates result = ((Locatable) getWrappedElement()).getCoordinates();
-		infoPlugins().afterGetCoordinates(this, result);
-		return result;
-	}
+
+//	public Coordinates getCoordinates() {
+//		infoPlugins().beforeGetCoordinates(this);
+//		Coordinates result = ((Locatable) getWrappedElement()).getCoordinates();
+//		infoPlugins().afterGetCoordinates(this, result);
+//		return result;
+//	}
 
 	@Override
 	public Rectangle getRect() {

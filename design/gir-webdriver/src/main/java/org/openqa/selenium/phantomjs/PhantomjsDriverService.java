@@ -13,6 +13,7 @@ package org.openqa.selenium.phantomjs;
 import java.io.File;
 import java.io.IOException;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
 import org.openqa.selenium.remote.service.DriverService;
@@ -47,8 +48,12 @@ public class PhantomjsDriverService extends DriverService {
 		return new Builder().usingAnyFreePort().build();
 	}
 
-	public static class Builder extends DriverService.Builder<
-	PhantomjsDriverService, PhantomjsDriverService.Builder> {
+	public static class Builder extends DriverService.Builder<PhantomjsDriverService, PhantomjsDriverService.Builder> {
+
+		@Override
+		public int score(Capabilities capabilities) {
+			return 1;
+		}
 
 		@Override
 		protected File findDefaultExecutable() {

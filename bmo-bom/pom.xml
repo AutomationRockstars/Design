@@ -160,14 +160,14 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>3.4.0</version>
+                <version>3.141.59</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.machinepublishers/jbrowserdriver -->
             <dependency>
                 <groupId>com.machinepublishers</groupId>
                 <artifactId>jbrowserdriver</artifactId>
-                <version>0.17.8</version>
+                <version>1.0.1</version>
             </dependency>
 
 
