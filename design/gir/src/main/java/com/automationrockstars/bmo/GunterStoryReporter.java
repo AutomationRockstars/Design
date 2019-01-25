@@ -93,15 +93,18 @@ public class GunterStoryReporter implements StoryReporter{
 	}
 	@Override
 	public void start() {
-		try {
-			RabbitEventBroker.init();
-			isConnected.set(true);
-		} catch (IllegalStateException e){
-			isConnected.set(false);
-		}
-		if (isConnected.get()){
-			start.set(createExecutionStart(config().getString("execution.name",config().getString("bdd.story.filter"))));
-			fireEvent(serialize(start.get()));
+		isConnected.set(false);
+		if (ConfigLoader.config().containsKey("rabbitmq.host")) {
+			try {
+				RabbitEventBroker.init();
+				isConnected.set(true);
+			} catch (IllegalStateException e) {
+				isConnected.set(false);
+			}
+			if (isConnected.get()) {
+				start.set(createExecutionStart(config().getString("execution.name", config().getString("bdd.story.filter"))));
+				fireEvent(serialize(start.get()));
+			}
 		}
 	}
 

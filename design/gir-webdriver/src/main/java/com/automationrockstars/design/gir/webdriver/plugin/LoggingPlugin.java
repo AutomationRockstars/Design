@@ -12,6 +12,7 @@ package com.automationrockstars.design.gir.webdriver.plugin;
 
 import java.util.List;
 
+import com.automationrockstars.base.ConfigLoader;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -201,15 +202,27 @@ public class LoggingPlugin implements UiObjectInfoPlugin, UiObjectActionPlugin, 
 
 	}
 
+	private CharSequence[] hideKeys(final UiObject element,final CharSequence... keys){
+        if (ConfigLoader.config().containsKey("webdriver.log.hide_inputs")){
+	        String[] inputsToHide= ConfigLoader.config().getStringArray("webdriver.log.hide_inputs");
+	        for (String elementName : inputsToHide){
+	            if (element.toString().toLowerCase().contains(elementName.toLowerCase())){
+	                return new CharSequence[] {"**************"};
+                }
+            }
+            return keys;
+        } else return keys;
+    }
+
 	@Override
 	public void beforeSendKeys(UiObject element, CharSequence... keysToSend) {
-		LOG.info("Sending {} to element {}",keysToSend,element);
+		LOG.info("Sending {} to element {}",hideKeys(element,keysToSend),element);
 
 	}
 
 	@Override
 	public void afterSendKeys(UiObject element, CharSequence... keysToSend) {
-		LOG.info("Keys {} sent to {}",keysToSend,element);
+		LOG.info("Keys {} sent to {}",hideKeys(element,keysToSend),element);
 
 	}
 

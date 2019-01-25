@@ -126,32 +126,32 @@ public class SikuliImageUiObject extends UiObject implements ImageUiObject {
 		return new SikuliMouse(getImageElement());
 	}
 
-	@Override
-	public Coordinates getCoordinates() {
-		return new Coordinates() {
-			
-			@Override
-			public Point onScreen() {
-				Point location = getLocation();
-				return location;
-			}
-			
-			@Override
-			public Point onPage() {
-				return onScreen();
-			}
-			
-			@Override
-			public Point inViewPort() {
-				return onScreen();
-			}
-			
-			@Override
-			public Object getAuxiliary() {
-				return getImageElement().toStringShort();
-			}
-		};
-	}
+//	@Override
+//	public Coordinates getCoordinates() {
+//		return new Coordinates() {
+//
+//			@Override
+//			public Point onScreen() {
+//				Point location = getLocation();
+//				return location;
+//			}
+//
+//			@Override
+//			public Point onPage() {
+//				return onScreen();
+//			}
+//
+//			@Override
+//			public Point inViewPort() {
+//				return onScreen();
+//			}
+//
+//			@Override
+//			public Object getAuxiliary() {
+//				return getImageElement().toStringShort();
+//			}
+//		};
+//	}
 
 	@Override
 	public void submit() {

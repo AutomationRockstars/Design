@@ -27,7 +27,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -102,15 +101,12 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 	}
 
 	public void lowLevelClick() {
-		Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until(new Function<WebDriver,Boolean>() {
-			@Override
-			public Boolean apply(WebDriver input) {
-				try {
-					DriverFactory.actions().moveToElement(getWrappedElement()).click().perform();
-					return true;
-				} catch (WebDriverException ignore) {
-					return false;
-				}
+		Waits.withDefaultDelay().pollingEvery(200, TimeUnit.MILLISECONDS).until((Function<WebDriver, Boolean>) input -> {
+			try {
+				DriverFactory.actions().moveToElement(getWrappedElement()).click().perform();
+				return true;
+			} catch (WebDriverException ignore) {
+				return false;
 			}
 		});
 	}
@@ -426,13 +422,9 @@ public class UiObject extends HtmlElement implements HasLocator, WebElement, Wra
 		return timeout;
 	}
 	public void sendKeysUntil(final String predicate, final CharSequence... keys) {
-		untilPredicate(new WebElementPredicate(predicate), new Function<WebElement, Void>() {
-
-			@Override
-			public Void apply(WebElement input) {
-				input.sendKeys(keys);
-				return null;
-			}
+		untilPredicate(new WebElementPredicate(predicate), input -> {
+			input.sendKeys(keys);
+			return null;
 		});
 	}
 
