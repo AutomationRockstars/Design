@@ -5,9 +5,9 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.internal.Locatable;
 
-public interface ImageUiObject  extends HasInputDevices,Locatable, WebElement, ImageSearchContext{
+
+public interface ImageUiObject  extends HasInputDevices, WebElement, ImageSearchContext{
 
 	
 	public void click();
