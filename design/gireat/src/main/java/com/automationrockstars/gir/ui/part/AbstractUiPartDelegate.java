@@ -1,149 +1,158 @@
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
+
 package com.automationrockstars.gir.ui.part;
-
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.FluentWait;
 
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.FilterableSearchContext;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.automationrockstars.gir.ui.Name;
 import com.automationrockstars.gir.ui.UiPart;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.FluentWait;
 
-public abstract class AbstractUiPartDelegate implements UiPart{
-	protected final Class<? extends UiPart> view;
-	
-	private SearchContext parent;
-	private By locator = null;
-	
-	public AbstractUiPartDelegate(Class<? extends UiPart> view){
-		this.view = view;
-		locator = UiPartProxy.buildBy(this,view);
-	}
-	
-	public AbstractUiPartDelegate(Class<? extends UiPart> view,UiObject toWrap){
-		this.view = view;
-		this.wrapped = toWrap;
-		locator = toWrap.getLocator();
-		loaded.set(true);
-	}
-	public String name() {
-		if (view.getAnnotation(Name.class) != null){
-			return view.getAnnotation(Name.class).value();
-		} else {
-			return String.format("UiPart %s", getLocator());
-		}
-	}
-	@Override
-	public SearchContext parent() {
-		return parent;
-	}
-	
-	public void parent(SearchContext parent){
-		this.parent = parent;
-	}
-	public FluentWait<SearchContext> delay() {
-		int initialValue = ConfigLoader.config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM,5);
-		try {
-			ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, 0);
-			return new FluentWait<SearchContext>(getWrappedElement());
-		} finally {
-			ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, initialValue);
-		}
-	}
-	public void click() {
-		getWrappedElement().click();
-	}
+import java.util.List;
 
-	public void submit() {
-		getWrappedElement().submit();
-	}
+public abstract class AbstractUiPartDelegate implements UiPart {
+    protected static ThreadLocal<Boolean> loaded = new ThreadLocal<Boolean>() {
 
-	public void sendKeys(CharSequence... keysToSend) {
-		getWrappedElement().sendKeys(keysToSend);
-	}
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE;
+        }
+    };
+    protected final Class<? extends UiPart> view;
+    protected UiObject wrapped = null;
+    private SearchContext parent;
+    private By locator = null;
 
-	public void clear() {
-		getWrappedElement().clear();
-	}
+    public AbstractUiPartDelegate(Class<? extends UiPart> view) {
+        this.view = view;
+        locator = UiPartProxy.buildBy(this, view);
+    }
 
-	public String getTagName() {
-		return getWrappedElement().getTagName();
-	}
+    public AbstractUiPartDelegate(Class<? extends UiPart> view, UiObject toWrap) {
+        this.view = view;
+        this.wrapped = toWrap;
+        locator = toWrap.getLocator();
+        loaded.set(true);
+    }
 
-	public String getAttribute(String name) {
-		return getWrappedElement().getAttribute(name);
-	}
+    public String name() {
+        if (view.getAnnotation(Name.class) != null) {
+            return view.getAnnotation(Name.class).value();
+        } else {
+            return String.format("UiPart %s", getLocator());
+        }
+    }
 
-	public boolean isSelected() {
-		return getWrappedElement().isSelected();
-	}
+    @Override
+    public SearchContext parent() {
+        return parent;
+    }
 
-	public boolean isEnabled() {
-		return getWrappedElement().isEnabled();
-	}
+    public void parent(SearchContext parent) {
+        this.parent = parent;
+    }
 
-	public String getText() {
-		return getWrappedElement().getText();
-	}
+    public FluentWait<SearchContext> delay() {
+        int initialValue = ConfigLoader.config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM, 5);
+        try {
+            ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, 0);
+            return new FluentWait<SearchContext>(getWrappedElement());
+        } finally {
+            ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, initialValue);
+        }
+    }
 
-	public List<WebElement> findElements(org.openqa.selenium.By by) {
-		return getWrappedElement().findElements(by);
-	}
+    public void click() {
+        getWrappedElement().click();
+    }
 
-	public WebElement findElement(org.openqa.selenium.By by) {
-		return getWrappedElement().findElement(by);
-	}
+    public void submit() {
+        getWrappedElement().submit();
+    }
 
-	public boolean isDisplayed() {
-		return getWrappedElement().isDisplayed();
-	}
+    public void sendKeys(CharSequence... keysToSend) {
+        getWrappedElement().sendKeys(keysToSend);
+    }
 
-	public Point getLocation() {
-		return getWrappedElement().getLocation();
-	}
+    public void clear() {
+        getWrappedElement().clear();
+    }
 
-	public Dimension getSize() {
-		return getWrappedElement().getSize();
-	}
+    public String getTagName() {
+        return getWrappedElement().getTagName();
+    }
 
-	public Rectangle getRect() {
-		return getWrappedElement().getRect();
-	}
+    public String getAttribute(String name) {
+        return getWrappedElement().getAttribute(name);
+    }
 
-	public String getCssValue(String propertyName) {
-		return getWrappedElement().getCssValue(propertyName);
-	}
+    public boolean isSelected() {
+        return getWrappedElement().isSelected();
+    }
 
-	public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-		return getWrappedElement().getScreenshotAs(target);
-	}
-	protected UiObject wrapped=null;
-	protected static ThreadLocal<Boolean> loaded = new ThreadLocal<Boolean>(){
+    public boolean isEnabled() {
+        return getWrappedElement().isEnabled();
+    }
 
-		@Override
-		protected Boolean initialValue(){
-			return Boolean.FALSE;
-		}
-	};
-	public org.openqa.selenium.By getLocator() {
-		return locator;
-	}
+    public String getText() {
+        return getWrappedElement().getText();
+    }
 
-	public void setLocator(By locator){
-		this.locator = locator;
-	}
+    public List<WebElement> findElements(org.openqa.selenium.By by) {
+        return getWrappedElement().findElements(by);
+    }
+
+    public WebElement findElement(org.openqa.selenium.By by) {
+        return getWrappedElement().findElement(by);
+    }
+
+    public boolean isDisplayed() {
+        return getWrappedElement().isDisplayed();
+    }
+
+    public Point getLocation() {
+        return getWrappedElement().getLocation();
+    }
+
+    public Dimension getSize() {
+        return getWrappedElement().getSize();
+    }
+
+    public Rectangle getRect() {
+        return getWrappedElement().getRect();
+    }
+
+    public String getCssValue(String propertyName) {
+        return getWrappedElement().getCssValue(propertyName);
+    }
+
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        return getWrappedElement().getScreenshotAs(target);
+    }
+
+    public org.openqa.selenium.By getLocator() {
+        return locator;
+    }
+
+    public void setLocator(By locator) {
+        this.locator = locator;
+    }
 
 
-	public String toString(){
-		return String.format("UiPart %s", name());
-	}
+    public String toString() {
+        return String.format("UiPart %s", name());
+    }
 }

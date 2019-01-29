@@ -13,59 +13,59 @@ package com.automationrockstars.gunter.events.impl;
 import com.automationrockstars.gunter.EventType;
 import com.automationrockstars.gunter.events.Attachment;
 
-public class AttachmentImpl extends AbstractTestEvent implements Attachment{
+public class AttachmentImpl extends AbstractTestEvent implements Attachment {
 
-	public AttachmentImpl(){
-		super();
-	}
-	
-	public AttachmentImpl(String parentId) {
-		super(parentId);
-	}
-	
-	public void attach(String mimeType, String title, byte[] content){
-		setMimeType(mimeType);
-		setTitle(title);
-		setContent(content);
-	}
-	
-	@Override
-	public EventType getType() {
-		return EventType.ATTACHMENT;
-	}
+    private byte[] content;
+    private String mimeType;
+    private String title;
 
-	public byte[] getContent() {
-		return content;
-	}
+    public AttachmentImpl() {
+        super();
+    }
 
-	public void setContent(byte[] content) {
-		this.content = content;
-	}
+    public AttachmentImpl(String parentId) {
+        super(parentId);
+    }
 
-	private byte[] content;
+    public void attach(String mimeType, String title, byte[] content) {
+        setMimeType(mimeType);
+        setTitle(title);
+        setContent(content);
+    }
 
-	private String mimeType;
-	private String title;
-	@Override
-	public void setMimeType(String type) {
-		this.mimeType= type;
-		
-	}
+    @Override
+    public EventType getType() {
+        return EventType.ATTACHMENT;
+    }
 
-	@Override
-	public String getMimeType() {
-		return mimeType;
-	}
+    public byte[] getContent() {
+        return content;
+    }
 
-	@Override
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
 
-	@Override
-	public String getTitle() {
-		return title;
-	}
-	
-	
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String type) {
+        this.mimeType = type;
+
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
 }

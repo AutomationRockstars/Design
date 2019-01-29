@@ -3,24 +3,24 @@
 	terms of the Apache License v2.0 which accompanies this distribution, and 
 	is available at http://www.apache.org/licenses/LICENSE-2.0 Contributors: 
 	Automation RockStars - initial API and implementation -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-	<servers>
-		<server>
-			<id>oss-maven-central</id>
-			<username>${env.CI_DEPLOY_USERNAME}</username>
-			<password>${env.CI_DEPLOY_PASSWORD}</password>
-		</server>
-		<server>
-			<id>oss-maven-central-snapshots</id>
-			<username>${env.CI_DEPLOY_USERNAME}</username>
-			<password>${env.CI_DEPLOY_PASSWORD}</password>
-		</server>
-		<server>
-			<id>gpg.passphrase</id>
-			<passphrase>${env.CI_DEPLOY_PASSWORD}</passphrase>
-			<!-- D641D882 -->
-		</server>
-	</servers>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>oss-maven-central</id>
+            <username>${env.CI_DEPLOY_USERNAME}</username>
+            <password>${env.CI_DEPLOY_PASSWORD}</password>
+        </server>
+        <server>
+            <id>oss-maven-central-snapshots</id>
+            <username>${env.CI_DEPLOY_USERNAME}</username>
+            <password>${env.CI_DEPLOY_PASSWORD}</password>
+        </server>
+        <server>
+            <id>gpg.passphrase</id>
+            <passphrase>${env.CI_DEPLOY_PASSWORD}</passphrase>
+            <!-- D641D882 -->
+        </server>
+    </servers>
 </settings>

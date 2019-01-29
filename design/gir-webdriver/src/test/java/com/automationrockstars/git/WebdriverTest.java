@@ -10,37 +10,29 @@
  *******************************************************************************/
 package com.automationrockstars.git;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
-import java.io.IOException;
-import java.sql.Driver;
-
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-import com.machinepublishers.jbrowserdriver.ProxyConfig;
-import com.machinepublishers.jbrowserdriver.Settings;
-import com.machinepublishers.jbrowserdriver.UserAgent;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.pagefactory.ByChained;
+
+import java.io.IOException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class WebdriverTest {
 
 
-	@Test
-	public void test() throws InterruptedException, IOException {
-		System.setProperty("noui","true");
-		assertThat(Ebay.searchFor("aa"),is(not(nullValue())));
-		
-		
-	}
+    @Test
+    public void test() throws InterruptedException, IOException {
+        System.setProperty("noui", "true");
+        assertThat(Ebay.searchFor("aa"), is(not(nullValue())));
 
-	@Test
-    public void checkItSearch(){
-        System.setProperty("noui","true");
+
+    }
+
+    @Test
+    public void checkItSearch() {
+        System.setProperty("noui", "true");
         DriverFactory.getDriver().get("http://ebay.com");
         DriverFactory.getDriver().findElement(By.tagName("body")).findElement(By.tagName("body"));
     }

@@ -3,32 +3,33 @@
 	terms of the Apache License v2.0 which accompanies this distribution, and 
 	is available at http://www.apache.org/licenses/LICENSE-2.0 Contributors: 
 	Automation RockStars - initial API and implementation -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.automationrockstars</groupId>
-		<artifactId>gunter</artifactId>
-		<version>2.0.1</version>
-	</parent>
-	<groupId>com.automationrockstars.gunter</groupId>
-	<artifactId>gunter-allure</artifactId>
-	<dependencies>
-		<dependency>
-			<groupId>com.automationrockstars</groupId>
-			<artifactId>gunter-events</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ru.yandex.qatools.allure</groupId>
-			<artifactId>allure-report-data</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ru.yandex.qatools.allure</groupId>
-			<artifactId>allure-report-builder</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.automationrockstars</groupId>
+        <artifactId>gunter</artifactId>
+        <version>2.0.1</version>
+    </parent>
+    <groupId>com.automationrockstars.gunter</groupId>
+    <artifactId>gunter-allure</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.automationrockstars</groupId>
+            <artifactId>gunter-events</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-report-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-report-builder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

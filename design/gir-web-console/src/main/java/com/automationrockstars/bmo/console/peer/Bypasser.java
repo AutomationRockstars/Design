@@ -10,21 +10,20 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.peer;
 
+import com.automationrockstars.bmo.console.traffic.ConsoleEventBus;
+import com.google.common.eventbus.Subscribe;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
-import com.automationrockstars.bmo.console.traffic.ConsoleEventBus;
-import com.google.common.eventbus.Subscribe;
-
 public class Bypasser {
 
-	@Subscribe
-	public void lame(HttpResponse r){
-		ConsoleEventBus.execution.post(r);
-	}
-	
-	@Subscribe
-	public void lame(HttpRequest r){
-		ConsoleEventBus.execution.post(r);
-	}
+    @Subscribe
+    public void lame(HttpResponse r) {
+        ConsoleEventBus.execution.post(r);
+    }
+
+    @Subscribe
+    public void lame(HttpRequest r) {
+        ConsoleEventBus.execution.post(r);
+    }
 }

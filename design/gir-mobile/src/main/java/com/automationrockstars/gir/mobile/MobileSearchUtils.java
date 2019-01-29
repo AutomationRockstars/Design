@@ -11,10 +11,9 @@
 package com.automationrockstars.gir.mobile;
 
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-
+import com.automationrockstars.design.gir.webdriver.UiObject;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -22,152 +21,154 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.automationrockstars.design.gir.webdriver.UiObject;
-import com.automationrockstars.design.gir.webdriver.Waits;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
 public class MobileSearchUtils {
 
-	private static Logger LOG = LoggerFactory.getLogger(MobileSearchUtils.class);
+    private static Logger LOG = LoggerFactory.getLogger(MobileSearchUtils.class);
 
-	public static MobileUiObject findVisible(By by){
-		if (by instanceof ByVisibleTextIos){
-			((ByVisibleTextIos) by).addVisible();
-		}
-		WebElement plain = MobileFactory.getDriver().findElement(by);
-		return new MobileUiObject(plain, by);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<MobileUiObject> findAllVisible(final By by){
-		if (by instanceof ByVisibleTextIos){
-			((ByVisibleTextIos) by).addVisible();
-		}
-		return Lists.newArrayList(Iterables.transform(MobileFactory.getDriver().findElements(by), new com.google.common.base.Function<WebElement, MobileUiObject>() {
-			@Override
-			public MobileUiObject apply(WebElement input) {
-				return MobileUiObjectFactory.from(input,by);
-			}
-			
-		}));
-	}
+    public static MobileUiObject findVisible(By by) {
+        if (by instanceof ByVisibleTextIos) {
+            ((ByVisibleTextIos) by).addVisible();
+        }
+        WebElement plain = MobileFactory.getDriver().findElement(by);
+        return new MobileUiObject(plain, by);
+    }
 
-	public static UiObject findPresent(By by){
+    @SuppressWarnings("unchecked")
+    public static List<MobileUiObject> findAllVisible(final By by) {
+        if (by instanceof ByVisibleTextIos) {
+            ((ByVisibleTextIos) by).addVisible();
+        }
+        return Lists.newArrayList(Iterables.transform(MobileFactory.getDriver().findElements(by), new com.google.common.base.Function<WebElement, MobileUiObject>() {
+            @Override
+            public MobileUiObject apply(WebElement input) {
+                return MobileUiObjectFactory.from(input, by);
+            }
 
-		WebElement plain = by.findElement(MobileFactory.getDriver());
-		return new UiObject(plain, by);
-	}
-	public static UiObject waitForVisible(final By by){
-		try {
-			WebElement plain = MobileFactory.delay().until(new Function<WebDriver,WebElement>() {
-				@Override
-				public WebElement apply(WebDriver input) {
-					try{
-						return findVisible(by);
-					} catch (Exception e){
-						return null;
-					}
-				}
-				
-				public String toString(){
-					return String.format("visibility of %s", by);
-				}
-			});
-			return new UiObject(plain, by);
-		} catch (Exception e){
-			LOG.error("Element {} not found",by,e);
-			LOG.trace(PageUtils.getPageSource());
-			throw new NoSuchElementException(String.format("Element identified by %s not visible",by));
-		}
-	}
+        }));
+    }
 
-	public static UiObject waitForPresent(final By by){
-		try {
-			WebElement plain = MobileFactory.delay().until(new Function<WebDriver, WebElement>() {
+    public static UiObject findPresent(By by) {
 
-				@Override
-				public WebElement apply(WebDriver input) {
-					return input.findElement(by);
-				}
-			});
-			return new UiObject(plain, by);
-		} catch (Exception e){
-			LOG.error("Element {} not found",by,e);
-			LOG.trace(PageUtils.getPageSource());
-			throw new NoSuchElementException(String.format("Element identified by %s not visible",by));
+        WebElement plain = by.findElement(MobileFactory.getDriver());
+        return new UiObject(plain, by);
+    }
 
-		}
+    public static UiObject waitForVisible(final By by) {
+        try {
+            WebElement plain = MobileFactory.delay().until(new Function<WebDriver, WebElement>() {
+                @Override
+                public WebElement apply(WebDriver input) {
+                    try {
+                        return findVisible(by);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
 
-	}
+                public String toString() {
+                    return String.format("visibility of %s", by);
+                }
+            });
+            return new UiObject(plain, by);
+        } catch (Exception e) {
+            LOG.error("Element {} not found", by, e);
+            LOG.trace(PageUtils.getPageSource());
+            throw new NoSuchElementException(String.format("Element identified by %s not visible", by));
+        }
+    }
 
+    public static UiObject waitForPresent(final By by) {
+        try {
+            WebElement plain = MobileFactory.delay().until(new Function<WebDriver, WebElement>() {
 
-	public static boolean isPresent(By by){
-		try {
-			return MobileFactory.getDriver().findElement(by) != null;
-		} catch (Exception e){
-			return false;
-		}
+                @Override
+                public WebElement apply(WebDriver input) {
+                    return input.findElement(by);
+                }
+            });
+            return new UiObject(plain, by);
+        } catch (Exception e) {
+            LOG.error("Element {} not found", by, e);
+            LOG.trace(PageUtils.getPageSource());
+            throw new NoSuchElementException(String.format("Element identified by %s not visible", by));
 
-	}
+        }
 
-	public static boolean isVisible(By by){
-		try {
-			return findVisible(by) != null;
-		} catch (Exception e){
-			return false;
-		}
-	}
-
-	public static Function<WebDriver,UiObject> anyPresent(final By... bys){
-		return new Function<WebDriver,UiObject>() {
-			@Override
-			public UiObject apply(WebDriver input) {
-				UiObject result = null;
-				for (By by : bys){
-					try {
-						result = new UiObject(MobileFactory.getDriver().findElement(by),by);
-						break;
-					} catch (Exception e){
-
-					}
-				}
-				return result;
-			}
-		};
-	}
-	public static UiObject waitForAnyPresent(final By... bys){
-		return MobileFactory.delay().until(anyPresent(bys));
-	}
-
-	public static Function<WebDriver,UiObject> anyVisible(final By... bys){
-		return new Function<WebDriver,UiObject>() {
-			@Override
-			public UiObject apply(WebDriver input) {
-				UiObject result = null;
-				for (By by : bys){
-					try {
-						if (by instanceof ByVisibleTextIos){
-							((ByVisibleTextIos)by).addVisible(); 
-						}
-						result = new UiObject(MobileFactory.getDriver().findElement(by),by);
-						break;
-					} catch (Exception e){
-					}
-				}
-				return result;
-			}
-			
-			@Override
-			public String toString(){
-				return String.format("visibility of any %s", Arrays.toString(bys));
-			}
-		};
-	}
+    }
 
 
-	public static UiObject waitForAnyVisible(final By... bys){
-		return MobileFactory.delay().until(anyVisible(bys));
+    public static boolean isPresent(By by) {
+        try {
+            return MobileFactory.getDriver().findElement(by) != null;
+        } catch (Exception e) {
+            return false;
+        }
 
-	}
+    }
+
+    public static boolean isVisible(By by) {
+        try {
+            return findVisible(by) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static Function<WebDriver, UiObject> anyPresent(final By... bys) {
+        return new Function<WebDriver, UiObject>() {
+            @Override
+            public UiObject apply(WebDriver input) {
+                UiObject result = null;
+                for (By by : bys) {
+                    try {
+                        result = new UiObject(MobileFactory.getDriver().findElement(by), by);
+                        break;
+                    } catch (Exception e) {
+
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    public static UiObject waitForAnyPresent(final By... bys) {
+        return MobileFactory.delay().until(anyPresent(bys));
+    }
+
+    public static Function<WebDriver, UiObject> anyVisible(final By... bys) {
+        return new Function<WebDriver, UiObject>() {
+            @Override
+            public UiObject apply(WebDriver input) {
+                UiObject result = null;
+                for (By by : bys) {
+                    try {
+                        if (by instanceof ByVisibleTextIos) {
+                            ((ByVisibleTextIos) by).addVisible();
+                        }
+                        result = new UiObject(MobileFactory.getDriver().findElement(by), by);
+                        break;
+                    } catch (Exception e) {
+                    }
+                }
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return String.format("visibility of any %s", Arrays.toString(bys));
+            }
+        };
+    }
+
+
+    public static UiObject waitForAnyVisible(final By... bys) {
+        return MobileFactory.delay().until(anyVisible(bys));
+
+    }
 
 }

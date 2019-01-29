@@ -1,146 +1,153 @@
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
+
 package com.automationrockstars.gir.ui.part;
-
-import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
-
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.google.common.collect.Lists;
+import org.openqa.selenium.*;
+import org.openqa.selenium.internal.WrapsElement;
 
-public class EmptyUiObject extends UiObject{
+import java.util.List;
 
-	public List<WebElement> findElements(By by) {
-		findPlugins().beforeFindElements(this, by);
-		List<WebElement> found = getWrappedElement().findElements(by);
-		findPlugins().afterFindElements(this, by, found);
-		return wrapAll(found, getLocator(),by);
-	}
+import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
 
-	public WebElement findElement(By by) {
-		findPlugins().beforeFindElement(this, by);
-		WebElement result = getWrappedElement().findElement(by);
-		findPlugins().afterFindElement(this, by, result);
-		return wrap(result, by);
-	}
+public class EmptyUiObject extends UiObject {
 
+    private final EmptyWebElement wrapped = new EmptyWebElement();
 
-	public EmptyUiObject withTagName(String tagName){
-		
-		wrapped.tagName = tagName;
-		return this;
-	}
-	
+    public static boolean isEmpty(WebElement element) {
+        if (element instanceof EmptyUiObject || element instanceof EmptyWebElement) {
+            return true;
+        } else if (WrapsElement.class.isAssignableFrom(element.getClass())) {
+            return isEmpty(((WrapsElement) element).getWrappedElement());
+        } else {
+            return false;
+        }
+    }
 
-	private final EmptyWebElement wrapped = new EmptyWebElement();
-	@Override
-	public WebElement getWrappedElement() {
-		return wrapped;
-	}
+    public List<WebElement> findElements(By by) {
+        findPlugins().beforeFindElements(this, by);
+        List<WebElement> found = getWrappedElement().findElements(by);
+        findPlugins().afterFindElements(this, by, found);
+        return wrapAll(found, getLocator(), by);
+    }
 
-	public String getName(){
-		return "Empty Ui Object";
-	}
-	static class EmptyWebElement implements WebElement {
-		private String tagName = "none";
-		@Override
-		public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-			return target.convertFromBase64Png("");
-		}
+    public WebElement findElement(By by) {
+        findPlugins().beforeFindElement(this, by);
+        WebElement result = getWrappedElement().findElement(by);
+        findPlugins().afterFindElement(this, by, result);
+        return wrap(result, by);
+    }
 
-		@Override
-		public void click() {		
-		}
+    public EmptyUiObject withTagName(String tagName) {
 
-		@Override
-		public void submit() {
-		}
+        wrapped.tagName = tagName;
+        return this;
+    }
 
-		@Override
-		public void sendKeys(CharSequence... keysToSend) {		
-		}
+    @Override
+    public WebElement getWrappedElement() {
+        return wrapped;
+    }
 
-		@Override
-		public void clear() {
-		}
+    public String getName() {
+        return "Empty Ui Object";
+    }
 
-		@Override
-		public String getTagName() {
-			return tagName;
-		}
+    static class EmptyWebElement implements WebElement {
+        private String tagName = "none";
 
-		@Override
-		public String getAttribute(String name) {
-			return "";
-		}
+        @Override
+        public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+            return target.convertFromBase64Png("");
+        }
 
-		@Override
-		public boolean isSelected() {
-			return false;
-		}
+        @Override
+        public void click() {
+        }
 
-		@Override
-		public boolean isEnabled() {
-			return true;
-		}
+        @Override
+        public void submit() {
+        }
 
-		@Override
-		public String getText() {
-			return "";
-		}
+        @Override
+        public void sendKeys(CharSequence... keysToSend) {
+        }
 
-		@Override
-		public List<WebElement> findElements(By by) {
-			return Lists.newArrayList((WebElement)new EmptyUiObject());
-		}
+        @Override
+        public void clear() {
+        }
 
-		@Override
-		public WebElement findElement(By by) {
-			return new EmptyUiObject();
-		}
+        @Override
+        public String getTagName() {
+            return tagName;
+        }
 
-		@Override
-		public boolean isDisplayed() {
-			return true;
-		}
+        @Override
+        public String getAttribute(String name) {
+            return "";
+        }
 
-		@Override
-		public Point getLocation() {
-			return new Point(0, 0);
-		}
+        @Override
+        public boolean isSelected() {
+            return false;
+        }
 
-		@Override
-		public Dimension getSize() {
-			return new Dimension(0, 0);
-		}
+        @Override
+        public boolean isEnabled() {
+            return true;
+        }
 
-		@Override
-		public Rectangle getRect() {
-			return new Rectangle(0, 0, 0, 0);
-		}
+        @Override
+        public String getText() {
+            return "";
+        }
 
-		@Override
-		public String getCssValue(String propertyName) {
-			return "";
-		}
-	}
-	
-	public static boolean isEmpty(WebElement element){
-		if (element instanceof EmptyUiObject || element instanceof EmptyWebElement){
-			return true;
-		} else if (WrapsElement.class.isAssignableFrom(element.getClass())){
-			return isEmpty(((WrapsElement)element).getWrappedElement());
-		} else {
-			return false;
-		}
-	}
-	
+        @Override
+        public List<WebElement> findElements(By by) {
+            return Lists.newArrayList((WebElement) new EmptyUiObject());
+        }
+
+        @Override
+        public WebElement findElement(By by) {
+            return new EmptyUiObject();
+        }
+
+        @Override
+        public boolean isDisplayed() {
+            return true;
+        }
+
+        @Override
+        public Point getLocation() {
+            return new Point(0, 0);
+        }
+
+        @Override
+        public Dimension getSize() {
+            return new Dimension(0, 0);
+        }
+
+        @Override
+        public Rectangle getRect() {
+            return new Rectangle(0, 0, 0, 0);
+        }
+
+        @Override
+        public String getCssValue(String propertyName) {
+            return "";
+        }
+    }
+
 }

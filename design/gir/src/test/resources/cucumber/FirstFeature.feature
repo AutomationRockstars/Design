@@ -2,7 +2,7 @@ Feature: The First Feature
 
   @One @Common
 
-    Scenario: One Alfa
+  Scenario: One Alfa
     Given Some data <data>
     When I read it
     Then I see result
@@ -13,13 +13,13 @@ Feature: The First Feature
   |unos|
   |dos|
 
-    Scenario: Two Alfa
-      Given different <input>
-      When I read it
-      Then I expect stuff
+  Scenario: Two Alfa
+    Given different <input>
+    When I read it
+    Then I expect stuff
 
-      Examples:
-    |input|
-    |ichi|
-    |ni|
-    |san|
+  Examples:
+  |input|
+  |ichi|
+  |ni|
+  |san|

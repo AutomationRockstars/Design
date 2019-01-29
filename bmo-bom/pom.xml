@@ -10,7 +10,8 @@
         Automation RockStars - initial API and implementation
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,37 +21,37 @@
     <packaging>pom</packaging>
     <name>BOM for AutomationRockstars Toolchain</name>
     <description>BOM for AutomationRockstars Toolchain</description>
-	<url>https://github.com/AutomationRockstars/Design/wiki</url>
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-	<developers>
-		<developer>
-			<organization>Automation RockStars</organization>
-			<organizationUrl>https://github.com/orgs/AutomationRockstars/people</organizationUrl>
-		</developer>
-	</developers>
-	<distributionManagement>
-		<repository>
-			<id>oss-maven-central</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-		<snapshotRepository>
-			<id>oss-maven-central-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <url>https://github.com/AutomationRockstars/Design/wiki</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <organization>Automation RockStars</organization>
+            <organizationUrl>https://github.com/orgs/AutomationRockstars/people</organizationUrl>
+        </developer>
+    </developers>
+    <distributionManagement>
+        <repository>
+            <id>oss-maven-central</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>oss-maven-central-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-	<scm>
-		<connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
-		<developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
-		<url>https://github.com/automationrockstars/Design</url>
-		<tag>armor-2.0.0</tag>
-	</scm>
-	
+    <scm>
+        <connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
+        <developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
+        <url>https://github.com/automationrockstars/Design</url>
+        <tag>armor-2.0.0</tag>
+    </scm>
+
     <properties>
         <logback.version>1.1.3</logback.version>
         <slf4j.version>1.7.12</slf4j.version>
@@ -132,11 +133,11 @@
                 <artifactId>allure-report-data</artifactId>
                 <version>1.4.19</version>
             </dependency>
-		<dependency>
-			<groupId>ru.yandex.qatools.allure</groupId>
-			<artifactId>allure-java-adaptor-api</artifactId>
-			    <version>1.4.19</version>
-		</dependency>
+            <dependency>
+                <groupId>ru.yandex.qatools.allure</groupId>
+                <artifactId>allure-java-adaptor-api</artifactId>
+                <version>1.4.19</version>
+            </dependency>
 
             <dependency>
                 <groupId>ru.yandex.qatools.allure</groupId>

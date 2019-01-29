@@ -14,33 +14,35 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import static com.automationrockstars.gir.mobile.MobileUiObjectFactory.*;
+
+import static com.automationrockstars.gir.mobile.MobileUiObjectFactory.onAny;
+
 public class Debug {
 
-	public static void runFromFile(Path file){
-		try {
-			for (String object : Files.readAllLines(file, Charset.defaultCharset())){
-				if (object.equals("SOURCE")){
-					System.out.println(PageUtils.getPageSource());
-				} else {
-					try {
-						if (object.contains("KEYS")){
-							String obj = object.split("KEYS")[0];
-							onAny(obj).waitForVisible();
-							onAny(obj).sendKeys(object.split("KEYS")[1]);
-						} else {
-							onAny(object).waitForVisible();
-							onAny(object).click();
-						}
+    public static void runFromFile(Path file) {
+        try {
+            for (String object : Files.readAllLines(file, Charset.defaultCharset())) {
+                if (object.equals("SOURCE")) {
+                    System.out.println(PageUtils.getPageSource());
+                } else {
+                    try {
+                        if (object.contains("KEYS")) {
+                            String obj = object.split("KEYS")[0];
+                            onAny(obj).waitForVisible();
+                            onAny(obj).sendKeys(object.split("KEYS")[1]);
+                        } else {
+                            onAny(object).waitForVisible();
+                            onAny(object).click();
+                        }
 
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} catch (IOException f) {
-			f.printStackTrace();
-		}
-	}
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (IOException f) {
+            f.printStackTrace();
+        }
+    }
 
 }

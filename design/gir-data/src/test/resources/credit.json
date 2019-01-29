@@ -4,54 +4,55 @@
       "promo": false,
       "cancellationProtection": false,
       "bookingGuarantee": false,
-      "deposit" : true
+      "deposit": true
     },
     {
       "promo": true,
       "cancellationProtection": false,
       "bookingGuarantee": false,
-      "deposit" : true
+      "deposit": true
     },
     {
       "promo": true,
       "cancellationProtection": false,
       "bookingGuarantee": false,
-      "deposit" : false
+      "deposit": false
     },
     {
       "promo": false,
       "cancellationProtection": true,
       "bookingGuarantee": false,
-      "deposit" : true
-    },{
+      "deposit": true
+    },
+    {
       "promo": false,
       "cancellationProtection": true,
       "bookingGuarantee": false,
-      "deposit" : false
+      "deposit": false
     },
     {
       "promo": false,
       "cancellationProtection": false,
       "bookingGuarantee": true,
-      "deposit" : true
+      "deposit": true
     },
     {
       "promo": false,
       "cancellationProtection": false,
       "bookingGuarantee": true,
-      "deposit" : false
+      "deposit": false
     },
     {
       "promo": false,
       "cancellationProtection": true,
       "bookingGuarantee": true,
-      "deposit" : true
+      "deposit": true
     },
     {
       "promo": false,
       "cancellationProtection": true,
       "bookingGuarantee": true,
-      "deposit" : false
+      "deposit": false
     }
   ]
 }
