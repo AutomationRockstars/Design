@@ -64,7 +64,7 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin{
 				}
 			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	}
