@@ -35,6 +35,8 @@ import org.openqa.selenium.support.AbstractFindByBuilder;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.pagefactory.ByAll;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
@@ -42,10 +44,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class UiParts {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UiParts.class);
     private static final BackAnnotation backward = new BackAnnotation();
     public static long DEFAULT_DELAY = ConfigLoader.config().getLong("webdriver.uipart.delay", 5);
 
@@ -289,8 +293,16 @@ public class UiParts {
         for (Class<? extends UiPart> part : parts) {
             byToPart.put(buildBy(part), part);
         }
+        AtomicInteger timeOut = new AtomicInteger();
+        Arrays.stream(parts).forEach(part -> {
+            if (part.getAnnotation(Timeout.class) != null) {
+                timeOut.set(Math.max(part.getAnnotation(Timeout.class).value(), timeOut.get()));
+            }
+        });
+        long actualTimeout = Math.max(DEFAULT_DELAY,timeOut.get());
+        LOG.info("Looking for parts {} with timeout {}",Arrays.toString(parts),actualTimeout);
         return new FluentWait<SearchContext>(DriverFactory.getUnwrappedDriver())
-                .withTimeout(DEFAULT_DELAY, TimeUnit.SECONDS)
+                .withTimeout(actualTimeout, TimeUnit.SECONDS)
                 .withMessage(String.format("None of UiParts %s found", Arrays.toString(parts)))
                 .until(new Function<SearchContext, T>() {
                     @SuppressWarnings("unchecked")

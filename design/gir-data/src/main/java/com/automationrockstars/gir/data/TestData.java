@@ -20,6 +20,8 @@ import java.io.IOException;
 
 public interface TestData<T extends TestDataRecord> {
 
+    String REMOTE_DATA_URL_PROP = "test.data.service.url";
+
     String name();
 
     boolean isShared();

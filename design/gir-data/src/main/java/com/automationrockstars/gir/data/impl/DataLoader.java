@@ -13,11 +13,14 @@
 
 package com.automationrockstars.gir.data.impl;
 
+import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.base.JarUtils;
+import com.automationrockstars.gir.data.TestData;
 import com.automationrockstars.gir.data.TestDataRecord;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -33,7 +36,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
+
+import static com.automationrockstars.gir.data.TestData.REMOTE_DATA_URL_PROP;
 
 
 public class DataLoader {
@@ -70,12 +77,38 @@ public class DataLoader {
     }
 
     private static Map<Class<? extends TestDataRecord>, List<Map<String, Object>>> loadDataResource(String resourceName) {
+        if (ConfigLoader.config().containsKey(REMOTE_DATA_URL_PROP)){
+            return loadRemoteDataResource(resourceName);
+        } else {
+            return loadLocalDataResource(resourceName);
+        }
+    }
+
+
+    private static Map<Class<? extends TestDataRecord>, List<Map<String, Object>>> loadLocalDataResource(String resourceName) {
+        LOG.info("Loading local data");
         try (InputStream content = JarUtils.findResources(resourceName).first().get().url().openStream()) {
             return loadFrom(content);
         } catch (NoSuchElementException | IOException e) {
             LOG.error("Resource {} cannot be used as data", resourceName, e);
         }
         ;
+        return null;
+
+    }
+
+    private static Map<Class<? extends TestDataRecord>, List<Map<String, Object>>> loadRemoteDataResource(String resourceName) {
+        try {
+            URL remoteUrl = new URL(String.format("%s/%s",ConfigLoader.config().getString(REMOTE_DATA_URL_PROP),resourceName));
+            LOG.info("Loading data from URL {}",remoteUrl);
+            try (InputStream content = remoteUrl.openStream()) {
+                return loadFrom(content);
+            } catch (NoSuchElementException | IOException e) {
+                LOG.error("Remote resource {} cannot be used as data", resourceName, e);
+            }
+        } catch (MalformedURLException e) {
+            LOG.error("Cannot read data from {}",String.format("%s/%s",ConfigLoader.config().getString(REMOTE_DATA_URL_PROP),resourceName),e);
+        }
         return null;
     }
 
