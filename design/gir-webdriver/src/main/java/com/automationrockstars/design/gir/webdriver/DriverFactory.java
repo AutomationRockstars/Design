@@ -57,6 +57,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.automationrockstars.base.ConfigLoader.config;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
 
 
@@ -484,8 +485,12 @@ public class DriverFactory {
             case BrowserType.CHROME:
                 result = DesiredCapabilities.chrome();
                 ChromeOptions chromOptions = new ChromeOptions();
-                //			chromOptions.setExperimentalOption("excludeSwitches",Lists.newArrayList("ignore-certificate-errors"));
                 chromOptions.addArguments("chrome.switches", "--disable-extensions");
+                if (ConfigLoader.config().getBoolean("noui")){
+                    chromOptions.addArguments("window-size=1200x900");
+                    chromOptions.setHeadless(config().getBoolean("webdriver.headless", true));
+                }
+                chromOptions.setAcceptInsecureCerts(true);
                 result.setCapability(ChromeOptions.CAPABILITY, chromOptions);
                 result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
                 break;
