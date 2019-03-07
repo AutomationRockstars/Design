@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
 language: java
+services:
+  - xvfb
 
 env:
   global:
@@ -16,6 +18,7 @@ before_install:
 install: mvn clean -B source:jar -Dnoui -DskipTests --settings settings.xml
 
 addons:
+  chrome: stable
   coverity_scan:
     project:
       name: "AutomationRockstars/Design"

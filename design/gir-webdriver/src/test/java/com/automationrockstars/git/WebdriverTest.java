@@ -26,7 +26,7 @@ public class WebdriverTest {
     @Ignore
     @Test
     public void test() throws InterruptedException, IOException {
-        System.setProperty("noui", "true");
+        System.setProperty("webdriver.browser", "chrome");
         assertThat(Ebay.searchFor("aa"), is(not(nullValue())));
 
 
