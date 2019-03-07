@@ -72,6 +72,6 @@ public class HeadlessWebDriver {
         return Settings.builder()
                 .userAgent(UserAgent.CHROME)
                 .loggerLevel(Level.ALL)
-                .headless(false).buildCapabilities();
+                .headless(true).buildCapabilities();
     }
 }
