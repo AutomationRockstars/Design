@@ -41,6 +41,7 @@ public class SimpleTestDataService implements TestDataService {
     @Override
     public void close() throws IOException {
         Files.write(new GsonBuilder().setPrettyPrinting().create().toJson(RECORDS_CACHE), Paths.get("output.json").toFile(), Charset.defaultCharset());
+        RECORDS_CACHE.clear();
     }
 
     private void populate(TestData<? extends TestDataRecord> testData, List<Map<String, Object>> dataToBeAdded) {

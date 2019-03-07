@@ -45,6 +45,14 @@ public class TestDataServices {
 
     public static void close() {
         pool().close();
+        for (TestDataPool pool : POOLS.values()) {
+            pool.close();
+        }
+        POOLS.clear();
+    }
+
+    public static void removePool(String poolName){
+        POOLS.remove(poolName);
     }
 
 

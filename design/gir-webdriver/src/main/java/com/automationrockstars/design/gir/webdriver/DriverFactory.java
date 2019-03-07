@@ -278,7 +278,7 @@ public class DriverFactory {
 
     private static synchronized void enableGridExtras(RemoteWebDriver driver) {
         if (checkGridExtras(GRID_URL, driver)) {
-            String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver), driver.getSessionId().toString());
+            String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver), driver.getSessionId().toString()).replace("//download","/download");
             ConfigLoader.config().addProperty("webdriver.video", videoLink);
             List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String, String>>());
             String story = String.format("%s->%s::", storyName(), scenarioName());
@@ -364,21 +364,38 @@ public class DriverFactory {
         }
     }
 
-    private static synchronized void closeDriver(WebDriver driver) {
+    /**
+     * Close all drivers created by DriverFactory
+     */
+    public static synchronized void closeAllDrivers(){
+        Lists.newArrayList(activeDrivers).stream().forEach(d-> closeDriver(d));
+    }
+
+    /**
+     * Close driver that has been created using different method
+     * @param driver
+     */
+    public static synchronized void closeDriver(WebDriver driver) {
         UiDriverPluginService.driverPlugins().beforeCloseDriver(driver);
         if (driver != null) {
             try {
                 driver.close();
+            } catch (Throwable ignore) {}
+            try {
                 if (!dontUseQuit()) {
                     driver.quit();
                 }
-            } catch (Throwable ignore) {
+            } catch (Throwable ignore){}
+            if (activeDrivers.contains(driver)) {
+                activeDrivers.remove(driver);
             }
-            activeDrivers.remove(driver);
         }
         UiDriverPluginService.driverPlugins().afterCloseDriver();
     }
 
+    /**
+     * Close currently used driver
+     */
     public static void closeDriver() {
         closeDriver(instance());
         instances.remove();
@@ -410,13 +427,7 @@ public class DriverFactory {
     }
 
     public static void closeSession(final String session) {
-        Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return ((RemoteWebDriver) unwrap(input)).getSessionId().toString().equals(session);
-            }
-        });
+        Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), input -> ((RemoteWebDriver) unwrap(input)).getSessionId().toString().equals(session));
         if (driver.isPresent()) {
             closeDriver(driver.get());
         }
