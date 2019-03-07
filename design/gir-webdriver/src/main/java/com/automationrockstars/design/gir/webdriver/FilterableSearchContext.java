@@ -17,7 +17,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

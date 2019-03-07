@@ -56,7 +56,7 @@
         <dependency>
             <artifactId>guava</artifactId>
             <groupId>com.google.guava</groupId>
-            <version>21.0</version>
+            <version>25.0-jre</version>
         </dependency>
 
 
@@ -109,7 +109,6 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>21.0</version>
             </dependency>
 
             <dependency>

@@ -404,7 +404,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
         LOG.info("Starting scenario {}", scenarioTitle);
         originalThreadName.set(Thread.currentThread().getName());
         currentScenario.set(scenarioTitle);
-        Thread.currentThread().setName(CharMatcher.JAVA_DIGIT.retainFrom(originalThreadName.get()) + "|" + scenarioTitle);
+        Thread.currentThread().setName(CharMatcher.javaDigit().retainFrom(originalThreadName.get()) + "|" + scenarioTitle);
         stepFailed.set(null);
         TestCaseStartedEvent testCase = new TestCaseStartedEvent(currentSuite.get(), scenarioTitle);
         if (!Strings.isNullOrEmpty(currentMeta.get().getProperty("feature"))) {

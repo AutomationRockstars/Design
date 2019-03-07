@@ -44,11 +44,15 @@
             </releases>
         </repository>
     </repositories>
+    <properties>
+        <selenium_version>3.141.59</selenium_version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>3.4.0</version>
+            <version>${selenium_version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

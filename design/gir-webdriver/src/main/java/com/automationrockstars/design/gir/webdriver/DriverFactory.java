@@ -38,7 +38,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -486,7 +486,7 @@ public class DriverFactory {
                 result = DesiredCapabilities.chrome();
                 ChromeOptions chromOptions = new ChromeOptions();
                 chromOptions.addArguments("chrome.switches", "--disable-extensions");
-                if (ConfigLoader.config().getBoolean("noui")){
+                if (ConfigLoader.config().getBoolean("noui",false)){
                     chromOptions.addArguments("window-size=1200x900");
                     chromOptions.setHeadless(config().getBoolean("webdriver.headless", true));
                 }

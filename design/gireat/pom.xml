@@ -25,7 +25,6 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>21.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -54,12 +53,12 @@
             <version>${project.version}</version>
             <!--<scope>test</scope>-->
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>3.4.0</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.seleniumhq.selenium</groupId>-->
+            <!--<artifactId>selenium-server</artifactId>-->
+            <!--<version>${selenium_version}</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

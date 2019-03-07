@@ -76,7 +76,7 @@ public class SikulixProvider implements DriverProvider {
         return driverCapabilities();
     }
 
-    @Override
+
     public boolean canCreateDriverInstances() {
         return true;
     }
