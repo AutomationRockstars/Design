@@ -10,31 +10,31 @@
  *******************************************************************************/
 package com.automationrockstars.design.gir.webdriver;
 
-import java.lang.reflect.Field;
-
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
-
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementClassAnnotationsHandler;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementFieldAnnotationsHandler;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
-public class UiObjectLocatorFactory extends HtmlElementLocatorFactory{
+import java.lang.reflect.Field;
 
-	SearchContext searchContext;
-	public UiObjectLocatorFactory(SearchContext searchContext) {
-		super(searchContext);
-		this.searchContext = searchContext;
-	}
+public class UiObjectLocatorFactory extends HtmlElementLocatorFactory {
 
-	@Override
-	public ElementLocator createLocator(Field field) {
-		return new NamedElementLocator(searchContext, getTimeOut(field), new HtmlElementFieldAnnotationsHandler(field)).withField(field);
-	}
+    SearchContext searchContext;
+
+    public UiObjectLocatorFactory(SearchContext searchContext) {
+        super(searchContext);
+        this.searchContext = searchContext;
+    }
+
+    @Override
+    public ElementLocator createLocator(Field field) {
+        return new NamedElementLocator(searchContext, getTimeOut(field), new HtmlElementFieldAnnotationsHandler(field)).withField(field);
+    }
 
 
-	public ElementLocator createLocator(Class clazz) {
-		return new NamedElementLocator(searchContext, getTimeOut(clazz), new HtmlElementClassAnnotationsHandler(clazz)).withClass(clazz);
-	}
+    public ElementLocator createLocator(Class clazz) {
+        return new NamedElementLocator(searchContext, getTimeOut(clazz), new HtmlElementClassAnnotationsHandler(clazz)).withClass(clazz);
+    }
 
 }

@@ -10,42 +10,40 @@
  *******************************************************************************/
 package com.automationrockstars.gunter.events.impl;
 
-import java.util.Map;
-
 import com.automationrockstars.gunter.EventType;
 import com.automationrockstars.gunter.events.Commit;
-import com.google.common.base.Strings;
 
-public class CommitImpl extends AbstractTestEvent implements Commit{
+import java.util.Map;
 
-	
-	private static final String CONTENT = "CONTENT";
+public class CommitImpl extends AbstractTestEvent implements Commit {
 
-	public CommitImpl() {
-		super();
-	}
-	
-	public CommitImpl(String parent){
-		super(parent);
-	}
-	@Override
-	public void setContent(Map<String, String> content) {
-		attributes().put(CONTENT,content);
-		
-	}
 
-	@Override
-	public Map<String, String> getContent() {
-		return (Map<String, String>) attributes().get(CONTENT);
-	}
+    private static final String CONTENT = "CONTENT";
 
-	@Override
-	public EventType getType() {
-		return EventType.COMMIT;
+    public CommitImpl() {
+        super();
+    }
 
-	}
+    public CommitImpl(String parent) {
+        super(parent);
+    }
 
-	
+    @Override
+    public Map<String, String> getContent() {
+        return (Map<String, String>) attributes().get(CONTENT);
+    }
 
-	
+    @Override
+    public void setContent(Map<String, String> content) {
+        attributes().put(CONTENT, content);
+
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.COMMIT;
+
+    }
+
+
 }

@@ -3,134 +3,135 @@
 	terms of the Apache License v2.0 which accompanies this distribution, and 
 	is available at http://www.apache.org/licenses/LICENSE-2.0 Contributors: 
 	Automation RockStars - initial API and implementation -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.automationrockstars</groupId>
-	<artifactId>toolchain</artifactId>
-	<version>1.0.5</version>
-	<packaging>pom</packaging>
-	<name>Toolchain for Test Automation</name>
-	<description>Toolchain funneling opensource tools necessary for test automation</description>
-	<url>https://github.com/AutomationRockstars/Design/wiki</url>
-	<developers>
-		<developer>
-			<organization>Automation RockStars</organization>
-			<organizationUrl>https://github.com/orgs/AutomationRockstars/people</organizationUrl>
-		</developer>
-	</developers>
+    <groupId>com.automationrockstars</groupId>
+    <artifactId>armor</artifactId>
+    <version>2.0.3</version>
+    <packaging>pom</packaging>
+    <name>Automation Toolchain for Confidence in CI</name>
+    <description>Toolchain funneling opensource tools necessary for test automation</description>
+    <url>https://github.com/AutomationRockstars/Design/wiki</url>
+    <developers>
+        <developer>
+            <organization>Automation RockStars</organization>
+            <organizationUrl>https://github.com/orgs/AutomationRockstars/people</organizationUrl>
+        </developer>
+    </developers>
 
-	<modules>
-		<module>bmo-bom</module>
-		<module>execution</module>
-		<module>reporting</module>
-		<module>design</module>
-	</modules>
+    <modules>
+        <module>bmo-bom</module>
+        <module>execution</module>
+        <module>reporting</module>
+        <module>design</module>
+    </modules>
 
-	<distributionManagement>
-		<repository>
-			<id>oss-maven-central</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-		<snapshotRepository>
-			<id>oss-maven-central-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
+    <distributionManagement>
+        <repository>
+            <id>oss-maven-central</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>oss-maven-central-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
-	<scm>
-		<connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
-		<developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
-		<url>https://github.com/automationrockstars/Design</url>
-		<tag>toolchain-1.0.2</tag>
-	</scm>
+    <scm>
+        <connection>scm:git:https://github.com/automationrockstars/Design.git</connection>
+        <developerConnection>scm:git:git@github.com:automationrockstars/Design.git</developerConnection>
+        <url>https://github.com/automationrockstars/Design</url>
+        <tag>armor-2.0.0</tag>
+    </scm>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.automationrockstars</groupId>
-				<artifactId>bmo-bom</artifactId>
-				<version>${project.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.automationrockstars</groupId>
+                <artifactId>bmo-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<useReleaseProfile>false</useReleaseProfile>
-					<releaseProfiles>release</releaseProfiles>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	<organization>
-		<name>Automation RockStars</name>
-		<url>https://github.com/AutomationRockstars/Design/wiki</url>
-	</organization>
-	<ciManagement>
-		<system>Travis CI</system>
-		<url>https://travis-ci.org/AutomationRockstars/Design</url>
-	</ciManagement>
-	<issueManagement>
-		<url>https://github.com/AutomationRockstars/Design/issues</url>
-		<system>Github Issues</system>
-	</issueManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <organization>
+        <name>Automation RockStars</name>
+        <url>https://github.com/AutomationRockstars/Design/wiki</url>
+    </organization>
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/AutomationRockstars/Design</url>
+    </ciManagement>
+    <issueManagement>
+        <url>https://github.com/AutomationRockstars/Design/issues</url>
+        <system>Github Issues</system>
+    </issueManagement>
 </project>

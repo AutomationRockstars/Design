@@ -13,29 +13,31 @@ package com.automationrockstars.gunter.events.impl;
 import com.automationrockstars.gunter.EventType;
 import com.automationrockstars.gunter.events.TestStepStart;
 
-public class TestStepStartImpl extends AbstractTestEvent implements TestStepStart{
+public class TestStepStartImpl extends AbstractTestEvent implements TestStepStart {
 
-	public TestStepStartImpl() {
-		super();
-	}
-	public TestStepStartImpl(String id) {
-		super(id);
-	}
+    private static final String TS_NAME = "TestStepName";
 
-	@Override
-	public void setName(String name) {
-		attributes().put(TS_NAME, name);
-	}
+    public TestStepStartImpl() {
+        super();
+    }
 
-	private static final String TS_NAME = "TestStepName";
-	@Override
-	public String getName() {
-		return getAttribute(TS_NAME);
-	}
+    public TestStepStartImpl(String id) {
+        super(id);
+    }
 
-	@Override
-	public EventType getType() {
-		return EventType.TEST_STEP_START;
-	}
+    @Override
+    public String getName() {
+        return getAttribute(TS_NAME);
+    }
+
+    @Override
+    public void setName(String name) {
+        attributes().put(TS_NAME, name);
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.TEST_STEP_START;
+    }
 
 }

@@ -10,28 +10,27 @@
  *******************************************************************************/
 package com.automationrockstars.gir.mobile;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MobileUtilsTest {
 
-	@Ignore
-	@Test
-	public void basicDriver() throws MalformedURLException{
+    @Ignore
+    @Test
+    public void basicDriver() throws MalformedURLException {
 
-		DesiredCapabilities cap = DesiredCapabilities.android();
-		cap.setCapability("deviceName", "android phone");
-		AppiumDriver<WebElement> d = new AndroidDriver<>(new URL("http://localhost:4723/wd/hub"),cap);
-		d.quit();
+        DesiredCapabilities cap = DesiredCapabilities.android();
+        cap.setCapability("deviceName", "android phone");
+        AppiumDriver<WebElement> d = new AndroidDriver<>(new URL("http://localhost:4723/wd/hub"), cap);
+        d.quit();
 
-	}
+    }
 
 }

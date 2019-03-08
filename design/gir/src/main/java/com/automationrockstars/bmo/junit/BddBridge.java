@@ -10,69 +10,64 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.junit;
 
-import static com.automationrockstars.bmo.JBehaveRunner.deleteTransformedFiles;
-import static com.automationrockstars.bmo.JBehaveRunner.embedder;
-import static com.automationrockstars.bmo.JBehaveRunner.getFeatures;
-import static com.automationrockstars.bmo.JBehaveRunner.transformData;
-
-import java.util.List;
-
+import com.automationrockstars.bmo.AllureStoryReporter;
+import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.automationrockstars.bmo.AllureStoryReporter;
+import java.util.List;
 
-import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
+import static com.automationrockstars.bmo.JBehaveRunner.*;
+
 /**
- * Extend this class to execute BDD scripts as JUnit tests 
+ * Extend this class to execute BDD scripts as JUnit tests
  * Please use the code below to finish execution
  * <pre>
  * <code>
  * <br>
- *	{@literal: @}Override<br>
- *	protected List&lt;String&gt; storyPaths() {<br>
- *		return super.features();<br>
- *	}<br>
- *</code>
- *</pre>
+ *    {@literal: @}Override<br>
+ * 	protected List&lt;String&gt; storyPaths() {<br>
+ * 		return super.features();<br>
+ *    }<br>
+ * </code>
+ * </pre>
  */
 @RunWith(JUnitReportingRunner.class)
-public abstract class BddBridge  extends JUnitStories{
+public abstract class BddBridge extends JUnitStories {
 
-	@BeforeClass
-	public static void prepareData(){
-		transformData();
-	}
+    public BddBridge() {
+        super();
+        super.useEmbedder(embedder());
+        super.useConfiguration(embedder().configuration());
+        super.useStepsFactory(embedder().stepsFactory());
+        JUnitReportingRunner.recommandedControls(embedder())
+                .doIgnoreFailureInStories(false)
+                .doIgnoreFailureInView(false)
+                .doVerboseFailures(true)
+                .doSkip(true);
+    }
 
+    @BeforeClass
+    public static void prepareData() {
+        transformData();
+    }
 
-	@AfterClass
-	public static void cleanUp(){
-		deleteTransformedFiles();
-		AllureStoryReporter.generateReport();
-	}
+    @AfterClass
+    public static void cleanUp() {
+        deleteTransformedFiles();
+        AllureStoryReporter.generateReport();
+    }
 
-	public BddBridge() {
-		super();
-		super.useEmbedder(embedder());
-		super.useConfiguration(embedder().configuration());
-		super.useStepsFactory(embedder().stepsFactory());
-		JUnitReportingRunner.recommandedControls(embedder())				
-		.doIgnoreFailureInStories(false)
-		.doIgnoreFailureInView(false)
-		.doVerboseFailures(true)
-		.doSkip(true);
-	}
-
-	/**
-	 * Method scanning for BDD scripts and providing it for execution
-	 * @return BDD script files
-	 */
-	public List<String> features(){
-		return getFeatures();
-	}
-
+    /**
+     * Method scanning for BDD scripts and providing it for execution
+     *
+     * @return BDD script files
+     */
+    public List<String> features() {
+        return getFeatures();
+    }
 
 
 }

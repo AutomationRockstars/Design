@@ -10,36 +10,35 @@
  *******************************************************************************/
 package com.automationrockstars.gunter.rabbit;
 
-import java.io.IOException;
-
+import com.rabbitmq.client.MessageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rabbitmq.client.MessageProperties;
+import java.io.IOException;
 
 public class Publisher {
 
-	private final String exchange;
-	private final String routingKey;
-	private static final Logger LOG = LoggerFactory.getLogger(Publisher.class);
-	
-	public void fireEvent(String event){
-		try {
-			RabbitEventBroker.getChannel().basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, event.getBytes());
-		} catch (IOException e) {
-			LOG.error("Cannot publish event {} on {}",event,exchange,e);
-		}
-	}
-	
-	protected Publisher(String exchange, String routingKey){
-		RabbitEventBroker.declareExchange(exchange);
-		this.exchange = exchange;
-		this.routingKey = routingKey;
-	}
-	
-	@Override
-	public String toString(){
-		return String.format("Publisher to {},{} using {}", exchange,routingKey,RabbitEventBroker.getChannel());
-		
-	}
+    private static final Logger LOG = LoggerFactory.getLogger(Publisher.class);
+    private final String exchange;
+    private final String routingKey;
+
+    protected Publisher(String exchange, String routingKey) {
+        RabbitEventBroker.declareExchange(exchange);
+        this.exchange = exchange;
+        this.routingKey = routingKey;
+    }
+
+    public void fireEvent(String event) {
+        try {
+            RabbitEventBroker.getChannel().basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, event.getBytes());
+        } catch (IOException e) {
+            LOG.error("Cannot publish event {} on {}", event, exchange, e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Publisher to {},{} using {}", exchange, routingKey, RabbitEventBroker.getChannel());
+
+    }
 }

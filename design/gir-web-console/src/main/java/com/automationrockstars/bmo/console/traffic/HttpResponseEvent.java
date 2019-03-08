@@ -10,40 +10,41 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.traffic;
 
-import java.util.List;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
+import java.util.List;
 
-public class HttpResponseEvent extends AbstractHttpEvent{
+public class HttpResponseEvent extends AbstractHttpEvent {
 
-	private List<Header> headers;
-	private StatusLine statusLine;
-	
-	
-	
-	public StatusLine getStatusLine() {
-		return statusLine;
-	}
-	public void setStatusLine(StatusLine statusLine) {
-		this.statusLine = statusLine;
-	}
-	public List<Header> getHeaders(){
-		return headers;
-	}
-	public void setHeaders(Header[] headers){
-		this.headers = Lists.newArrayList(headers);
-	}
-	
-	
-	public String toString(){
-		return String.format("%s\n%s\n%s", 
-				getStatusLine(), 
-				Joiner.on("\n").join(getHeaders()),
-				(readContent()==null)?"":new String(readContent()));
-	}
-	
+    private List<Header> headers;
+    private StatusLine statusLine;
+
+
+    public StatusLine getStatusLine() {
+        return statusLine;
+    }
+
+    public void setStatusLine(StatusLine statusLine) {
+        this.statusLine = statusLine;
+    }
+
+    public List<Header> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Header[] headers) {
+        this.headers = Lists.newArrayList(headers);
+    }
+
+
+    public String toString() {
+        return String.format("%s\n%s\n%s",
+                getStatusLine(),
+                Joiner.on("\n").join(getHeaders()),
+                (readContent() == null) ? "" : new String(readContent()));
+    }
+
 }

@@ -11,22 +11,22 @@
 package com.automationrockstars.design.gir.webdriver;
 
 import org.openqa.selenium.SearchContext;
-
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 import ru.yandex.qatools.htmlelements.pagefactory.CustomElementLocatorFactory;
 
-public class UiObjectDecorator extends HtmlElementDecorator{
+public class UiObjectDecorator extends HtmlElementDecorator {
 
-	public UiObjectDecorator(CustomElementLocatorFactory locatorFactory) {
-		super(locatorFactory);
-	}
-	
-	public UiObjectDecorator(SearchContext driver) {
-		super(new HtmlElementLocatorFactory(driver));
-	}
-	public UiObjectDecorator(){
-		this(DriverFactory.getDriver());
-	}
+    public UiObjectDecorator(CustomElementLocatorFactory locatorFactory) {
+        super(locatorFactory);
+    }
+
+    public UiObjectDecorator(SearchContext driver) {
+        super(new HtmlElementLocatorFactory(driver));
+    }
+
+    public UiObjectDecorator() {
+        this(DriverFactory.getDriver());
+    }
 
 }
