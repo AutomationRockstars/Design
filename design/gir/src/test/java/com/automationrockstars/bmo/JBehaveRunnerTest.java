@@ -10,51 +10,51 @@
  *******************************************************************************/
 package com.automationrockstars.bmo;
 
+import com.automationrockstars.base.ConfigLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.automationrockstars.base.ConfigLoader;
-
 public class JBehaveRunnerTest {
-	
-	@Test
-	public void should_executeFeaturesAndPass() {
-		ConfigLoader.config().setProperty("bdd.story.files", "pass");
-		ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
-		JBehaveRunner.executeFeatures();
-	}
 
-	@BeforeClass
-	public static void prepare(){
-		ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
-	}
-	@Test
-	public void should_executeFeaturesAndFail(){
-		try {
-			ConfigLoader.config().setProperty("bdd.story.files", "fail");
-			ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
-			JBehaveRunner.executeFeatures();
-			throw new AssertionError("It didnt fail");
-		} catch (org.jbehave.core.embedder.Embedder.RunningStoriesFailed e){
-			
+    @BeforeClass
+    public static void prepare() {
+        ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
+    }
 
-		}
-	}
+    @Test
+    public void should_executeFeaturesAndPass() {
+        ConfigLoader.config().setProperty("bdd.story.files", "pass");
+        ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
+        JBehaveRunner.executeFeatures();
+    }
 
-	@Test
-	public void should_executeFeatureAndReport(){
-			ConfigLoader.config().setProperty("bdd.story.files", "story");
-			ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
-			JBehaveRunner.executeFeatures();
-	
-	}
+    @Test
+    public void should_executeFeaturesAndFail() {
+        try {
+            ConfigLoader.config().setProperty("bdd.story.files", "fail");
+            ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
+            JBehaveRunner.executeFeatures();
+            throw new AssertionError("It didnt fail");
+        } catch (org.jbehave.core.embedder.Embedder.RunningStoriesFailed e) {
 
-	@Test
-	public void should_verifyCornerCases(){
-		ConfigLoader.config().setProperty("bdd.story.files", "feature");
-		ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
-		JBehaveRunner.executeFeatures();
-		
-	}
+
+        }
+    }
+
+    @Test
+    public void should_executeFeatureAndReport() {
+        ConfigLoader.config().setProperty("bdd.story.files", "story");
+        ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
+        JBehaveRunner.executeFeatures();
+
+    }
+
+    @Test
+    public void should_verifyCornerCases() {
+        ConfigLoader.config().setProperty("bdd.story.files", "feature");
+        ConfigLoader.config().setProperty("bdd.steps.package", "com.automationrockstars");
+        JBehaveRunner.executeFeatures();
+
+    }
 
 }

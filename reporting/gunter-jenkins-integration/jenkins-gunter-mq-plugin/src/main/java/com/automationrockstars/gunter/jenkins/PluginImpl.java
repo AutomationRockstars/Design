@@ -10,25 +10,24 @@
  *******************************************************************************/
 package com.automationrockstars.gunter.jenkins;
 
-import java.util.logging.Logger;
-
 import com.automationrockstars.gunter.jenkins.rabbitmq.GlobalGunterConfiguration;
-
 import hudson.Plugin;
 
+import java.util.logging.Logger;
 
-public class PluginImpl extends Plugin{
-	private final static Logger LOG = Logger.getLogger(PluginImpl.class.getName());
 
-	public void start() throws Exception {
-		LOG.info("Gunter plugin to send job event to RabbitMQ");
-		
-		if (GlobalGunterConfiguration.get()!= null && GlobalGunterConfiguration.get().getHost()!= null){
-			LOG.info("Configuration set to :" + GlobalGunterConfiguration.get());
-		} else {
-			LOG.warning("RabbitMQ connection is not configured");
-		}
-		
-	}
+public class PluginImpl extends Plugin {
+    private final static Logger LOG = Logger.getLogger(PluginImpl.class.getName());
+
+    public void start() throws Exception {
+        LOG.info("Gunter plugin to send job event to RabbitMQ");
+
+        if (GlobalGunterConfiguration.get() != null && GlobalGunterConfiguration.get().getHost() != null) {
+            LOG.info("Configuration set to :" + GlobalGunterConfiguration.get());
+        } else {
+            LOG.warning("RabbitMQ connection is not configured");
+        }
+
+    }
 
 }

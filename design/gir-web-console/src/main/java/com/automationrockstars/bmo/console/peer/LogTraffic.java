@@ -10,25 +10,24 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.peer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.automationrockstars.bmo.console.traffic.HttpRequestEvent;
 import com.automationrockstars.bmo.console.traffic.HttpResponseEvent;
 import com.google.common.eventbus.Subscribe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogTraffic {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(LogTraffic.class);	
-	
-	@Subscribe
-	public void handleRequest(HttpRequestEvent request){	
-		LOG.info("RQ: {}",request);
-	}
-	
-	@Subscribe
-	public void handleResponse(HttpResponseEvent response){
-		LOG.info("RP: {}",response);
-	}
+
+    private static final Logger LOG = LoggerFactory.getLogger(LogTraffic.class);
+
+    @Subscribe
+    public void handleRequest(HttpRequestEvent request) {
+        LOG.info("RQ: {}", request);
+    }
+
+    @Subscribe
+    public void handleResponse(HttpResponseEvent response) {
+        LOG.info("RP: {}", response);
+    }
 
 }

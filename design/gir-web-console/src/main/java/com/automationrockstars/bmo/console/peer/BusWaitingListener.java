@@ -10,81 +10,82 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.peer;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Queues;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class BusWaitingListener<T> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BusWaitingListener.class); 
+    private static final Logger LOG = LoggerFactory.getLogger(BusWaitingListener.class);
+    @SuppressWarnings("rawtypes")
+    private static final Predicate alwaysAccept = new Predicate() {
+        @Override
+        public boolean apply(Object input) {
+            return true;
+        }
 
-	public void clean(){
-		responses.clear();
-	}
+    };
+    private final EventBus source;
+    BlockingQueue<T> responses = Queues.newLinkedBlockingQueue();
 
-	private final EventBus source;
-	public BusWaitingListener(final EventBus source){
-		this.source = source;
-		this.source.register(this);
-	}
-	public T get(long timeout, Predicate<T> check) {
+    public BusWaitingListener(final EventBus source) {
+        this.source = source;
+        this.source.register(this);
+    }
 
-		T response = null;
-		boolean timedout = false;
-		while (! timedout && response == null){
-			long start = System.currentTimeMillis();
-			try {
-				response = responses.poll(timeout,TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				LOG.warn("Waiting for response interrupted");
-			}
+    public static <T> BusWaitingListener<T> forType(Class<T> type, EventBus source) {
+        return new BusWaitingListener<T>(source);
+    }
 
-			if (response != null){
-				response = (check.apply(response))? response : null;
-				timeout = timeout - (System.currentTimeMillis() - start);
-				timedout = timeout <= 0;
-				LOG.info("R: {} T: {}",response,timeout);
-			} else {
-				timedout = true;
-			}
+    public void clean() {
+        responses.clear();
+    }
 
-		}
-		return response;
+    public T get(long timeout, Predicate<T> check) {
 
-	}
-	@SuppressWarnings("unchecked")
-	public T get(long timeout)  {
-		return get(timeout,alwaysAccept);
-	}
+        T response = null;
+        boolean timedout = false;
+        while (!timedout && response == null) {
+            long start = System.currentTimeMillis();
+            try {
+                response = responses.poll(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.warn("Waiting for response interrupted");
+            }
 
-	@SuppressWarnings("rawtypes")
-	private static final Predicate alwaysAccept = new Predicate() {
-		@Override
-		public boolean apply(Object input) {
-			return true;
-		}
+            if (response != null) {
+                response = (check.apply(response)) ? response : null;
+                timeout = timeout - (System.currentTimeMillis() - start);
+                timedout = timeout <= 0;
+                LOG.info("R: {} T: {}", response, timeout);
+            } else {
+                timedout = true;
+            }
 
-	};
+        }
+        return response;
 
-	BlockingQueue<T> responses = Queues.newLinkedBlockingQueue();
-	@Subscribe
-	public void handle(T response){
-		responses.add(response);
-	}
+    }
 
-	public void close(){
-		source.unregister(this);
-		responses.clear();
-	}
-	public static <T> BusWaitingListener<T> forType(Class<T> type,EventBus source){
-		return new BusWaitingListener<T>(source);
-	}
+    @SuppressWarnings("unchecked")
+    public T get(long timeout) {
+        return get(timeout, alwaysAccept);
+    }
+
+    @Subscribe
+    public void handle(T response) {
+        responses.add(response);
+    }
+
+    public void close() {
+        source.unregister(this);
+        responses.clear();
+    }
 
 }

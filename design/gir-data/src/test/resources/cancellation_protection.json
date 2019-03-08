@@ -1,10 +1,10 @@
 {
-  "cancellation protection" : [
+  "cancellation protection": [
     {
-      "purchased" : true
+      "purchased": true
     },
     {
-      "purchased" : false
+      "purchased": false
     }
   ]
 }

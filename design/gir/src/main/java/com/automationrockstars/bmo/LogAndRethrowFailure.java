@@ -10,45 +10,46 @@
  *******************************************************************************/
 package com.automationrockstars.bmo;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogAndRethrowFailure implements FailureStrategy{
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public class LogAndRethrowFailure implements FailureStrategy {
 
 
-	public static final CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>();
+    public static final CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>();
 
-	private static final Logger LOG = LoggerFactory.getLogger(LogAndRethrowFailure.class);
-	@Override
-	public void handleFailure(Throwable throwable) throws Throwable {
+    private static final Logger LOG = LoggerFactory.getLogger(LogAndRethrowFailure.class);
 
-		if ( throwable instanceof UUIDExceptionWrapper ){
-			throwable =  ((UUIDExceptionWrapper)throwable).getCause();
-		}
-		for (Method m : discoverFailureHandlers(BmoEmbedder.packageName)){
-			try {
-				m.invoke(m.getDeclaringClass().newInstance(), throwable);
-			} catch (Throwable ignore){
-				//Doing best effort but needs to call all
-			}
-		}
+    @Override
+    public void handleFailure(Throwable throwable) throws Throwable {
 
-		errors.add(throwable);
-		LOG.error("Error during step execution.",throwable);
-		throw throwable;
-	}
+        if (throwable instanceof UUIDExceptionWrapper) {
+            throwable = ((UUIDExceptionWrapper) throwable).getCause();
+        }
+        for (Method m : discoverFailureHandlers(BmoEmbedder.packageName)) {
+            try {
+                m.invoke(m.getDeclaringClass().newInstance(), throwable);
+            } catch (Throwable ignore) {
+                //Doing best effort but needs to call all
+            }
+        }
+
+        errors.add(throwable);
+        LOG.error("Error during step execution.", throwable);
+        throw throwable;
+    }
 
 
-	private Set<Method> discoverFailureHandlers(String packageName){
-		Reflections search = new Reflections(packageName);
-		return search.getMethodsAnnotatedWith(FailureHandler.class);
-	}
+    private Set<Method> discoverFailureHandlers(String packageName) {
+        Reflections search = new Reflections(packageName);
+        return search.getMethodsAnnotatedWith(FailureHandler.class);
+    }
 
 }

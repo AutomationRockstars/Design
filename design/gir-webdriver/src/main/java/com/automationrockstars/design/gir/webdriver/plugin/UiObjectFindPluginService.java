@@ -1,110 +1,112 @@
-/*******************************************************************************
- * Copyright (c) 2015 Automation RockStars Ltd.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Apache License v2.0
- * which accompanies this distribution, and is available at
- * http://www.apache.org/licenses/LICENSE-2.0
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Contributors:
- *     Automation RockStars - initial API and implementation
- *******************************************************************************/
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
 package com.automationrockstars.design.gir.webdriver.plugin;
-
-import java.util.List;
-import java.util.ServiceLoader;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
+import java.util.ServiceLoader;
 
 public class UiObjectFindPluginService {
 
-	public static class CompositeFindPlugin  implements UiObjectFindPlugin{
+    private static final List<UiObjectFindPlugin> plugins = Lists.newArrayList();
+    private static final UiObjectFindPlugin instance = new CompositeFindPlugin();
 
-		public void beforeFindElements(UiObject element, By by) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.beforeFindElements(element, by);
-			}
+    static {
+        registerSpiPlugins();
+    }
 
-		}
+    public static final UiObjectFindPlugin findPlugins() {
+        return instance;
+    }
 
-		public void afterFindElements(UiObject element, By by, List<WebElement> result) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.afterFindElements(element, by,result);
-			}
+    public static List<UiObjectFindPlugin> getPlugins() {
+        return ImmutableList.copyOf(plugins);
+    }
 
-		}
+    public static void registerPlugin(UiObjectFindPlugin plugin) {
+        plugins.add(plugin);
+    }
 
-		public void beforeFindElement(UiObject element, By by) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.beforeFindElement(element, by);
-			}
+    private static final void registerSpiPlugins() {
+        plugins.addAll(Lists.newArrayList(ServiceLoader.load(UiObjectFindPlugin.class).iterator()));
+    }
 
-		}
+    public static class CompositeFindPlugin implements UiObjectFindPlugin {
 
-		public void afterFindElement(UiObject element, By by, WebElement result) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.afterFindElement(element, by,result);
-			}
+        public void beforeFindElements(UiObject element, By by) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.beforeFindElements(element, by);
+            }
 
-		}
+        }
 
-		@Override
-		public void beforeWaitForVisible(UiObject element) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.beforeWaitForVisible(element);
-			}
+        public void afterFindElements(UiObject element, By by, List<WebElement> result) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.afterFindElements(element, by, result);
+            }
 
-		}
+        }
 
-		@Override
-		public void afterWaitForVisible(UiObject element) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.afterWaitForVisible(element);
-			}
+        public void beforeFindElement(UiObject element, By by) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.beforeFindElement(element, by);
+            }
 
-		}
+        }
 
-		@Override
-		public void beforeWaitForPresent(UiObject element) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.beforeWaitForPresent(element);
-			}
+        public void afterFindElement(UiObject element, By by, WebElement result) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.afterFindElement(element, by, result);
+            }
 
-		}
+        }
 
-		@Override
-		public void afterWaitForPresent(UiObject element) {
-			for (UiObjectFindPlugin plugin : plugins){
-				plugin.afterWaitForPresent(element);
-			}
+        @Override
+        public void beforeWaitForVisible(UiObject element) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.beforeWaitForVisible(element);
+            }
 
-		}
+        }
 
-	}
+        @Override
+        public void afterWaitForVisible(UiObject element) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.afterWaitForVisible(element);
+            }
 
-	private static final List<UiObjectFindPlugin> plugins = Lists.newArrayList();
-	private static final UiObjectFindPlugin instance = new CompositeFindPlugin();
+        }
 
-	public static final UiObjectFindPlugin findPlugins(){
-		return instance;
-	}
+        @Override
+        public void beforeWaitForPresent(UiObject element) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.beforeWaitForPresent(element);
+            }
 
-	public static List<UiObjectFindPlugin> getPlugins(){
-		return ImmutableList.copyOf(plugins);
-	}
+        }
 
-	public static void registerPlugin(UiObjectFindPlugin plugin){
-		plugins.add(plugin);
-	}
+        @Override
+        public void afterWaitForPresent(UiObject element) {
+            for (UiObjectFindPlugin plugin : plugins) {
+                plugin.afterWaitForPresent(element);
+            }
 
-	static {
-		registerSpiPlugins();
-	}
-	private static final void registerSpiPlugins(){
-		plugins.addAll(Lists.newArrayList(ServiceLoader.load(UiObjectFindPlugin.class).iterator()));
-	}
+        }
+
+    }
 }

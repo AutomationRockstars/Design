@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface Commit extends Event {
 
-	void setContent(Map<String,String> content);
-	
-	Map<String,String> getContent();
+    Map<String, String> getContent();
+
+    void setContent(Map<String, String> content);
 }

@@ -10,33 +10,27 @@
  *******************************************************************************/
 package com.automationrockstars.gir.console;
 
-import org.junit.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
 import com.automationrockstars.base.ConfigLoader;
-import com.automationrockstars.design.gir.webdriver.DriverFactory;
+import org.junit.Test;
 
 public class ConsoleServerTest {
 
-	@Test
-	public void test() throws Exception {
-		if (! ConfigLoader.config().containsKey("noui")){
-			ConsoleServer.startServer();	
+    @Test
+    public void test() throws Exception {
+        if (!ConfigLoader.config().containsKey("noui")) {
+            ConsoleServer.startServer();
 //			DesiredCapabilities d = DesiredCapabilities.chrome();
 //			d.setCapability("debugSessionId", "stefan");
 //			ConfigLoader.config().addProperty("webdriver.browser", "chrome");
 //			WebDriver dr = DriverFactory.getDriver(d);
 //			dr.get("http://d7djvv22w7:8181/time");
 
-			
 
- 
 //				Thread.sleep(6000000);
 //				DriverFactory.closeDriver();
-				ConsoleServer.stopServer();
+            ConsoleServer.stopServer();
 
-		}
-	}
+        }
+    }
 
 }

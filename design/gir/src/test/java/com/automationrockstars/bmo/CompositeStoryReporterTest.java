@@ -10,21 +10,18 @@
  *******************************************************************************/
 package com.automationrockstars.bmo;
 
-import static com.automationrockstars.asserts.Asserts.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.not;
-
 import org.junit.Test;
+
+import static com.automationrockstars.asserts.Asserts.assertThat;
+import static org.hamcrest.Matchers.*;
+
 public class CompositeStoryReporterTest {
 
-	@Test
-	public void should_loadAlReportersExceptSelf() {
-		CompositeStoryReporter.load();
-		assertThat(CompositeStoryReporter.subReporters(),hasSize(greaterThan(0)));
-		assertThat(CompositeStoryReporter.subReporters(),not(contains(instanceOf(CompositeStoryReporter.class))));
-	}
+    @Test
+    public void should_loadAlReportersExceptSelf() {
+        CompositeStoryReporter.load();
+        assertThat(CompositeStoryReporter.subReporters(), hasSize(greaterThan(0)));
+        assertThat(CompositeStoryReporter.subReporters(), not(contains(instanceOf(CompositeStoryReporter.class))));
+    }
 
 }
