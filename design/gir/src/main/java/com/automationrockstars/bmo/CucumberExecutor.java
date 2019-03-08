@@ -10,33 +10,11 @@
  *******************************************************************************/
 package com.automationrockstars.bmo;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.runner.Description;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.ParentRunner;
-import org.junit.runners.model.InitializationError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.bmo.junit.FakeTest;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
+import com.google.common.base.*;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
 import cucumber.api.CucumberOptions;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.Runtime;
@@ -50,12 +28,29 @@ import cucumber.runtime.junit.FeatureRunner;
 import cucumber.runtime.junit.JUnitOptions;
 import cucumber.runtime.junit.JUnitReporter;
 import cucumber.runtime.model.CucumberFeature;
+import org.apache.commons.io.FileUtils;
+import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.ParentRunner;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class CucumberExecutor extends ParentRunner<FeatureRunner> {
-    private JUnitReporter jUnitReporter;
+    private static final Logger LOG = LoggerFactory.getLogger(CucumberExecutor.class);
     private final List<FeatureRunner> children = new ArrayList<FeatureRunner>();
+    private JUnitReporter jUnitReporter;
     private Runtime runtime;
     private RuntimeOptions runtimeOptions;
+    private String features;
 
     /**
      * Constructor called by JUnit.
@@ -79,9 +74,35 @@ public class CucumberExecutor extends ParentRunner<FeatureRunner> {
 
         final List<CucumberFeature> cucumberFeatures = runtimeOptions.cucumberFeatures(resourceLoader);
         jUnitReporter = new JUnitReporter(runtimeOptions.reporter(classLoader), runtimeOptions.formatter(classLoader),
-                runtimeOptions.isStrict(),new JUnitOptions(Lists.newArrayList("--allow-started-ignored", "--filename-compatible-names")));
+                runtimeOptions.isStrict(), new JUnitOptions(Lists.newArrayList("--allow-started-ignored", "--filename-compatible-names")));
         addChildren(cucumberFeatures);
 
+    }
+
+    public CucumberExecutor() throws InitializationError, IOException {
+        this(FakeTest.class);
+    }
+
+    public static String common(String a, String b) {
+        List<String> base = Lists.newArrayList();
+        List<String> x = Splitter.onPattern("/|\\\\").splitToList(a);
+        List<String> y = Splitter.onPattern("/|\\\\").splitToList(b);
+        for (int i = 0; i < x.size(); i++) {
+            if (x.get(i).equals(y.get(i))) {
+                base.add(x.get(i));
+            } else break;
+        }
+        return Joiner.on("/").join(base);
+    }
+
+    public static String common(List<String> strings) {
+        Preconditions.checkArgument(strings.size() > 0, "Cannot compare nothing");
+        if (strings.size() == 1) return strings.get(0);
+        String base = strings.get(0);
+        for (int i = 1; i < strings.size(); i++) {
+            base = common(base, strings.get(i));
+        }
+        return base;
     }
 
     private void classInit(Class<?> clazz) throws InitializationError, IOException {
@@ -177,9 +198,6 @@ public class CucumberExecutor extends ParentRunner<FeatureRunner> {
         return Splitter.on(",").splitToList(ConfigLoader.config().getString("bdd.glue", defaultGlue));
     }
 
-    private String features;
-    private static final Logger LOG = LoggerFactory.getLogger(CucumberExecutor.class);
-
     public String features() {
 
         if (Strings.isNullOrEmpty(features)) {
@@ -233,32 +251,6 @@ public class CucumberExecutor extends ParentRunner<FeatureRunner> {
         }
         runtimeArgs.add(features());
         runtimeOptions = new RuntimeOptions(runtimeArgs);
-    }
-
-    public static String common(String a, String b) {
-        List<String> base = Lists.newArrayList();
-        List<String> x = Splitter.onPattern("/|\\\\").splitToList(a);
-        List<String> y = Splitter.onPattern("/|\\\\").splitToList(b);
-        for (int i = 0; i < x.size(); i++) {
-            if (x.get(i).equals(y.get(i))) {
-                base.add(x.get(i));
-            } else break;
-        }
-        return Joiner.on("/").join(base);
-    }
-
-    public static String common(List<String> strings) {
-        Preconditions.checkArgument(strings.size() > 0, "Cannot compare nothing");
-        if (strings.size() == 1) return strings.get(0);
-        String base = strings.get(0);
-        for (int i = 1; i < strings.size(); i++) {
-            base = common(base, strings.get(i));
-        }
-        return base;
-    }
-
-    public CucumberExecutor() throws InitializationError, IOException {
-        this(FakeTest.class);
     }
 
 }

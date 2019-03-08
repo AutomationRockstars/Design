@@ -1,14 +1,25 @@
-package com.automationrockstars.bmo;
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
 
-import static org.junit.Assert.*;
+package com.automationrockstars.bmo;
 
 import org.junit.Test;
 
 public class AllureStoryReporterTest {
 
-	@Test
-	public void test() {
-		AllureStoryReporter.closeSession("sadfs");
-	}
+    @Test
+    public void test() {
+        AllureStoryReporter.closeSession("sadfs");
+    }
 
 }

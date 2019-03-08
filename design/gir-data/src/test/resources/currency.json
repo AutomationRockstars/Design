@@ -1,8 +1,8 @@
 {
-  "currency" : [
+  "currency": [
     {
-      "property" : "EUR",
-      "settle" : "EUR"
+      "property": "EUR",
+      "settle": "EUR"
     }
   ]
 }

@@ -14,10 +14,10 @@ import org.junit.Test;
 
 public class UiObjectFactoryTest {
 
-	@Test
-	public void testFromString() {
-		MobileUiObject a =MobileUiObjectFactory.from(" {  android: 'Loading...&&img sss sd', ios: 'Loading...'}  ");
-		System.out.println(a.getLocators().get(MobileFactory.ANDROID));
-	}
+    @Test
+    public void testFromString() {
+        MobileUiObject a = MobileUiObjectFactory.from(" {  android: 'Loading...&&img sss sd', ios: 'Loading...'}  ");
+        System.out.println(a.getLocators().get(MobileFactory.ANDROID));
+    }
 
 }

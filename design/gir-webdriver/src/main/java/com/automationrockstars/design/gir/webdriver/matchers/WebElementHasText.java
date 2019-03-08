@@ -17,19 +17,21 @@ import org.openqa.selenium.WebElement;
 
 public class WebElementHasText extends TypeSafeMatcher<WebElement> {
 
-	private final String textToFind;
-	public WebElementHasText(String textToFind) {
-		this.textToFind = textToFind;
-	}
-	@Override
-	public void describeTo(Description description) {
-		description.appendText(textToFind);
-		
-	}
+    private final String textToFind;
 
-	@Override
-	protected boolean matchesSafely(WebElement item) {
-		return new StringContains(textToFind).matchesSafely(((org.openqa.selenium.WebElement) item).getText());
-	}
+    public WebElementHasText(String textToFind) {
+        this.textToFind = textToFind;
+    }
+
+    @Override
+    public void describeTo(Description description) {
+        description.appendText(textToFind);
+
+    }
+
+    @Override
+    protected boolean matchesSafely(WebElement item) {
+        return new StringContains(textToFind).matchesSafely(((org.openqa.selenium.WebElement) item).getText());
+    }
 
 }

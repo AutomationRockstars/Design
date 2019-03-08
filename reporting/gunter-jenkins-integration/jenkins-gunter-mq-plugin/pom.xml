@@ -1,80 +1,82 @@
 <!--
-    Copyright (c) 2015 Automation RockStars Ltd.
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Apache License v2.0
-    which accompanies this distribution, and is available at
-    http://www.apache.org/licenses/LICENSE-2.0
-   
-    Contributors:
-        Automation RockStars - initial API and implementation
- -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.automationrockstars.gunter</groupId>
-		<artifactId>gunter-jenkins-integration</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
-	</parent>
+  ~
+  ~     Copyright (c) 2015-2019 Automation RockStars Ltd.
+  ~     All rights reserved. This program and the accompanying materials
+  ~     are made available under the terms of the Apache License v2.0
+  ~     which accompanies this distribution, and is available at
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Contributors:
+  ~         Automation RockStars
+  ~
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.automationrockstars.gunter</groupId>
+        <artifactId>gunter-jenkins-integration</artifactId>
+        <version>1.0.3-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>jenkins-gunter-mq-plugin</artifactId>
+    <artifactId>jenkins-gunter-mq-plugin</artifactId>
 
-	<packaging>hpi</packaging>
+    <packaging>hpi</packaging>
 
 
-	<properties>
-		<jmockit.version>1.5</jmockit.version>
-		<junit.version>4.11</junit.version>
-		<rabbitmq.consumer.version>2.5</rabbitmq.consumer.version>
-		<commons.lang3.version>3.1</commons.lang3.version>
-	</properties>
+    <properties>
+        <jmockit.version>1.5</jmockit.version>
+        <junit.version>4.11</junit.version>
+        <rabbitmq.consumer.version>2.5</rabbitmq.consumer.version>
+        <commons.lang3.version>3.1</commons.lang3.version>
+    </properties>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>com.automationrockstars</groupId>
-			<artifactId>gunter-rabbit</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.12</version>
-		</dependency>
+        <dependency>
+            <groupId>com.automationrockstars</groupId>
+            <artifactId>gunter-rabbit</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.12</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jenkins-ci.tools</groupId>
-				<artifactId>maven-hpi-plugin</artifactId>
-				<configuration>
-					<defaultPort>8091</defaultPort>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jenkins-ci.tools</groupId>
+                <artifactId>maven-hpi-plugin</artifactId>
+                <configuration>
+                    <defaultPort>8091</defaultPort>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>15.0</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>15.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -3,55 +3,56 @@
 	terms of the Apache License v2.0 which accompanies this distribution, and
 	is available at http://www.apache.org/licenses/LICENSE-2.0 Contributors:
 	Automation RockStars - initial API and implementation -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.automationrockstars</groupId>
-		<artifactId>design</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>gir-rest</artifactId>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.automationrockstars</groupId>
+        <artifactId>design</artifactId>
+        <version>2.0.3</version>
+    </parent>
+    <artifactId>gir-rest</artifactId>
 
-	<properties>
-		<selenium_version>2.53.1</selenium_version>
-	</properties>
+    <properties>
+        <selenium_version>2.53.1</selenium_version>
+    </properties>
 
 
-	<dependencies>
-		<dependency>
-			<groupId>com.jayway.restassured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>2.9.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core</artifactId>
-			<version>4.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.jayway.restassured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>4.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.automationrockstars</groupId>
-			<artifactId>gir</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>httpclient</artifactId>
-					<groupId>org.apache.httpcomponents</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>httpmime</artifactId>
-					<groupId>org.apache.httpcomponents</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>httpcore</artifactId>
-					<groupId>org.apache.httpcomponents</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>com.automationrockstars</groupId>
+            <artifactId>gir</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpclient</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>httpmime</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

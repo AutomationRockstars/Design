@@ -12,17 +12,17 @@ package com.automationrockstars.gunter.events;
 
 public interface Attachment extends Event {
 
-	void setContent(byte[] content);
-	
-	byte[] getContent();
-	
-	void setMimeType(String type);
-	
-	String getMimeType();
-	
-	void setTitle(String title);
-	
-	String getTitle();
-	
-	void attach(String mimeType, String title, byte[] content);
+    byte[] getContent();
+
+    void setContent(byte[] content);
+
+    String getMimeType();
+
+    void setMimeType(String type);
+
+    String getTitle();
+
+    void setTitle(String title);
+
+    void attach(String mimeType, String title, byte[] content);
 }

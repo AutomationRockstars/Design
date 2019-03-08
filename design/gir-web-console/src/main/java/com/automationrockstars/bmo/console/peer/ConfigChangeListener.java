@@ -10,18 +10,17 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.peer;
 
+import com.automationrockstars.bmo.console.traffic.ConsoleEventBus;
 import org.apache.commons.configuration.event.ConfigurationEvent;
 import org.apache.commons.configuration.event.ConfigurationListener;
 
-import com.automationrockstars.bmo.console.traffic.ConsoleEventBus;
-
 public class ConfigChangeListener implements ConfigurationListener {
 
-	@Override
-	public void configurationChanged(ConfigurationEvent event) {
-		if (! event.isBeforeUpdate()){
-			ConsoleEventBus.execution.post(event);
-		}
-	}
+    @Override
+    public void configurationChanged(ConfigurationEvent event) {
+        if (!event.isBeforeUpdate()) {
+            ConsoleEventBus.execution.post(event);
+        }
+    }
 
 }

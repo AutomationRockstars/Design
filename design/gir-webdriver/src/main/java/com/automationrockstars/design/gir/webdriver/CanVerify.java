@@ -14,14 +14,13 @@ import org.openqa.selenium.By;
 
 public interface CanVerify {
 
-	void verifyVisible();
-	
-	void verifyVisible(String failMessage);
-	
-	void verifyVisible(String failMessage, HasLocator errorObject);
-	
-	void verifyVisible(String failMessage, By errorObject);
-	
-	
-	
+    void verifyVisible();
+
+    void verifyVisible(String failMessage);
+
+    void verifyVisible(String failMessage, HasLocator errorObject);
+
+    void verifyVisible(String failMessage, By errorObject);
+
+
 }
