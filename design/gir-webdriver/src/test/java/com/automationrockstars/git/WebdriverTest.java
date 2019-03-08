@@ -23,10 +23,12 @@ import static org.hamcrest.Matchers.*;
 public class WebdriverTest {
 
 
+
     @Ignore
     @Test
     public void test() throws InterruptedException, IOException {
         System.setProperty("webdriver.browser", "chrome");
+        System.setProperty("noui","true");
         assertThat(Ebay.searchFor("aa"), is(not(nullValue())));
 
 
@@ -35,6 +37,7 @@ public class WebdriverTest {
     @Ignore
     @Test
     public void checkItSearch() {
+        System.setProperty("webdriver.browser", "chrome");
         System.setProperty("noui", "true");
         DriverFactory.getDriver().get("http://ebay.com");
         DriverFactory.getDriver().findElement(By.tagName("body")).findElement(By.tagName("body"));

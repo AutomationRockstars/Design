@@ -320,10 +320,10 @@ public class DriverFactory {
 
     private static WebDriver createRemoteDriver() {
         String name = "";
-        if (ConfigLoader.config().containsKey("noui")) {
-            name = HeadlessWebDriver.name();
-            browser.set(name);
-        }
+//        if (ConfigLoader.config().containsKey("noui")) {
+//            name = HeadlessWebDriver.name();
+//            browser.set(name);
+//        }
 
         log.info("Creating browser for {}", browser.get());
         try {

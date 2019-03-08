@@ -17,17 +17,23 @@ import com.automationrockstars.base.ConfigLoader;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import static com.automationrockstars.base.ConfigLoader.config;
+
 
 public class LocalBrowserDriverPlugin implements UiDriverPlugin {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LocalBrowserDriverPlugin.class);
     public static synchronized void downloadDrivers(String browserName) {
         try {
             Files.write(Paths.get("Downloader.java"), IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream("downloader")), StandardOpenOption.CREATE);
@@ -41,32 +47,34 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin {
             FileUtils.forceDelete(Paths.get("Downloader.java").toFile());
             FileUtils.forceDelete(Paths.get("Downloader.class").toFile());
             FileUtils.forceDelete(Paths.get("Downloader$1.class").toFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException | InterruptedException e) {
+            LOG.error("Cannot enable downloader", e);
         }
     }
 
     @Override
     public void beforeInstantiateDriver() {
-        if (ConfigLoader.config().containsKey("webdriver.browser")
-                && !ConfigLoader.config().containsKey("grid.url")) {
-            final String browser = ConfigLoader.config().getString("webdriver.browser");
+
+        if (config().containsKey("webdriver.browser")
+                && !config().containsKey("grid.url")) {
+            final String browser = config().getString("webdriver.browser");
             String webDriverProperty = String.format("webdriver.%s.driver", browser);
             if (System.getProperty(webDriverProperty) == null) {
-                if (ConfigLoader.config().getString(webDriverProperty) != null
-                        && Paths.get(ConfigLoader.config().getString(webDriverProperty)).toFile().exists()) {
-                    System.setProperty(webDriverProperty, ConfigLoader.config().getString(webDriverProperty));
+                if (config().getString(webDriverProperty) != null
+                        && Paths.get(config().getString(webDriverProperty)).toFile().exists()) {
+                    LOG.info("Setting local driver to {}",config().getString(webDriverProperty));
+                    System.setProperty(webDriverProperty, config().getString(webDriverProperty));
                 } else {
-                    if (!FluentIterable.from(Lists.newArrayList(Paths.get(".").toFile().list())).firstMatch(new Predicate<String>() {
-
-                        @Override
-                        public boolean apply(String input) {
-                            return input.toLowerCase().contains(browser.toLowerCase());
-                        }
-                    }).isPresent()) {
+                    LOG.info("Downloading and setting local driver");
+                    if (!FluentIterable.from(Lists.newArrayList(Paths.get(".").toFile().list())).firstMatch(input -> input.toLowerCase().contains(browser.toLowerCase())).isPresent()) {
                         downloadDrivers(browser);
+                    }
+                    if (! System.getProperty("os.name").toLowerCase().contains("win")){
+                        LOG.info("Using driver manager to get latest version");
+                        if (browser.contains("chrome")){
+                            ChromeDriverManager.getInstance().setup();
+                        }
+
                     }
                 }
             }
@@ -94,6 +102,8 @@ public class LocalBrowserDriverPlugin implements UiDriverPlugin {
             //e.printStackTrace();
         }
 
+
+        
     }
 
     @Override

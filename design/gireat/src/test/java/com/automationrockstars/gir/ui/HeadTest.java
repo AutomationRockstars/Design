@@ -28,6 +28,7 @@ public class HeadTest {
 
     @BeforeClass
     public static void browser() {
+    	System.setProperty("noui", "true");
         DriverFactory.getDriver().get("http://www.google.ie");
 
     }
