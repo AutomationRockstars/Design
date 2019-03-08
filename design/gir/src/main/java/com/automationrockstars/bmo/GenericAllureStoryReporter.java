@@ -285,6 +285,11 @@ public class GenericAllureStoryReporter implements StoryReporter {
                 LOG.warn("Deleting previous results failed");
             }
         }
+        try {
+            FileUtils.forceMkdir(Paths.get(config().getString("allure.results.directory", AllureConfig.getDefaultResultsDirectory().getAbsolutePath())).toFile());
+        } catch (IOException e) {
+            LOG.warn("Creation of allure results dir at {} failed due to {}",config().getString("allure.results.directory", AllureConfig.getDefaultResultsDirectory().getAbsolutePath()),e);
+        }
     }
 
     public static void generateReport() {
@@ -516,6 +521,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
         cleanPreviousReport();
         setLogger();
         config().setProperty("assert.screenshot", false);
+        finished.set(false);
     }
 
     @Override
