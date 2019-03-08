@@ -13,10 +13,10 @@ package com.automationrockstars.design.gir.webdriver.plugin;
 import com.automationrockstars.base.ConfigLoader;
 import com.automationrockstars.design.gir.webdriver.UiObject;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.internal.Coordinates;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.openqa.selenium.interactions.Coordinates;
 import java.util.List;
 
 
@@ -144,7 +144,7 @@ public class LoggingPlugin implements UiObjectInfoPlugin, UiObjectActionPlugin, 
         LOG.info("Getting coordindate of {}", uiObject);
     }
 
-    @Override
+     @Override
     public void afterGetCoordinates(UiObject uiObject, Coordinates result) {
         LOG.info("Element {} has coordinates {} on page", uiObject, result.onPage());
 

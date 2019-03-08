@@ -73,7 +73,7 @@ public class SmartDateConverter extends DateTimeConverter {
                 c.add(Calendar.DATE, 1);
                 return (T) c.getTime();
             } else if (value.toString().toLowerCase().startsWith("in ")) {
-                int amount = Integer.valueOf(CharMatcher.JAVA_DIGIT.retainFrom(value.toString()));
+                int amount = Integer.valueOf(CharMatcher.javaDigit().retainFrom(value.toString()));
                 int type = Calendar.DATE;
                 if (value.toString().toLowerCase().endsWith("months") || value.toString().toLowerCase().endsWith("month")) {
                     type = Calendar.MONTH;
@@ -110,7 +110,7 @@ public class SmartDateConverter extends DateTimeConverter {
                 }
                 return (T) c.getTime();
             } else if (value.toString().toLowerCase().endsWith("years ago")) {
-                int difference = Integer.valueOf(CharMatcher.JAVA_DIGIT.retainFrom((CharSequence) value));
+                int difference = Integer.valueOf(CharMatcher.javaDigit().retainFrom((CharSequence) value));
                 c.add(Calendar.YEAR, -1 * difference);
                 if (value.toString().startsWith("over")) {
                     c.add(Calendar.YEAR, -1 * rnd.nextInt(10));

@@ -38,7 +38,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -57,6 +57,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.automationrockstars.base.ConfigLoader.config;
 import static com.automationrockstars.design.gir.webdriver.plugin.UiObjectFindPluginService.findPlugins;
 
 
@@ -278,7 +279,7 @@ public class DriverFactory {
 
     private static synchronized void enableGridExtras(RemoteWebDriver driver) {
         if (checkGridExtras(GRID_URL, driver)) {
-            String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver), driver.getSessionId().toString());
+            String videoLink = String.format("%s/download_video/%s.mp4", GridUtils.getNodeExtras(GRID_URL, driver), driver.getSessionId().toString()).replace("//download","/download");
             ConfigLoader.config().addProperty("webdriver.video", videoLink);
             List<Object> videos = ConfigLoader.config().getList("webdriver.videos", new ArrayList<Map<String, String>>());
             String story = String.format("%s->%s::", storyName(), scenarioName());
@@ -319,10 +320,10 @@ public class DriverFactory {
 
     private static WebDriver createRemoteDriver() {
         String name = "";
-        if (ConfigLoader.config().containsKey("noui")) {
-            name = HeadlessWebDriver.name();
-            browser.set(name);
-        }
+//        if (ConfigLoader.config().containsKey("noui")) {
+//            name = HeadlessWebDriver.name();
+//            browser.set(name);
+//        }
 
         log.info("Creating browser for {}", browser.get());
         try {
@@ -364,21 +365,38 @@ public class DriverFactory {
         }
     }
 
-    private static synchronized void closeDriver(WebDriver driver) {
+    /**
+     * Close all drivers created by DriverFactory
+     */
+    public static synchronized void closeAllDrivers(){
+        Lists.newArrayList(activeDrivers).stream().forEach(d-> closeDriver(d));
+    }
+
+    /**
+     * Close driver that has been created using different method
+     * @param driver
+     */
+    public static synchronized void closeDriver(WebDriver driver) {
         UiDriverPluginService.driverPlugins().beforeCloseDriver(driver);
         if (driver != null) {
             try {
                 driver.close();
+            } catch (Throwable ignore) {}
+            try {
                 if (!dontUseQuit()) {
                     driver.quit();
                 }
-            } catch (Throwable ignore) {
+            } catch (Throwable ignore){}
+            if (activeDrivers.contains(driver)) {
+                activeDrivers.remove(driver);
             }
-            activeDrivers.remove(driver);
         }
         UiDriverPluginService.driverPlugins().afterCloseDriver();
     }
 
+    /**
+     * Close currently used driver
+     */
     public static void closeDriver() {
         closeDriver(instance());
         instances.remove();
@@ -410,13 +428,7 @@ public class DriverFactory {
     }
 
     public static void closeSession(final String session) {
-        Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), new Predicate<WebDriver>() {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return ((RemoteWebDriver) unwrap(input)).getSessionId().toString().equals(session);
-            }
-        });
+        Optional<WebDriver> driver = Iterables.tryFind(activeInstances(), input -> ((RemoteWebDriver) unwrap(input)).getSessionId().toString().equals(session));
         if (driver.isPresent()) {
             closeDriver(driver.get());
         }
@@ -473,8 +485,12 @@ public class DriverFactory {
             case BrowserType.CHROME:
                 result = DesiredCapabilities.chrome();
                 ChromeOptions chromOptions = new ChromeOptions();
-                //			chromOptions.setExperimentalOption("excludeSwitches",Lists.newArrayList("ignore-certificate-errors"));
                 chromOptions.addArguments("chrome.switches", "--disable-extensions");
+                if (ConfigLoader.config().getBoolean("noui",false)){
+                    chromOptions.addArguments("window-size=1200x900");
+                    chromOptions.setHeadless(config().getBoolean("webdriver.headless", true));
+                }
+                chromOptions.setAcceptInsecureCerts(true);
                 result.setCapability(ChromeOptions.CAPABILITY, chromOptions);
                 result.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
                 break;

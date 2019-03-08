@@ -12,11 +12,13 @@
  */
 package com.automationrockstars.gunter.events;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
-import java.util.Arrays;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 public class EventStore {
 
@@ -40,7 +42,10 @@ public class EventStore {
 
     public static final void putEvent(Event event) {
 
-        Class<? extends Event> key = (Class<? extends Event>) Iterables.find(Arrays.asList(event.getClass().getInterfaces()), new com.google.common.base.Predicate<Class<?>>() {
+        Class<? extends Event> key = (Class<? extends Event>) Iterables.find(asList(event.getClass().getInterfaces()), new Predicate<Class<?>>() {
+            public boolean test(Class<?> input){
+                return apply(input);
+            }
             @Override
             public boolean apply(Class<?> input) {
                 return input.getName().startsWith("com.automationrockstars.gunter.events.");

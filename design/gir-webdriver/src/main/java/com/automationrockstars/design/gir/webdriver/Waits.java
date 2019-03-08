@@ -15,8 +15,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,6 +25,7 @@ import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementClassAnnotatio
 
 import java.util.Arrays;
 
+import static com.automationrockstars.base.ConfigLoader.config;
 import static com.automationrockstars.design.gir.webdriver.DriverFactory.getUnwrappedDriver;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
@@ -148,8 +149,8 @@ public class Waits {
                 while (input.getClass().isAssignableFrom(WrapsDriver.class)) {
                     input = ((WrapsDriver) input).getWrappedDriver();
                 }
-                int wait = ConfigLoader.config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM, 5);
-                ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, 0);
+                int wait = config().getInt(FilterableSearchContext.STUBBORN_WAIT_PARAM, 5);
+                config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, 0);
                 UiObject result = null;
                 SearchContext ctx = new FilterableSearchContext(input);
                 for (By by : bys) {
@@ -164,7 +165,7 @@ public class Waits {
                     } catch (Exception ignore) {
                     }
                 }
-                ConfigLoader.config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, wait);
+                config().setProperty(FilterableSearchContext.STUBBORN_WAIT_PARAM, wait);
                 return result;
             }
 

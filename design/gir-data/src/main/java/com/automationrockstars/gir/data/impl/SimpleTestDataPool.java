@@ -13,10 +13,7 @@
 
 package com.automationrockstars.gir.data.impl;
 
-import com.automationrockstars.gir.data.TestData;
-import com.automationrockstars.gir.data.TestDataPool;
-import com.automationrockstars.gir.data.TestDataRecord;
-import com.automationrockstars.gir.data.TestDataService;
+import com.automationrockstars.gir.data.*;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -54,6 +51,7 @@ public class SimpleTestDataPool implements TestDataPool {
 
     @Override
     public void close() {
+
         for (TestDataService service : services) {
             try {
                 service.close();
@@ -61,6 +59,7 @@ public class SimpleTestDataPool implements TestDataPool {
 
             }
         }
+        TestDataServices.removePool(name);
     }
 
     @Override

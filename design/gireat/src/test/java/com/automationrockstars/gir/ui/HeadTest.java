@@ -15,6 +15,7 @@ package com.automationrockstars.gir.ui;
 
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
 import com.google.common.base.Optional;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class HeadTest {
 
     @BeforeClass
     public static void browser() {
+    	System.setProperty("noui", "true");
         DriverFactory.getDriver().get("http://www.google.ie");
 
     }
@@ -38,7 +40,7 @@ public class HeadTest {
 
     @Test
     public void should_returnMeta() {
-        assertThat(UiParts.head().meta().first().get().getAttribute("content"), not(isEmptyOrNullString()));
+        assertThat(UiParts.head().meta().size(), greaterThan(0));
     }
 
     @Test

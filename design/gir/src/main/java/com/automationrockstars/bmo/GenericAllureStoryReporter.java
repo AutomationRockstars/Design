@@ -149,7 +149,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
         for (Object video : videos) {
             @SuppressWarnings("unchecked")
             Map.Entry<String, String> videoData = ((Map<String, String>) video).entrySet().iterator().next();
-            closeSession(videoData.getValue().replaceAll(".*/download_video/", "").replaceAll(".mp4", ""));
+            closeSession(videoData.getValue().replaceAll(".*/download_video/", "").replaceAll(".mp4", "").replaceAll("//download_video","/download_video"));
             titles.add(videoData.getKey().split("->")[0]);
             videosData.add(Collections.singletonMap(videoData.getKey(), videoData.getValue()));
         }
@@ -245,6 +245,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
         } catch (IOException e) {
             LOG.debug("Cannot generate properties");
         }
+        config().clearProperty("webdriver.video");
     }
 
     public static Optional<File> getResultsDir() {
@@ -403,7 +404,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
         LOG.info("Starting scenario {}", scenarioTitle);
         originalThreadName.set(Thread.currentThread().getName());
         currentScenario.set(scenarioTitle);
-        Thread.currentThread().setName(CharMatcher.JAVA_DIGIT.retainFrom(originalThreadName.get()) + "|" + scenarioTitle);
+        Thread.currentThread().setName(CharMatcher.javaDigit().retainFrom(originalThreadName.get()) + "|" + scenarioTitle);
         stepFailed.set(null);
         TestCaseStartedEvent testCase = new TestCaseStartedEvent(currentSuite.get(), scenarioTitle);
         if (!Strings.isNullOrEmpty(currentMeta.get().getProperty("feature"))) {
@@ -519,7 +520,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
     @Override
     public void finish() {
-        if (!finished.getAndSet(true)) {
+        if (!finished.getAndSet(true) && ! config().getBoolean("allure.skip.report.generation",false)) {
             generateReport();
         }
 

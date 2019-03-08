@@ -14,7 +14,7 @@
 package com.automationrockstars.design.desktop.driver.internal;
 
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.Coordinates;
 import org.sikuli.script.Button;
 import org.sikuli.script.Region;
 

@@ -11,6 +11,7 @@
 package com.automationrockstars.git;
 
 import com.automationrockstars.design.gir.webdriver.DriverFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
@@ -22,16 +23,21 @@ import static org.hamcrest.Matchers.*;
 public class WebdriverTest {
 
 
+
+    @Ignore
     @Test
     public void test() throws InterruptedException, IOException {
-        System.setProperty("noui", "true");
+        System.setProperty("webdriver.browser", "chrome");
+        System.setProperty("noui","true");
         assertThat(Ebay.searchFor("aa"), is(not(nullValue())));
 
 
     }
 
+    @Ignore
     @Test
     public void checkItSearch() {
+        System.setProperty("webdriver.browser", "chrome");
         System.setProperty("noui", "true");
         DriverFactory.getDriver().get("http://ebay.com");
         DriverFactory.getDriver().findElement(By.tagName("body")).findElement(By.tagName("body"));

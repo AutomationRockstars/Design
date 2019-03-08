@@ -21,6 +21,7 @@ import com.automationrockstars.gunter.events.impl.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterators;
 import org.slf4j.Logger;
@@ -179,8 +180,11 @@ public class EventFactory {
     }
 
     private static Class<? extends Event> getClass(String jsonString) {
-        Iterator<String> result = Iterators.filter(Splitter.on(",").split(jsonString).iterator(), new com.google.common.base.Predicate<String>() {
+        Iterator<String> result = Iterators.filter(Splitter.on(",").split(jsonString).iterator(), new Predicate<String>() {
 
+            public boolean test(String part){
+                return apply(part);
+            }
             @Override
             public boolean apply(String part) {
                 return part.contains("type");
@@ -188,7 +192,7 @@ public class EventFactory {
         });
         String typeLine = result.next().split(":")[1];
         String eventName = CharMatcher.noneOf(" \":\n\r{}").retainFrom(typeLine);
-        eventName = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).retainFrom(eventName);
+        eventName = CharMatcher.javaLetterOrDigit().or(CharMatcher.anyOf("_")).retainFrom(eventName);
         return EventImplUtils.getClassForType(EventType.valueOf(eventName));
     }
 
