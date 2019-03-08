@@ -15,52 +15,51 @@ import com.automationrockstars.gunter.events.Log;
 
 public class LogImpl extends AbstractTestEvent implements Log {
 
-	public LogImpl(){
-		super();
-	}
-	
-	public LogImpl(String parentId) {
-		super(parentId);
-	}
+    private static final String LOG_LEVEL = "logLevel";
+    private static final String LOG_MSG = "logMessage";
+    private static final String LOG_ORIGIN = "logOrigin";
 
-	@Override
-	public EventType getType() {
-		return EventType.TEST_LOG;
-	}
-	
-	private static final String LOG_LEVEL = "logLevel";
-	private static final String LOG_MSG = "logMessage";
-	private static final String LOG_ORIGIN = "logOrigin";
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.Log#log(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void log(String level,String origin, String message){
-		attributes().put(LOG_LEVEL, level);
-		attributes().put(LOG_MSG, message);
-		attributes().put(LOG_ORIGIN, origin);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.Log#getLevel()
-	 */
-	public String getLevel(){
-		return getAttribute(LOG_LEVEL);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.Log#getMessage()
-	 */
-	public String getMessage(){
-		return getAttribute(LOG_MSG);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.Log#getOrigin()
-	 */
-	public String getOrigin(){
-		return getAttribute(LOG_ORIGIN);
-	}
-	
+    public LogImpl() {
+        super();
+    }
+    public LogImpl(String parentId) {
+        super(parentId);
+    }
 
-	
+    @Override
+    public EventType getType() {
+        return EventType.TEST_LOG;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.Log#log(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void log(String level, String origin, String message) {
+        attributes().put(LOG_LEVEL, level);
+        attributes().put(LOG_MSG, message);
+        attributes().put(LOG_ORIGIN, origin);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.Log#getLevel()
+     */
+    public String getLevel() {
+        return getAttribute(LOG_LEVEL);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.Log#getMessage()
+     */
+    public String getMessage() {
+        return getAttribute(LOG_MSG);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.Log#getOrigin()
+     */
+    public String getOrigin() {
+        return getAttribute(LOG_ORIGIN);
+    }
+
+
 }

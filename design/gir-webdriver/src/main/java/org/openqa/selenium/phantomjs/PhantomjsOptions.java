@@ -17,8 +17,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class PhantomjsOptions {
 
-	public Capabilities toCapabilities() {
-		return new  DesiredCapabilities(BrowserType.PHANTOMJS,"",Platform.WINDOWS);
-	}
+    public Capabilities toCapabilities() {
+        return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.WINDOWS);
+    }
 
 }

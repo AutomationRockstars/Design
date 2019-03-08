@@ -16,32 +16,34 @@ import com.automationrockstars.gunter.events.TestExecutionStart;
 
 public class TestExecutionFinishImpl extends TestExecutionStartImpl implements TestExecutionFinish {
 
-	public TestExecutionFinishImpl(){
-		super();
-	}
-	public TestExecutionFinishImpl(TestExecutionStart parent) {
-		super(parent.getId());
-		super.setExecutionName(parent.getExecutionName());
-	}
+    private static final String TE_STATUS = "TestExecutionStatus";
 
-	@Override
-	public EventType getType(){
-		return EventType.EXECUTION_FINISH;
-	}
-	
-	private static final String TE_STATUS = "TestExecutionStatus";
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestExecutionFinish#setStatus(java.lang.String)
-	 */
-	public void setStatus(String status){
-		attributes().put(TE_STATUS, status);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestExecutionFinish#getStatus()
-	 */
-	public String getStatus(){
-		return getAttribute(TE_STATUS);
-	}
+    public TestExecutionFinishImpl() {
+        super();
+    }
+
+    public TestExecutionFinishImpl(TestExecutionStart parent) {
+        super(parent.getId());
+        super.setExecutionName(parent.getExecutionName());
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.EXECUTION_FINISH;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestExecutionFinish#getStatus()
+     */
+    public String getStatus() {
+        return getAttribute(TE_STATUS);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestExecutionFinish#setStatus(java.lang.String)
+     */
+    public void setStatus(String status) {
+        attributes().put(TE_STATUS, status);
+    }
 
 }

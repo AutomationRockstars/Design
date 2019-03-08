@@ -1,17 +1,23 @@
 {
-    "monitors": [
-		{
-		"monitorName": "monitor1",
-        "hosts" : ["as","asdf"],
-		"type": "OS"
-		},
-		{
-		"monitorName": "monitor2",
-        "hosts" : ["as","asdf"],
-        "type": "OS",
-        "address": "java,jboss,cmeditor"
-		}
-	]
+  "monitors": [
+    {
+      "monitorName": "monitor1",
+      "hosts": [
+        "as",
+        "asdf"
+      ],
+      "type": "OS"
+    },
+    {
+      "monitorName": "monitor2",
+      "hosts": [
+        "as",
+        "asdf"
+      ],
+      "type": "OS",
+      "address": "java,jboss,cmeditor"
+    }
+  ]
 }
 
 

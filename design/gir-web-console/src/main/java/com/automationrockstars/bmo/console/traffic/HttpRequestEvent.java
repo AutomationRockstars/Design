@@ -10,24 +10,25 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.traffic;
 
+import com.google.common.base.Joiner;
 import org.apache.http.RequestLine;
 
-import com.google.common.base.Joiner;
+public class HttpRequestEvent extends AbstractHttpEvent {
 
-public class HttpRequestEvent extends AbstractHttpEvent{
+    private RequestLine requestLine;
 
-	private RequestLine requestLine;
-	public void setRequestLine(RequestLine line){
-		this.requestLine = line;
-	}
-	
-	public RequestLine getRequestLine(){
-		return requestLine;
-	}
-	public String toString(){
-		return String.format("%s\n%s\n%s", 
-				getRequestLine(),
-				Joiner.on("\n").join(getHeaders()),
-				(readContent()==null)?"":new String(readContent()));
-	}
+    public RequestLine getRequestLine() {
+        return requestLine;
+    }
+
+    public void setRequestLine(RequestLine line) {
+        this.requestLine = line;
+    }
+
+    public String toString() {
+        return String.format("%s\n%s\n%s",
+                getRequestLine(),
+                Joiner.on("\n").join(getHeaders()),
+                (readContent() == null) ? "" : new String(readContent()));
+    }
 }

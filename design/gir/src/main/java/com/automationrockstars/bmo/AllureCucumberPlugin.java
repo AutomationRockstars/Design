@@ -10,134 +10,126 @@
  *******************************************************************************/
 package com.automationrockstars.bmo;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-
 import cucumber.api.StepDefinitionReporter;
 import cucumber.runtime.StepDefinitionMatch;
 import gherkin.formatter.Argument;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
-import gherkin.formatter.model.Feature;
-import gherkin.formatter.model.Match;
-import gherkin.formatter.model.Result;
-import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.Step;
+import gherkin.formatter.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 
-/**
- * Created by Hannah on 11/06/2016.
- */
 public class AllureCucumberPlugin extends AbstractCucumberPlugin implements Formatter, StepDefinitionReporter, Reporter {
-	private static final GenericAllureStoryReporter reporter = new GenericAllureStoryReporter();
-	private static final Logger LOG = LoggerFactory.getLogger(AllureCucumberPlugin.class);
+    private static final GenericAllureStoryReporter reporter = new GenericAllureStoryReporter();
+    private static final Logger LOG = LoggerFactory.getLogger(AllureCucumberPlugin.class);
 
-	private static final ThreadLocal<String> featureUri = new ThreadLocal<>();
+    private static final ThreadLocal<String> featureUri = new ThreadLocal<>();
+    private static final ThreadLocal<Match> currentStep = new ThreadLocal<>();
 
-	@Override
-	public void uri(String uri) {
-		featureUri.set(uri);
-	}
+    private static String scenarioName(Scenario scenario) {
+        String name = scenario.getName();
+        if (Strings.isNullOrEmpty(name)) {
+            name = scenario.getDescription().replaceAll("\\n", "").replaceAll("\\r", "");
+        }
+        return name;
+    }
 
-	
-	@Override
-	public void feature(Feature feature) {		
-		LOG.info("Starting feature {}",feature.getName());
-		reporter.beforeStory(feature.getName(), feature.getDescription(), featureUri.get());
-	}
+    private static String toName(Match match) {
+        if (match instanceof StepDefinitionMatch) {
+            Field stepField;
+            try {
+                stepField = StepDefinitionMatch.class.getDeclaredField("step");
+                stepField.setAccessible(true);
+                Step step = (Step) stepField.get(match);
+                return step.getKeyword() + " " + step.getName();
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 
-	private static String scenarioName(Scenario scenario){
-		String name = scenario.getName();
-		if (Strings.isNullOrEmpty(name)){
-			name = scenario.getDescription().replaceAll("\\n", "").replaceAll("\\r", "");
-		}
-		return name;
-	}
-//	@Override
-	public void startOfScenarioLifeCycle(Scenario scenario) {
-		LOG.info("Starting scenario {}",scenarioName(scenario));
-		reporter.beforeScenario(scenarioName(scenario));
-	}
+                e.printStackTrace();
+            }
 
-//	@Override
-	public void endOfScenarioLifeCycle(Scenario scenario) {
-		LOG.info("Finished scenario {}",scenarioName(scenario));
-		reporter.afterScenario();
-	};
-	@Override
-	public void done() {
-		LOG.info("Generating report");
-		GenericAllureStoryReporter.generateReport();
-		LOG.info("Report generated. Test done");
+        }
+        return (match != null && match.getLocation() != null) ? match.getLocation() : "unknown";
+    }
 
-	}
+    @Override
+    public void uri(String uri) {
+        featureUri.set(uri);
+    }
 
+    @Override
+    public void feature(Feature feature) {
+        LOG.info("Starting feature {}", feature.getName());
+        reporter.beforeStory(feature.getName(), feature.getDescription(), featureUri.get());
+    }
 
-	@Override
-	public void eof() {
-		LOG.info("Story finished");
-		reporter.afterStory();
-	}
+    ;
 
-	@Override
-	public void before(Match match, Result result) {
-		LOG.info("BEFORE {} {} {}",match.getLocation(), match.getArguments(),result.getStatus());
-	}
+    //	@Override
+    public void startOfScenarioLifeCycle(Scenario scenario) {
+        LOG.info("Starting scenario {}", scenarioName(scenario));
+        reporter.beforeScenario(scenarioName(scenario));
+    }
 
-	private static final ThreadLocal<Match> currentStep = new ThreadLocal<>();
-	@Override
-	public void result(Result result) {
-		switch (result.getStatus()){
-		case Result.PASSED :
-			reporter.successful(toName(currentStep.get()));
-			break;
+    //	@Override
+    public void endOfScenarioLifeCycle(Scenario scenario) {
+        LOG.info("Finished scenario {}", scenarioName(scenario));
+        reporter.afterScenario();
+    }
 
-		case Result.FAILED: 
-			reporter.failed(toName(currentStep.get()), result.getError());
-			break;
-		case "skipped" :
-			reporter.ignorable(toName(currentStep.get()));
-			break;
-		}
+    @Override
+    public void done() {
+        LOG.info("Generating report");
+        GenericAllureStoryReporter.generateReport();
+        LOG.info("Report generated. Test done");
 
-		LOG.info("Step {} finished with result {}",toName(currentStep.get()),result.getStatus());
-	}
+    }
 
+    @Override
+    public void eof() {
+        LOG.info("Story finished");
+        reporter.afterStory();
+    }
 
-	private static String toName(Match match){
-		if (match instanceof StepDefinitionMatch){
-			Field stepField;
-			try {
-				stepField = StepDefinitionMatch.class.getDeclaredField("step");
-				stepField.setAccessible(true);
-				Step step = (Step) stepField.get(match);
-				return step.getKeyword() + " " + step.getName();
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+    @Override
+    public void before(Match match, Result result) {
+        LOG.info("BEFORE {} {} {}", match.getLocation(), match.getArguments(), result.getStatus());
+    }
 
-				e.printStackTrace();
-			}
+    @Override
+    public void result(Result result) {
+        switch (result.getStatus()) {
+            case Result.PASSED:
+                reporter.successful(toName(currentStep.get()));
+                break;
 
-		} 
-		return (match != null && match.getLocation()!=null)?match.getLocation():"unknown";
-	}
+            case Result.FAILED:
+                reporter.failed(toName(currentStep.get()), result.getError());
+                break;
+            case "skipped":
+                reporter.ignorable(toName(currentStep.get()));
+                break;
+        }
 
-	@Override
-	public void match(Match match) {
-		Map<String,String> args = Maps.newHashMap();
-		for (Argument arg : match.getArguments()){
-			args.put(arg.getOffset().toString(), arg.getVal());
-		}
-		reporter.example(args);
-		reporter.beforeStep(toName(match));
-		currentStep.set(match);
-		LOG.info("Startin step {} {}",match.getLocation(), match.getArguments());
+        LOG.info("Step {} finished with result {}", toName(currentStep.get()), result.getStatus());
+    }
 
-	}
+    @Override
+    public void match(Match match) {
+        Map<String, String> args = Maps.newHashMap();
+        for (Argument arg : match.getArguments()) {
+            args.put(arg.getOffset().toString(), arg.getVal());
+        }
+        reporter.example(args);
+        reporter.beforeStep(toName(match));
+        currentStep.set(match);
+        LOG.info("Startin step {} {}", match.getLocation(), match.getArguments());
+
+    }
 
 }

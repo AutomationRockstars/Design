@@ -1,15 +1,30 @@
-package com.automationrockstars.gir.data.impl;
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
 
-import java.util.Map;
+package com.automationrockstars.gir.data.impl;
 
 import com.automationrockstars.gir.data.TestDataRecord;
 
+import java.util.Map;
+
 public interface TestDataRecordBuilder {
 
-	TestDataRecordBuilder with(String name, Object value);
-	TestDataRecordBuilder with(Map<String,?> values);
-	TestDataRecordBuilder with(TestDataRecord values);
-	
-	TestDataRecord record();
-	
+    TestDataRecordBuilder with(String name, Object value);
+
+    TestDataRecordBuilder with(Map<String, ?> values);
+
+    TestDataRecordBuilder with(TestDataRecord values);
+
+    TestDataRecord record();
+
 }

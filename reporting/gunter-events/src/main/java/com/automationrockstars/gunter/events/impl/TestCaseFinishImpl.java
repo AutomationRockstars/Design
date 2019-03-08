@@ -16,33 +16,34 @@ import com.automationrockstars.gunter.events.TestCaseStart;
 
 public class TestCaseFinishImpl extends TestCaseStartImpl implements TestCaseFinish {
 
-	public TestCaseFinishImpl() {
-		super();
-	}
-	public TestCaseFinishImpl(TestCaseStart parent) {
-		super(parent.getId());
-		super.setName(parent.getName());
-	}
+    private static final String TC_STATUS = "TestCaseStatus";
 
-	@Override
-	public EventType getType(){
-		return EventType.TEST_CASE_FINISH;
-	}
-	
-	private static final String TC_STATUS = "TestCaseStatus";
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestCaseFinish#setStatus(java.lang.String)
-	 */
-	public void setStatus(String status){
-		attributes().put(TC_STATUS, status);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestCaseFinish#getStatus()
-	 */
-	public String getStatus(){
-		return getAttribute(TC_STATUS);
-	}
-	
+    public TestCaseFinishImpl() {
+        super();
+    }
+
+    public TestCaseFinishImpl(TestCaseStart parent) {
+        super(parent.getId());
+        super.setName(parent.getName());
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.TEST_CASE_FINISH;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestCaseFinish#getStatus()
+     */
+    public String getStatus() {
+        return getAttribute(TC_STATUS);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestCaseFinish#setStatus(java.lang.String)
+     */
+    public void setStatus(String status) {
+        attributes().put(TC_STATUS, status);
+    }
+
 }

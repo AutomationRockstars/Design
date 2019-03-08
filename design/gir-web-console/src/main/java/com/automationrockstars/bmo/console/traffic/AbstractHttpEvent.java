@@ -10,37 +10,38 @@
  *******************************************************************************/
 package com.automationrockstars.bmo.console.traffic;
 
+import com.google.common.collect.Lists;
+import org.apache.http.Header;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
-import org.apache.http.Header;
-
-import com.google.common.collect.Lists;
-
 public abstract class AbstractHttpEvent {
 
-	private byte[] content;
+    private byte[] content;
+    private List<Header> headers;
 
-	public BufferedInputStream getContent() {
-		if (content != null){
-			return new BufferedInputStream(new ByteArrayInputStream(content));
-		} else return null;
-	}
-	public void setContent(BufferedInputStream content){
-		this.content = HttpEventUtils.copyToBytes(content);
-	}
+    public BufferedInputStream getContent() {
+        if (content != null) {
+            return new BufferedInputStream(new ByteArrayInputStream(content));
+        } else return null;
+    }
 
-	public byte[] readContent(){
-		return content;
-	}
+    public void setContent(BufferedInputStream content) {
+        this.content = HttpEventUtils.copyToBytes(content);
+    }
 
-	private List<Header> headers;
-	public List<Header> getHeaders(){
-		return headers;
-	}
-	public void setHeaders(Header[] headers){
-		this.headers = Lists.newArrayList(headers);
-	}
+    public byte[] readContent() {
+        return content;
+    }
+
+    public List<Header> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Header[] headers) {
+        this.headers = Lists.newArrayList(headers);
+    }
 
 }

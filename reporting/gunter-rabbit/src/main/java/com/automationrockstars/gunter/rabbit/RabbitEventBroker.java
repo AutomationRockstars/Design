@@ -10,15 +10,6 @@
  *******************************************************************************/
 package com.automationrockstars.gunter.rabbit;
 
-import static com.automationrockstars.base.ConfigLoader.config;
-
-import java.io.IOException;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.automationrockstars.gunter.events.EventBroker;
 import com.automationrockstars.gunter.events.EventBus;
 import com.google.common.base.Preconditions;
@@ -26,136 +17,143 @@ import com.google.common.collect.Maps;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-public class RabbitEventBroker implements EventBroker{
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	public static final String HOST_PROP = "rabbitmq.host";
-	public static final String PORT_PROP = "rabbitmq.port";
-	public static final String USER_PROP = "rabbitmq.user";
-	public static final String PASS_PROP = "rabbitmq.pass";
+import java.io.IOException;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeoutException;
 
-	private static final ConnectionFactory factory = new ConnectionFactory();
-	private static Connection connection;
-	private static Channel channel;
+import static com.automationrockstars.base.ConfigLoader.config;
 
-	private static RabbitEventBroker instance;
-	private static RabbitEventBroker getInstance(){
-		if(instance == null){
-			instance = new RabbitEventBroker();
-		}
-		return instance;
-	}
+public class RabbitEventBroker implements EventBroker {
 
+    public static final String HOST_PROP = "rabbitmq.host";
+    public static final String PORT_PROP = "rabbitmq.port";
+    public static final String USER_PROP = "rabbitmq.user";
+    public static final String PASS_PROP = "rabbitmq.pass";
 
-	private RabbitEventBroker(){
-		EventBus.registerBroker(this);
-	}
+    private static final ConnectionFactory factory = new ConnectionFactory();
+    private static final Logger LOG = LoggerFactory.getLogger(RabbitEventBroker.class);
+    private static final ConcurrentMap<String, Publisher> publishers = Maps.newConcurrentMap();
+    private static final ConcurrentMap<String, Consumer> consumers = Maps.newConcurrentMap();
+    private static final String DEFAULT_EXCHANGE = "testing-events";
+    private static final String DEFAULT_KEY = "";
+    private static Connection connection;
+    private static Channel channel;
+    private static RabbitEventBroker instance;
+    private static Publisher defaultPublisher;
+    private static Consumer defaultConsumer;
 
+    private RabbitEventBroker() {
+        EventBus.registerBroker(this);
+    }
 
-	private static final Logger LOG = LoggerFactory.getLogger(RabbitEventBroker.class); 
-	private  static Channel reconnect() throws IOException, TimeoutException{
-		getInstance().close();
-		connection = factory.newConnection();
-		channel = connection.createChannel();
-		return channel;
-	}
-	static Channel getChannel(){
-		try {
-			if (channel == null || ! connection.isOpen() || ! channel.isOpen()){
-				Preconditions.checkNotNull(config().getString(HOST_PROP), "RabbitMQ host cannot be undefined");
-				factory.setHost(config().getString(HOST_PROP));
-				factory.setPort(config().getInt(PORT_PROP));
-				factory.setUsername(config().getString(USER_PROP));
-				factory.setPassword(config().getString(PASS_PROP));
-				reconnect();
-			}
-		} catch (IOException | TimeoutException e) {
-			LOG.error("Connection  {}:{}@{}:{} failed",
-					factory.getUsername(), factory.getPassword(),factory.getHost(),factory.getPort(),e);
-		}
-		Preconditions.checkState(connection.isOpen(),"Cannot establish connection to RabbitMQ server");
-		return channel;
-	}
+    private static RabbitEventBroker getInstance() {
+        if (instance == null) {
+            instance = new RabbitEventBroker();
+        }
+        return instance;
+    }
 
-	private static final ConcurrentMap<String, Publisher> publishers = Maps.newConcurrentMap();
-	public static boolean declareExchange(String exchange){
-		try {
-			getChannel().exchangeDeclare(exchange, "fanout",true);
-			return true;
-		} catch (IOException e) {
-			LOG.error("Creating exchange {} failed",exchange,e);
-			return false;
-		}
-	}
-	public static Publisher publisher(String exchange, String routingKey){
-		Publisher result = publishers.get(exchange + "::" + routingKey);
-		if (result == null){
-				result = new Publisher(exchange, routingKey);
-				publishers.put(exchange + "::" + routingKey, result);				
-		}
-		return result; 
-	}
+    private static Channel reconnect() throws IOException, TimeoutException {
+        getInstance().close();
+        connection = factory.newConnection();
+        channel = connection.createChannel();
+        return channel;
+    }
 
-	private static final ConcurrentMap<String, Consumer> consumers = Maps.newConcurrentMap();
-	public static Consumer consumer(String exchange, String routingKey){
-		Consumer result = consumers.get(exchange+"::"+routingKey);
-		if (result == null){
-			result = new Consumer( exchange, routingKey);
-			consumers.put(exchange+"::"+routingKey, result);	
-		}
-		return result; 
+    static Channel getChannel() {
+        try {
+            if (channel == null || !connection.isOpen() || !channel.isOpen()) {
+                Preconditions.checkNotNull(config().getString(HOST_PROP), "RabbitMQ host cannot be undefined");
+                factory.setHost(config().getString(HOST_PROP));
+                factory.setPort(config().getInt(PORT_PROP));
+                factory.setUsername(config().getString(USER_PROP));
+                factory.setPassword(config().getString(PASS_PROP));
+                reconnect();
+            }
+        } catch (IOException | TimeoutException e) {
+            LOG.error("Connection  {}:{}@{}:{} failed",
+                    factory.getUsername(), factory.getPassword(), factory.getHost(), factory.getPort(), e);
+        }
+        Preconditions.checkState(connection.isOpen(), "Cannot establish connection to RabbitMQ server");
+        return channel;
+    }
 
-	}
+    public static boolean declareExchange(String exchange) {
+        try {
+            getChannel().exchangeDeclare(exchange, "fanout", true);
+            return true;
+        } catch (IOException e) {
+            LOG.error("Creating exchange {} failed", exchange, e);
+            return false;
+        }
+    }
 
-	private static final String DEFAULT_EXCHANGE = "testing-events";
-	private static final String DEFAULT_KEY = "";
+    public static Publisher publisher(String exchange, String routingKey) {
+        Publisher result = publishers.get(exchange + "::" + routingKey);
+        if (result == null) {
+            result = new Publisher(exchange, routingKey);
+            publishers.put(exchange + "::" + routingKey, result);
+        }
+        return result;
+    }
 
-	private static Publisher defaultPublisher;
+    public static Consumer consumer(String exchange, String routingKey) {
+        Consumer result = consumers.get(exchange + "::" + routingKey);
+        if (result == null) {
+            result = new Consumer(exchange, routingKey);
+            consumers.put(exchange + "::" + routingKey, result);
+        }
+        return result;
 
-	public static final Publisher defaultPublisher(){
-		if (defaultPublisher == null){
-			defaultPublisher = publisher(DEFAULT_EXCHANGE,DEFAULT_KEY);
-		}
-		return defaultPublisher;
+    }
 
-	}
-	private static Consumer defaultConsumer;
-	public static final Consumer defaultConsumer(){
-		if (defaultConsumer == null){
-			defaultConsumer = consumer(DEFAULT_EXCHANGE, DEFAULT_KEY);
-		}
-		return defaultConsumer;
-	}
+    public static final Publisher defaultPublisher() {
+        if (defaultPublisher == null) {
+            defaultPublisher = publisher(DEFAULT_EXCHANGE, DEFAULT_KEY);
+        }
+        return defaultPublisher;
 
-	public void fireEvent(String event){
-		defaultPublisher().fireEvent(event);
-	}
+    }
 
+    public static final Consumer defaultConsumer() {
+        if (defaultConsumer == null) {
+            defaultConsumer = consumer(DEFAULT_EXCHANGE, DEFAULT_KEY);
+        }
+        return defaultConsumer;
+    }
 
-	public void close(){
-		if (channel != null){
-			try {
-				channel.close();
-			} catch (Exception e) {
-			}
-		}
-		if (connection != null){
-			try {
-				connection.close();
+    public static void closeAll() {
+        getInstance().close();
+    }
 
-			} catch (IOException e) {
-			}
-		}
-		channel = null;
-		connection = null;
-	}
-	
-	public static void closeAll(){
-		getInstance().close();
-	}
+    public static final void init() {
+        getInstance();
+        getChannel();
+    }
 
-	public static final void init(){
-		getInstance();
-		getChannel();
-	}
+    public void fireEvent(String event) {
+        defaultPublisher().fireEvent(event);
+    }
+
+    public void close() {
+        if (channel != null) {
+            try {
+                channel.close();
+            } catch (Exception e) {
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+
+            } catch (IOException e) {
+            }
+        }
+        channel = null;
+        connection = null;
+    }
 
 }

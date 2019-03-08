@@ -1,33 +1,37 @@
-/*******************************************************************************
- * Copyright (c) 2015 Automation RockStars Ltd.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Apache License v2.0
- * which accompanies this distribution, and is available at
- * http://www.apache.org/licenses/LICENSE-2.0
+/*
+ * <!--
+ *     Copyright (c) 2015-2019 Automation RockStars Ltd.
+ *     All rights reserved. This program and the accompanying materials
+ *     are made available under the terms of the Apache License v2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Contributors:
- *     Automation RockStars - initial API and implementation
- *******************************************************************************/
+ *     Contributors:
+ *         Automation RockStars
+ *  -->
+ */
 package com.automationrockstars.bmo;
 
+
+import com.automationrockstars.gunter.events.EventBus;
+import com.automationrockstars.gunter.events.TestCaseStart;
+import com.automationrockstars.gunter.events.TestStepStart;
+import com.google.common.base.MoreObjects;
 
 import static com.automationrockstars.gunter.events.EventFactory.createTestStepStart;
 import static com.automationrockstars.gunter.events.EventFactory.toJson;
 import static com.automationrockstars.gunter.events.EventStore.getEvent;
 import static com.automationrockstars.gunter.events.EventStore.putEvent;
 
-import com.automationrockstars.gunter.events.EventBus;
-import com.automationrockstars.gunter.events.TestCaseStart;
-import com.automationrockstars.gunter.events.TestStepStart;
-import com.google.common.base.Objects;
 public class DslReporter {
 
-	public static final void reportExecutionStart(String executionName){
-		
-	}
-	public static final void reportStepStart(Object name){
-		TestStepStart event = createTestStepStart(getEvent(TestCaseStart.class), Objects.firstNonNull(name, "UNKNOWN").toString());
-		putEvent(event);
-		EventBus.fireEvent(toJson(event));
-	}
+    public static final void reportExecutionStart(String executionName) {
+
+    }
+
+    public static final void reportStepStart(Object name) {
+        TestStepStart event = createTestStepStart(getEvent(TestCaseStart.class), MoreObjects.firstNonNull(name, "UNKNOWN").toString());
+        putEvent(event);
+        EventBus.fireEvent(toJson(event));
+    }
 }

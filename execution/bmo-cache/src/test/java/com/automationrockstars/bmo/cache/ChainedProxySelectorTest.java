@@ -1,15 +1,15 @@
 package com.automationrockstars.bmo.cache;
 
+import org.junit.Test;
+
 import static com.automationrockstars.asserts.Asserts.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.Test;
-
 public class ChainedProxySelectorTest {
 
-	@Test
-	public void should_constructProxiesFromProperties() {
-		assertThat(ChainedProxySelector.proxyNames(),containsInAnyOrder("aws","bluecoat","local"));
-	}
+    @Test
+    public void should_constructProxiesFromProperties() {
+        assertThat(ChainedProxySelector.proxyNames(), containsInAnyOrder("aws", "bluecoat", "local"));
+    }
 
 }

@@ -1,0 +1,16 @@
+{
+  "affiliate payback": [
+    {
+      "percentage": false,
+      "flat": false
+    },
+    {
+      "percentage": true,
+      "flat": false
+    },
+    {
+      "percentage": false,
+      "flat": true
+    }
+  ]
+}

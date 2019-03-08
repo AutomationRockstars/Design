@@ -13,33 +13,34 @@ package com.automationrockstars.gunter.events.impl;
 import com.automationrockstars.gunter.EventType;
 import com.automationrockstars.gunter.events.TestSuiteStart;
 
-public class TestSuiteStartImpl extends AbstractTestEvent implements TestSuiteStart{
+public class TestSuiteStartImpl extends AbstractTestEvent implements TestSuiteStart {
 
-	private final static String TS_NAME = "TestSuiteName";
-	
-	public TestSuiteStartImpl() {
-		super();
-	}
-	public TestSuiteStartImpl(String parentId){
-		super(parentId);
-	}
-	
-	@Override
-	public EventType getType() {
-		return EventType.TEST_SUITE_START;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestSuiteStart#setTestSuiteName(java.lang.String)
-	 */
-	public void setTestSuiteName(String name){
-		attributes().put(TS_NAME, name);
-	}
+    private final static String TS_NAME = "TestSuiteName";
 
-	/* (non-Javadoc)
-	 * @see com.automationrockstars.gunter.events.impl.TestSuiteStart#getTestSuiteName()
-	 */
-	public String getTestSuiteName(){
-		return getAttribute(TS_NAME);
-	}
+    public TestSuiteStartImpl() {
+        super();
+    }
+
+    public TestSuiteStartImpl(String parentId) {
+        super(parentId);
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.TEST_SUITE_START;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestSuiteStart#getTestSuiteName()
+     */
+    public String getTestSuiteName() {
+        return getAttribute(TS_NAME);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automationrockstars.gunter.events.impl.TestSuiteStart#setTestSuiteName(java.lang.String)
+     */
+    public void setTestSuiteName(String name) {
+        attributes().put(TS_NAME, name);
+    }
 }

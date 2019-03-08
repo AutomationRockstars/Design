@@ -13,4 +13,4 @@ It's easy to contribute to AutomationRockstars code. Just setup an account on gi
 
 License
 
-Pickles is licensed with the Apache License, version 2.0. You can find more information on the license here: http://www.apache.org/licenses/LICENSE-2.0.html
+Armor is licensed with the Apache License, version 2.0. You can find more information on the license here: http://www.apache.org/licenses/LICENSE-2.0.html

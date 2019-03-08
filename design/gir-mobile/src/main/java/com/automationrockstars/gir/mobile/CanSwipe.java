@@ -13,8 +13,11 @@ package com.automationrockstars.gir.mobile;
 public interface CanSwipe {
 
 
-	void swipeLeft();
-	void swipeRight();
-	void swipeUp();
-	void swipeDown();
+    void swipeLeft();
+
+    void swipeRight();
+
+    void swipeUp();
+
+    void swipeDown();
 }
