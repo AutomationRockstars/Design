@@ -4,7 +4,7 @@
 
 
 
-Armor is a toolchain to protect you from any bugs. It contains toolset to create or simplify DevOps practices. More on wiki
+Armor is a toolchain to protect you from any bugs. It contains toolset to create and simplify DevOps practices. More on wiki
 https://github.com/AutomationRockstars/Design/wiki
 
 #Contributing
