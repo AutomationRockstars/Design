@@ -1,10 +1,10 @@
-# Design
+# Armor
 
 <a href="https://travis-ci.org/AutomationRockstars/Design"><img src="https://travis-ci.org/AutomationRockstars/Design.svg?branch=master" /></a>
 
 
 
-It is an awesome toolchain for comprehensive test automation of everything.
+Armor is a toolchain to protect you from any bugs. It contains toolset to create and simplify DevOps practices. More on wiki
 https://github.com/AutomationRockstars/Design/wiki
 
 #Contributing
