@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.automationrockstars.base;
 
+import com.automationrockstars.base.internal.ContextConfiguration;
 import com.automationrockstars.base.internal.RuntimeSetterDecorator;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterators;
@@ -127,5 +128,18 @@ public class ConfigLoader {
         } catch (ConfigurationException e) {
             LOG.error("File {} cannot be loaded to configuration", propertiesFile, e);
         }
+    }
+
+
+    public static void addContextProperty(String key, Object value){
+        ContextConfiguration.get().addContextProperty(key,value);
+    }
+
+    public static void clearContextProperty(String key){
+        ContextConfiguration.get().clearProperty(key);
+    }
+
+    public static void setContextProperty(String key,Object value){
+        ContextConfiguration.get().setProperty(key,value);
     }
 }

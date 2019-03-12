@@ -27,12 +27,13 @@ public class RuntimeSetterDecorator extends CompositeConfiguration {
 
     public RuntimeSetterDecorator(Collection<? extends Configuration> configList) {
         super();
-        List<Configuration> configs = Lists.newArrayList((Configuration) runtimeConfiguration);
+        List<Configuration> configs = Lists.newArrayList(ContextConfiguration.instance(), runtimeConfiguration);
         configs.addAll(configList);
         for (Configuration c : configs) {
             super.addConfiguration(c);
         }
         super.addConfiguration(runtimeConfiguration, true);
+        super.addConfiguration(ContextConfiguration.instance(),true);
     }
 
     @Override
