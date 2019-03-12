@@ -38,19 +38,6 @@ public class ConfigLoaderTest {
         assertThat(ConfigLoader.config().getString("t1"), is(equalTo("2")));
     }
 
-    public static class SuperLame extends Thread{
-
-        public SuperLame(){
-            super();
-            super.setName("SDFSFS");
-        }
-        public void run(){
-            System.out.println("sl" + Thread.currentThread());
-        }
-
-
-
-    }
     @Test
     public void should_separateContexts() throws Exception{
         System.setProperty("t1", "1");
