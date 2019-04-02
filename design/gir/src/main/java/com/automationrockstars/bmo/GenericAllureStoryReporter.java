@@ -16,29 +16,27 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import com.automationrockstars.asserts.Asserts;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.*;
 import com.google.common.base.Optional;
+import com.google.common.base.*;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+import io.qameta.allure.Allure;
+import io.qameta.allure.model.Attachment;
+import io.qameta.allure.model.Status;
+import io.qameta.allure.model.StepResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.allure.Allure;
-import ru.yandex.qatools.allure.config.AllureConfig;
-import ru.yandex.qatools.allure.config.AllureModelUtils;
-import ru.yandex.qatools.allure.events.*;
-import ru.yandex.qatools.allure.model.Description;
-import ru.yandex.qatools.allure.report.AllureReportBuilder;
-import ru.yandex.qatools.allure.report.AllureReportBuilderException;
 
 import java.awt.*;
 import java.io.File;
@@ -49,9 +47,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static com.automationrockstars.base.ConfigLoader.config;
 
@@ -328,11 +327,10 @@ public class GenericAllureStoryReporter implements StoryReporter {
         if (getResultsDir().isPresent()) {
 
             generateProperties(getResultsDir().get().getAbsolutePath());
-            AllureReportBuilder bl;
+            Generat bl;
             try {
-                bl = new AllureReportBuilder("1.4.19", getReportDir());
-                bl.processResults(getResultsDir().get());
-                bl.unpackFace();
+                bl = new AllureReportGenerator(getResultsDir().get());
+                bl.generate(getReportDir());
                 URI report = Paths.get(getReportDir().getAbsolutePath(), "index.html").toUri();
                 LOG.info("Report generated to {}", report);
                 if (config().containsKey("bdd.open.report")) {
@@ -344,7 +342,7 @@ public class GenericAllureStoryReporter implements StoryReporter {
                         }
                     }
                 }
-            } catch (AllureReportBuilderException cantCreateReport) {
+            } catch (ReportGenerationException cantCreateReport) {
                 LOG.error("Report is not generated due to ", cantCreateReport);
             }
         }
@@ -409,7 +407,13 @@ public class GenericAllureStoryReporter implements StoryReporter {
         LOG.info("Starting scenario {}", scenarioTitle);
         originalThreadName.set(Thread.currentThread().getName());
         currentScenario.set(scenarioTitle);
-        Thread.currentThread().setName(CharMatcher.javaDigit().retainFrom(originalThreadName.get()) + "|" + scenarioTitle);
+        String newThreadName = "";
+        if (originalThreadName.get().startsWith("pool-")){
+            newThreadName = CharMatcher.javaDigit().retainFrom(originalThreadName.get());
+        } else {
+            newThreadName = originalThreadName.get();
+        }
+        Thread.currentThread().setName(newThreadName + "|" + scenarioTitle);
         stepFailed.set(null);
         TestCaseStartedEvent testCase = new TestCaseStartedEvent(currentSuite.get(), scenarioTitle);
         if (!Strings.isNullOrEmpty(currentMeta.get().getProperty("feature"))) {
@@ -490,17 +494,27 @@ public class GenericAllureStoryReporter implements StoryReporter {
 
     }
 
-    public void failed(String step, Throwable cause) {
+    public void failed(String step,final Throwable cause) {
         AllureLogbackAppender.fire(step);
         Throwable trueCause = cause;
         if (cause instanceof InvocationTargetException) {
             trueCause = (cause.getCause() != null) ? cause.getCause() : cause;
         }
-
+        final Throwable actualCause = trueCause;
         stepFailed.set(trueCause);
         attachScreenshot(step);
-        Allure.LIFECYCLE.fire(new StepFailureEvent().withThrowable(trueCause));
-        Allure.LIFECYCLE.fire(new StepFinishedEvent());
+        Allure.getLifecycle().stopTestCase(step);
+        Allure.getLifecycle().updateStep(step, new Consumer<StepResult>() {
+            @Override
+            public void accept(StepResult stepResult) {
+                stepResult.setStatus(Status.FAILED);
+                stepResult.setAttachments(Lists.newArrayList(
+                        new Attachment().withName("Screenshot").withSource(att),
+                        new Attachment().withName("Stack trace").withSource(ExceptionUtils.getFullStackTrace(actualCause))));
+
+            }
+        });
+        Allure.getLifecycle().stopStep(step);
 
     }
 
