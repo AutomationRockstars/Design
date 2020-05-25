@@ -21,6 +21,8 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.HideKeyboardStrategy;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -28,6 +30,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,7 +43,7 @@ public class MobileUtils {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(MobileUtils.class);
-    private static final int pressWait = ConfigLoader.config().getInt("mobile.press.wait", 2500);
+    private static final Duration pressWait = Duration.ofMillis(ConfigLoader.config().getInt("mobile.press.wait", 2500));
     static Predicate<WebElement> displayed = new Predicate<WebElement>() {
 
         @Override
@@ -87,11 +90,13 @@ public class MobileUtils {
             startY += element.getSize().getHeight() * Math.abs(yoffsetPersent) / 100;
         }
 
-        int duration = ConfigLoader.config().getInt("mobile.swipe.time", 500);
+        Duration duration = Duration.ofMillis(ConfigLoader.config().getInt("mobile.swipe.time", 500));
         boolean retry = true;
         while (retry) {
             try {
-                MobileFactory.getDriver().swipe(startX, startY, stopX, stopY, duration);
+                new TouchAction(MobileFactory.getDriver()).press(new PointOption().withCoordinates(startX, startY))
+                        .waitAction(new WaitOptions().withDuration(duration)).moveTo(new PointOption().withCoordinates(stopX, stopX))
+                        .release().perform();
                 retry = false;
             } catch (WebDriverException e) {
 
@@ -102,10 +107,10 @@ public class MobileUtils {
     public static void press(int x, int y) {
         try {
             LOG.debug("Touching screen at {} {}", x, y);
-            new TouchAction(MobileFactory.getDriver()).press(x, y)
-                    .waitAction(600)
+            new TouchAction(MobileFactory.getDriver()).press(new PointOption().withCoordinates(x, y))
+                    .waitAction(new WaitOptions().withDuration(Duration.ofMillis(600)))
                     .release()
-                    .waitAction(pressWait)
+                    .waitAction(new WaitOptions().withDuration(pressWait))
                     .perform();
         } catch (Throwable rb) {
             LOG.warn("Touching failed {}", rb.getMessage());
@@ -258,7 +263,7 @@ public class MobileUtils {
                 } catch (Throwable ignore) {
                     try {
                         if (toPinch != null) {
-                            MobileFactory.getDriver().tap(1, toPinch.x, toPinch.y, 200);
+                            new TouchAction(MobileFactory.getDriver()).tap(new PointOption().withCoordinates(toPinch.x, toPinch.y)).perform();
                         }
                     } catch (Throwable there) {
                         LOG.warn("Pinching failed", there);
@@ -291,7 +296,7 @@ public class MobileUtils {
     }
 
     public static void tap(int x, int y) {
-        MobileFactory.getDriver().tap(1, x, y, 10);
+        new TouchAction(MobileFactory.getDriver()).tap(new PointOption().withCoordinates(x, y)).perform();
     }
 
     public static void tap(WebElement e) {
